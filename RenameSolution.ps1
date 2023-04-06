@@ -12,7 +12,7 @@ Write-Host ""
 Write-Host "This script will do the following:"
 Write-Host ""
 Write-Host ""
-Write-Host "1. Change the file names, folder names, and project references from the JotunnModStub to your custom solution name."
+Write-Host "1. Change the file names, folder names, and project references from the ChebsMercenaries to your custom solution name."
 Write-Host ""
 Write-Host "2. Change the DoPrebuild.props file."
 Write-Host ""
@@ -58,10 +58,10 @@ if ($Name -ne "")
 {
 
 Write-Host "     . . . Renaming files and folders to '$Name' . . ."
-Move-Item -Path ..\$Name\JotunnModStub -Destination ..\$Name\$Name
+Move-Item -Path ..\$Name\ChebsMercenaries -Destination ..\$Name\$Name
 $unity = $Name + "Unity"
-Move-Item -Path ..\$Name\JotunnModUnity -Destination ..\$Name\$unity
-Get-ChildItem -Path ..\$Name\ -File -Recurse | % -Process{if($_.Name -ne "JotunnModStub.zip") {Rename-Item -Path $_.PSPath -NewName $_.Name.replace("JotunnModStub", $Name)}}
+Move-Item -Path ..\$Name\ChebsMercenariesUnity -Destination ..\$Name\$unity
+Get-ChildItem -Path ..\$Name\ -File -Recurse | % -Process{if($_.Name -ne "ChebsMercenaries.zip") {Rename-Item -Path $_.PSPath -NewName $_.Name.replace("ChebsMercenaries", $Name)}}
 }
 else{
 Write-Host "Error: empty solution name"
@@ -70,14 +70,14 @@ Exit 0
 }
 
 #Rename internal references
-$msg = "     . . . Replacing internal references to 'JotunnModStub' with " + '($Name)' + " . . ."
+$msg = "     . . . Replacing internal references to 'ChebsMercenaries' with " + '($Name)' + " . . ."
 Write-Host $msg
-((Get-Content -path ..\$Name\$Name.sln -Raw) -replace 'JotunnModStub',$Name) | Set-Content -Path ..\$Name\$Name.sln
-((Get-Content -path ..\$Name\$Name\$Name.cs -Raw) -replace 'JotunnModStub',$Name) | Set-Content -Path ..\$Name\$Name\$Name.cs 
+((Get-Content -path ..\$Name\$Name.sln -Raw) -replace 'ChebsMercenaries',$Name) | Set-Content -Path ..\$Name\$Name.sln
+((Get-Content -path ..\$Name\$Name\$Name.cs -Raw) -replace 'ChebsMercenaries',$Name) | Set-Content -Path ..\$Name\$Name\$Name.cs 
 $landed = $Name + " has landed"
 ((Get-Content -path ..\$Name\$Name\$Name.cs -Raw) -replace 'ModStub has landed',$landed) | Set-Content -Path ..\$Name\$Name\$Name.cs 
-((Get-Content -path ..\$Name\$Name\$Name.csproj -Raw) -replace 'JotunnModStub',$Name) | Set-Content -Path ..\$Name\$Name\$Name.csproj
-((Get-Content -path ..\$Name\$Name\Properties\AssemblyInfo.cs -Raw) -replace 'JotunnModStub',$Name) | Set-Content -Path ..\$Name\$Name\Properties\AssemblyInfo.cs
+((Get-Content -path ..\$Name\$Name\$Name.csproj -Raw) -replace 'ChebsMercenaries',$Name) | Set-Content -Path ..\$Name\$Name\$Name.csproj
+((Get-Content -path ..\$Name\$Name\Properties\AssemblyInfo.cs -Raw) -replace 'ChebsMercenaries',$Name) | Set-Content -Path ..\$Name\$Name\Properties\AssemblyInfo.cs
 
 
 
@@ -102,7 +102,7 @@ if (Test-Path -Path ..\Environment.props) {
 		Write-Host ""	
 		Write-Host "You must create an environment.props file inside the solution directory PRIOR to building the solution."
 		Write-Host "Instructions for creating this file can be found at"
-		Write-Host "https://github.com/Valheim-Modding/JotunnModStub"
+		Write-Host "https://github.com/Valheim-Modding/ChebsMercenaries"
 		Write-Host ""
 		Write-Host ""
 		Read-Host "Hit Enter to Exit"
