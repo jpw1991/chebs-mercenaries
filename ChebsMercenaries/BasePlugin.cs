@@ -128,41 +128,9 @@ namespace ChebsMercenaries
             var chebgonazAssetBundle = AssetUtils.LoadAssetBundle(assetBundlePath);
             try
             {
-                GameObject LoadPrefabFromBundle(string prefabName, AssetBundle bundle)
-                {
-                    var prefab = bundle.LoadAsset<GameObject>(prefabName);
-                    if (prefab == null)
-                    {
-                        Jotunn.Logger.LogFatal($"LoadPrefabFromBundle: {prefabName} is null!");
-                    }
-
-                    if (RadeonFriendly.Value)
-                    {
-                        foreach (var child in prefab.GetComponentsInChildren<ParticleSystem>())
-                        {
-                            Destroy(child);
-                        }
-                    
-                        if (prefab.TryGetComponent(out Humanoid humanoid))
-                        {
-                            humanoid.m_deathEffects = new EffectList();
-                            humanoid.m_dropEffects = new EffectList();
-                            humanoid.m_equipEffects = new EffectList();
-                            humanoid.m_pickupEffects = new EffectList();
-                            humanoid.m_consumeItemEffects = new EffectList();
-                            humanoid.m_hitEffects = new EffectList();
-                            humanoid.m_jumpEffects = new EffectList();
-                            humanoid.m_slideEffects = new EffectList();
-                            humanoid.m_perfectBlockEffect = new EffectList();
-                            humanoid.m_tarEffects = new EffectList();
-                            humanoid.m_waterEffects = new EffectList();
-                            humanoid.m_flyingContinuousEffect = new EffectList();
-                        }
-                    }
-                    
-                    return prefab;
-                }
-
+                #region Items
+                ChebsValheimLibrary.Base.LoadMinionItems(chebgonazAssetBundle, RadeonFriendly.Value);
+                #endregion
                 #region Creatures
                 var prefabNames = new List<string>();
 
@@ -178,7 +146,7 @@ namespace ChebsMercenaries
 
                 prefabNames.ForEach(prefabName =>
                 {
-                    var prefab = LoadPrefabFromBundle(prefabName, chebgonazAssetBundle);
+                    var prefab = ChebsValheimLibrary.Base.LoadPrefabFromBundle(prefabName, chebgonazAssetBundle, RadeonFriendly.Value);
                     CreatureManager.Instance.AddCreature(new CustomCreature(prefab, true));
                 });
                 #endregion

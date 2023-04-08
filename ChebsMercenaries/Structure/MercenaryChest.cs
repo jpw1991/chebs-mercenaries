@@ -13,7 +13,7 @@ using Random = UnityEngine.Random;
 
 namespace ChebsMercenaries.Structure
 {
-    internal class MercenaryChest : ChebsValheimLibrary.Structures.Structure
+    public class MercenaryChest : ChebsValheimLibrary.Structures.Structure
     {
         public static ConfigEntry<int> ContainerWidth, ContainerHeight;
         public static ConfigEntry<float> RecruitmentInterval;
@@ -101,7 +101,7 @@ namespace ChebsMercenaries.Structure
             ContainerHeight = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ContainerHeight", 4,
                 "Inventory size = width * height = 4 * 4 = 16.", new AcceptableValueRange<int>(4, 20), true);
 
-            RecruitmentInterval = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "RecruitmentInterval", 60f,
+            RecruitmentInterval = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "RecruitmentInterval", 30f,
                 "Every X seconds, attempt to recruit a mercenary", null, true);
 
             WarriorTier1Cost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "WarriorTier1Cost",
@@ -247,12 +247,12 @@ namespace ChebsMercenaries.Structure
 
             var orderedByPreference = new List<MercenaryType>
             {
-                MercenaryType.WarriorTier4,
                 MercenaryType.ArcherTier3,
-                MercenaryType.WarriorTier3,
                 MercenaryType.ArcherTier2,
-                MercenaryType.WarriorTier2,
                 MercenaryType.ArcherTier1,
+                MercenaryType.WarriorTier4,
+                MercenaryType.WarriorTier3,
+                MercenaryType.WarriorTier2,
                 MercenaryType.WarriorTier1,
                 MercenaryType.Woodcutter,
                 MercenaryType.Miner
@@ -360,6 +360,8 @@ namespace ChebsMercenaries.Structure
                 _ => spawnedChar.AddComponent<HumanMinion>()
             };
             
+            minion.ScaleEquipment(mercenaryType, armorType);
+            
             if (mercenaryType != MercenaryType.Miner && mercenaryType != MercenaryType.Woodcutter)
                 minion.Roam();
 
@@ -442,11 +444,14 @@ namespace ChebsMercenaries.Structure
                         $"Recruiting {nextMerc} in {(RecruitmentInterval.Value - (Time.time - _lastRecruitmentAt)).ToString("0")} seconds...", false);
                 }
                 
-                if (Time.time - _lastRecruitmentAt > RecruitmentInterval.Value && nextMerc != MercenaryType.None)
+                if (Time.time - _lastRecruitmentAt > RecruitmentInterval.Value)
                 {
                     _lastRecruitmentAt = Time.time;
-                    PayForMercenary(nextMerc);
-                    SpawnMercenary(nextMerc, UpgradeMercenaryEquipment());
+                    if (nextMerc != MercenaryType.None)
+                    {
+                        PayForMercenary(nextMerc);
+                        SpawnMercenary(nextMerc, UpgradeMercenaryEquipment());   
+                    }
                 }
             }
         }

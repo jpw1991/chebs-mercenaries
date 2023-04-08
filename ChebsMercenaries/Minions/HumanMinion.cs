@@ -1,11 +1,11 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using BepInEx;
 using BepInEx.Configuration;
+using ChebsMercenaries.Structure;
 using ChebsValheimLibrary.Minions;
 using UnityEngine;
+using Logger = Jotunn.Logger;
 
 namespace ChebsMercenaries.Minions
 {
@@ -49,7 +49,7 @@ namespace ChebsMercenaries.Minions
 
             if (!TryGetComponent(out Humanoid humanoid))
             {
-                Jotunn.Logger.LogError("Humanoid component missing!");
+                Logger.LogError("Humanoid component missing!");
                 yield break;
             }
 
@@ -97,6 +97,92 @@ namespace ChebsMercenaries.Minions
             // }
 
             RestoreDrops();
+        }
+        
+        public void ScaleEquipment(MercenaryChest.MercenaryType mercenaryType, ArmorType armorType)
+        {
+            var defaultItems = new List<GameObject>();
+
+            var humanoid = GetComponent<Humanoid>();
+            if (humanoid == null)
+            {
+                Logger.LogError("ScaleEquipment: humanoid is null!");
+                return;
+            }
+
+            // note: as of 1.2.0 weapons were moved into skeleton prefab variants
+            // with different m_randomWeapons set. This is because trying to set
+            // dynamically seems very difficult -> skeletons forgetting their weapons
+            // on logout/log back in; skeletons thinking they have no weapons
+            // and running away from enemies.
+            //
+            // Fortunately, armor seems to work fine.
+            switch (armorType)
+            {
+                case ArmorType.Leather:
+                    defaultItems.AddRange(new[] {
+                        ZNetScene.instance.GetPrefab("HelmetLeather"),
+                        ZNetScene.instance.GetPrefab("ArmorLeatherChest"),
+                        ZNetScene.instance.GetPrefab("ArmorLeatherLegs"),
+                        ZNetScene.instance.GetPrefab("CapeDeerHide"),
+                    });
+                    break;
+                case ArmorType.LeatherTroll:
+                    defaultItems.AddRange(new[] {
+                        ZNetScene.instance.GetPrefab("ChebGonaz_HelmetLeatherTroll"),
+                        ZNetScene.instance.GetPrefab("ChebGonaz_ArmorLeatherChestTroll"),
+                        ZNetScene.instance.GetPrefab("ChebGonaz_ArmorLeatherLegsTroll"),
+                        ZNetScene.instance.GetPrefab("CapeTrollHide"),
+                    });
+                    break;
+                case ArmorType.LeatherWolf:
+                    defaultItems.AddRange(new[] {
+                        ZNetScene.instance.GetPrefab("ChebGonaz_HelmetLeatherWolf"),
+                        ZNetScene.instance.GetPrefab("ChebGonaz_ArmorLeatherChestWolf"),
+                        ZNetScene.instance.GetPrefab("ChebGonaz_ArmorLeatherLegsWolf"),
+                        ZNetScene.instance.GetPrefab("CapeWolf"),
+                    });
+                    break;
+                case ArmorType.LeatherLox:
+                    defaultItems.AddRange(new[] {
+                        ZNetScene.instance.GetPrefab("ChebGonaz_HelmetLeatherLox"),
+                        ZNetScene.instance.GetPrefab("ChebGonaz_ArmorLeatherChestLox"),
+                        ZNetScene.instance.GetPrefab("ChebGonaz_ArmorLeatherLegsLox"),
+                        ZNetScene.instance.GetPrefab("CapeLox"),
+                    });
+                    break;
+                case ArmorType.Bronze:
+                    defaultItems.AddRange(new[] {
+                        ZNetScene.instance.GetPrefab("HelmetBronze"),
+                        ZNetScene.instance.GetPrefab("ArmorBronzeChest"),
+                        ZNetScene.instance.GetPrefab("ArmorBronzeLegs"),
+                        ZNetScene.instance.GetPrefab("CapeLox"),
+                    });
+                    //Emblem = InternalName.GetName(NecromancerCape.EmblemConfig.Value);
+                    break;
+                case ArmorType.Iron:
+                    defaultItems.AddRange(new[] {
+                        ZNetScene.instance.GetPrefab("HelmetIron"),
+                        ZNetScene.instance.GetPrefab("ArmorIronChest"),
+                        ZNetScene.instance.GetPrefab("ArmorIronLegs"),
+                        ZNetScene.instance.GetPrefab("CapeLox"),
+                    });
+                    //Emblem = InternalName.GetName(NecromancerCape.EmblemConfig.Value);
+                    break;
+                case ArmorType.BlackMetal:
+                    defaultItems.AddRange(new[] {
+                        ZNetScene.instance.GetPrefab("ChebGonaz_HelmetBlackIron"),
+                        ZNetScene.instance.GetPrefab("ChebGonaz_ArmorBlackIronChest"),
+                        ZNetScene.instance.GetPrefab("ChebGonaz_ArmorBlackIronLegs"),
+                        ZNetScene.instance.GetPrefab("CapeLox"),
+                    });
+                    //Emblem = InternalName.GetName(NecromancerCape.EmblemConfig.Value);
+                    break;
+            }
+
+            humanoid.m_defaultItems = defaultItems.ToArray();
+
+            humanoid.GiveDefaultItems();
         }
     }
 }
