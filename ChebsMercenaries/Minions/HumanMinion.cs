@@ -9,6 +9,7 @@ namespace ChebsMercenaries.Minions
         public static ConfigEntry<DropType> DropOnDeath;
         public static ConfigEntry<bool> PackDropItemsIntoCargoCrate;
         public static ConfigEntry<bool> Commandable;
+        public static ConfigEntry<float> FollowDistance, RunDistance;
 
         public static void CreateConfigs(BaseUnityPlugin plugin)
         {
@@ -24,6 +25,12 @@ namespace ChebsMercenaries.Minions
             
             Commandable = plugin.Config.Bind("HumanMinion (Client)", "Commandable",
                 true, new ConfigDescription("If true, minions can be commanded individually with E (or equivalent) keybind."));
+            
+            FollowDistance = plugin.Config.Bind("HumanMinion (Client)", "FollowDistance",
+                3f, new ConfigDescription("How closely a minion will follow you (0 = standing on top of you, 3 = default)."));
+            
+            RunDistance = plugin.Config.Bind("HumanMinion (Client)", "RunDistance",
+                3f, new ConfigDescription("How close a following minion needs to be to you before it stops running and starts walking (0 = always running, 10 = default)."));
         }
     }
 }

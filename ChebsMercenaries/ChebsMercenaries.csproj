@@ -119,6 +119,7 @@
     <Compile Include="Minions\HumanMinerMinion.cs" />
     <Compile Include="Minions\HumanWoodcutterMinion.cs" />
     <Compile Include="Patches\AoePatches.cs" />
+    <Compile Include="Patches\BaseAIPatches.cs" />
     <Compile Include="Patches\CharacterDropPatches.cs" />
     <Compile Include="Patches\CharacterPatches.cs" />
     <Compile Include="Patches\ImpactEffectPatches.cs" />
