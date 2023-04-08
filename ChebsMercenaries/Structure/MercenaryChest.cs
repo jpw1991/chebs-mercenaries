@@ -1,11 +1,13 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using BepInEx.Configuration;
+using ChebsMercenaries.Minions;
+using ChebsNecromancy.Minions;
 using ChebsValheimLibrary.Common;
+using ChebsValheimLibrary.Minions;
 using UnityEngine;
+using Logger = Jotunn.Logger;
 
 namespace ChebsMercenaries.Structure
 {
@@ -23,6 +25,11 @@ namespace ChebsMercenaries.Structure
         public static ConfigEntry<string> ArcherTier3Cost;
         public static ConfigEntry<string> MinerCost;
         public static ConfigEntry<string> WoodcutterCost;
+        
+        public static ConfigEntry<int> ArmorLeatherScrapsRequiredConfig;
+        public static ConfigEntry<int> ArmorBronzeRequiredConfig;
+        public static ConfigEntry<int> ArmorIronRequiredConfig;
+        public static ConfigEntry<int> ArmorBlackIronRequiredConfig;
 
         public enum MercenaryType
         {
@@ -57,6 +64,18 @@ namespace ChebsMercenaries.Structure
         };
 
         private static Dictionary<MercenaryType, List<(GameObject, int)>> _mercCosts;
+        private static Dictionary<MercenaryType, string> _prefabNames = new()
+        {
+            { MercenaryType.WarriorTier1, "ChebGonaz_HumanWarrior" },
+            { MercenaryType.WarriorTier2, "ChebGonaz_HumanWarriorTier2" },
+            { MercenaryType.WarriorTier3, "ChebGonaz_HumanWarriorTier3" },
+            { MercenaryType.WarriorTier4, "ChebGonaz_HumanWarriorTier4" },
+            { MercenaryType.ArcherTier1, "ChebGonaz_HumanArcher" },
+            { MercenaryType.ArcherTier2, "ChebGonaz_HumanArcherTier2" },
+            { MercenaryType.ArcherTier3, "ChebGonaz_HumanArcherTier3" },
+            { MercenaryType.Miner, "ChebGonaz_HumanMiner" },
+            { MercenaryType.Woodcutter, "ChebGonaz_HumanWoodcutter" },
+        };
 
         public new static void UpdateRecipe()
         {
@@ -109,6 +128,22 @@ namespace ChebsMercenaries.Structure
 
             WoodcutterCost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "WoodcutterCost", InternalName.GetName(MercenaryType.Woodcutter),
                             "The items that are consumed when creating the Woodcutter mercenary. Please use a comma-delimited list of prefab names.", null, true);
+            
+            ArmorLeatherScrapsRequiredConfig = plugin.Config.Bind("General (Server Synced)", "ArmorLeatherScrapsRequired",
+                2, new ConfigDescription("The amount of LeatherScraps required to craft a minion in leather armor.", null,
+                    new ConfigurationManagerAttributes { IsAdminOnly = true }));
+
+            ArmorBronzeRequiredConfig = plugin.Config.Bind("General (Server Synced)", "ArmorBronzeRequired",
+                1, new ConfigDescription("The amount of Bronze required to craft a minion in bronze armor.", null,
+                    new ConfigurationManagerAttributes { IsAdminOnly = true }));
+
+            ArmorIronRequiredConfig = plugin.Config.Bind("General (Server Synced)", "ArmoredIronRequired",
+                1, new ConfigDescription("The amount of Iron required to craft a minion in iron armor.", null,
+                    new ConfigurationManagerAttributes { IsAdminOnly = true }));
+
+            ArmorBlackIronRequiredConfig = plugin.Config.Bind("General (Server Synced)", "ArmorBlackIronRequired",
+                1, new ConfigDescription("The amount of Black Metal required to craft a minion in black iron armor.", null,
+                    new ConfigurationManagerAttributes { IsAdminOnly = true }));
         }
 
         public static void ParseMercCosts()
@@ -149,7 +184,7 @@ namespace ChebsMercenaries.Structure
                     var splat = splut.Split(':');
                     if (splat.Length != 2)
                     {
-                        Jotunn.Logger.LogError($"{enumValue} costs invalid - please review config values. Reverting to default value.");
+                        Logger.LogError($"{enumValue} costs invalid - please review config values. Reverting to default value.");
                         splat = new[] { "CookedMeat:5", "Club:1" };
                     }
                 
@@ -159,7 +194,7 @@ namespace ChebsMercenaries.Structure
                     }
                     else
                     {
-                        Jotunn.Logger.LogError($"{enumValue} costs invalid - please review config values. Failed to set it up at all.");
+                        Logger.LogError($"{enumValue} costs invalid - please review config values. Failed to set it up at all.");
                     }
                 }
             }
@@ -180,15 +215,185 @@ namespace ChebsMercenaries.Structure
         {
             var mercenaryType = MercenaryType.None;
 
-            
-            
-            // foreach (MercenaryTypes value in Enum.GetValues(typeof(MercenaryTypes)))
-            // {
-            //     if (value is MercenaryTypes.None) continue;
-            //     
-            // }
-            
+            var orderedByPreference = new List<MercenaryType>
+            {
+                MercenaryType.WarriorTier4,
+                MercenaryType.ArcherTier3,
+                MercenaryType.WarriorTier3,
+                MercenaryType.ArcherTier2,
+                MercenaryType.WarriorTier2,
+                MercenaryType.ArcherTier1,
+                MercenaryType.WarriorTier1,
+                MercenaryType.Woodcutter,
+                MercenaryType.Miner
+            };
+
+            foreach (var merc in orderedByPreference)
+            {
+                var costs = _mercCosts[merc];
+                foreach (var cost in costs)
+                {
+                    var prefab = cost.Item1;
+                    var amount = cost.Item2;
+                    if (AmountInInventory(prefab) >= amount)
+                    {
+                        mercenaryType = merc;
+                        return mercenaryType;
+                    }
+                }
+            }
+
             return mercenaryType;
+        }
+
+        private void PayForMercenary(MercenaryType mercenaryType)
+        {
+            var costs = _mercCosts[mercenaryType];
+            foreach (var cost in costs)
+            {
+                _inventory.RemoveItem(cost.Item1.GetComponent<ItemDrop>()?.m_itemData.m_shared.m_name, cost.Item2);   
+            }
+        }
+
+        private ChebGonazMinion.ArmorType UpgradeMercenaryEquipment()
+        {
+            var armorType = ChebGonazMinion.DetermineArmorType(
+                _inventory,
+                ArmorBlackIronRequiredConfig.Value,
+                ArmorIronRequiredConfig.Value,
+                ArmorBronzeRequiredConfig.Value,
+                ArmorLeatherScrapsRequiredConfig.Value);
+
+            switch (armorType)
+            {
+                case ChebGonazMinion.ArmorType.BlackMetal:
+                    _inventory.RemoveItem("$item_blackmetal", ArmorBlackIronRequiredConfig.Value);
+                    break;
+                case ChebGonazMinion.ArmorType.Iron:
+                    _inventory.RemoveItem("$item_iron", ArmorBlackIronRequiredConfig.Value);
+                    break;
+                case ChebGonazMinion.ArmorType.Bronze:
+                    _inventory.RemoveItem("$item_bronze", ArmorBlackIronRequiredConfig.Value);
+                    break;
+                case ChebGonazMinion.ArmorType.Leather:
+                    var leatherItemTypes = new List<string>()
+                    {
+                        "$item_leatherscraps",
+                        "$item_deerhide",
+                        "$item_scalehide"
+                    };
+                    
+                    foreach (var leatherItem in leatherItemTypes)
+                    {
+                        var leatherItemsInInventory = _inventory.CountItems(leatherItem);
+                        if (leatherItemsInInventory >= ArmorLeatherScrapsRequiredConfig.Value)
+                        {
+                            _inventory.RemoveItem(leatherItem, ArmorLeatherScrapsRequiredConfig.Value);
+                            break;
+                        }
+                    }
+                    break;
+                case ChebGonazMinion.ArmorType.LeatherLox:
+                    _inventory.RemoveItem("$item_loxpelt", ArmorLeatherScrapsRequiredConfig.Value);
+                    break;
+                case ChebGonazMinion.ArmorType.LeatherTroll:
+                    _inventory.RemoveItem("$item_wolfpelt", ArmorLeatherScrapsRequiredConfig.Value);
+                    break;
+                case ChebGonazMinion.ArmorType.LeatherWolf:
+                    _inventory.RemoveItem("$item_trollhide", ArmorLeatherScrapsRequiredConfig.Value);
+                    break;
+
+            }
+            
+            return armorType;
+        }
+
+        private void SpawnMercenary(MercenaryType mercenaryType, ChebGonazMinion.ArmorType armorType)
+        {
+            if (mercenaryType is MercenaryType.None) return;
+
+            var prefabName = _prefabNames[mercenaryType];
+            var prefab = ZNetScene.instance.GetPrefab(prefabName);
+            if (!prefab)
+            {
+                Logger.LogError($"SpawnMercenary: spawning {prefabName} failed");
+                return;
+            }
+            var spawnedChar = Instantiate(prefab,
+                transform.position + transform.forward * 2f + Vector3.up, Quaternion.identity);
+            spawnedChar.AddComponent<FreshMinion>();
+
+            var minion = mercenaryType switch
+            {
+                MercenaryType.Miner => spawnedChar.AddComponent<HumanMinerMinion>(),
+                MercenaryType.Woodcutter => spawnedChar.AddComponent<HumanWoodcutterMinion>(),
+                _ => spawnedChar.AddComponent<HumanMinion>()
+            };
+            
+            if (mercenaryType != MercenaryType.Miner && mercenaryType != MercenaryType.Woodcutter)
+                minion.Roam();
+
+            var piece = GetComponent<Piece>();
+            var playerName = Player.GetAllPlayers().Find(p => p.m_nview.m_zdo.m_owner == piece.m_creator)
+                .GetPlayerName();
+            Logger.LogInfo($"MercenaryChest's creator = {piece.m_creator} which corresponds to {playerName}");
+            minion.UndeadMinionMaster = playerName;
+            
+            // handle refunding of resources on death
+            if (HumanMinion.DropOnDeath.Value == ChebGonazMinion.DropType.Nothing) return;
+            
+            // we have to be a little bit cautious. It normally shouldn't exist yet, but maybe some other mod
+            // added it? Who knows
+            var characterDrop = minion.gameObject.GetComponent<CharacterDrop>();
+            if (characterDrop == null)
+            {
+                characterDrop = minion.gameObject.AddComponent<CharacterDrop>();
+            }
+
+            if (HumanMinion.DropOnDeath.Value == ChebGonazMinion.DropType.Everything)
+            {
+                var costs = _mercCosts[mercenaryType];
+                foreach (var cost in costs)
+                {
+                    var costPrefab = cost.Item1;
+                    var costAmount = cost.Item2;
+                    
+                    ChebGonazMinion.AddOrUpdateDrop(characterDrop, costPrefab.name, costAmount);
+                }
+            }
+
+            switch (armorType)
+            {
+                case ChebGonazMinion.ArmorType.Leather:
+                    ChebGonazMinion.AddOrUpdateDrop(characterDrop, 
+                        Random.value > .5f ? "DeerHide" : "LeatherScraps", // flip a coin for deer or scraps
+                        ArmorLeatherScrapsRequiredConfig.Value);
+                    break;
+                case ChebGonazMinion.ArmorType.LeatherTroll:
+                    ChebGonazMinion.AddOrUpdateDrop(characterDrop, "TrollHide", ArmorLeatherScrapsRequiredConfig.Value);
+                    break;
+                case ChebGonazMinion.ArmorType.LeatherWolf:
+                    ChebGonazMinion.AddOrUpdateDrop(characterDrop, "WolfPelt", ArmorLeatherScrapsRequiredConfig.Value);
+                    break;
+                case ChebGonazMinion.ArmorType.LeatherLox:
+                    ChebGonazMinion.AddOrUpdateDrop(characterDrop, "LoxPelt", ArmorLeatherScrapsRequiredConfig.Value);
+                    break;
+                case ChebGonazMinion.ArmorType.Bronze:
+                    ChebGonazMinion.AddOrUpdateDrop(characterDrop, "Bronze", ArmorBronzeRequiredConfig.Value);
+                    break;
+                case ChebGonazMinion.ArmorType.Iron:
+                    ChebGonazMinion.AddOrUpdateDrop(characterDrop, "Iron", ArmorIronRequiredConfig.Value);
+                    break;
+                case ChebGonazMinion.ArmorType.BlackMetal:
+                    ChebGonazMinion.AddOrUpdateDrop(characterDrop, "BlackMetal", ArmorBlackIronRequiredConfig.Value);
+                    break;
+            }
+
+            // the component won't be remembered by the game on logout because
+            // only what is on the prefab is remembered. Even changes to the prefab
+            // aren't remembered. So we must write what we're dropping into
+            // the ZDO as well and then read & restore this on Awake
+            minion.RecordDrops(characterDrop);
         }
 
         IEnumerator Recruitment()
@@ -204,7 +409,7 @@ namespace ChebsMercenaries.Structure
             {
                 yield return new WaitWhile(() => Player.m_localPlayer != null && Player.m_localPlayer.m_sleeping);
                 
-                yield return new WaitForSeconds(1);
+                yield return new WaitForSeconds(5);
                 
                 var nextMerc = NextMercenary();
                 
@@ -214,110 +419,18 @@ namespace ChebsMercenaries.Structure
                     Chat.instance.SetNpcText(gameObject, Vector3.up, 5f, 2f, "", 
                         $"Recruiting {nextMerc} in {(RecruitmentInterval.Value - (Time.time - _lastRecruitmentAt)).ToString("0.##")}%)...", false);
                 }
-                
-                
-            }
-        }
 
-        
-        
-        private int FuelInInventory
-        {
-            get
-            {
-                var accumulator = 0;
-                foreach (var fuel in Fuels.Value.Split(','))
+                if (nextMerc != MercenaryType.None)
                 {
-                    var fuelPrefab = ZNetScene.instance.GetPrefab(fuel);
-                    if (fuelPrefab == null) continue;
-                    accumulator +=
-                        _inventory.CountItems(fuelPrefab.GetComponent<ItemDrop>()?.m_itemData.m_shared.m_name);
+                    PayForMercenary(nextMerc);
+                    SpawnMercenary(nextMerc, UpgradeMercenaryEquipment());
                 }
-                return accumulator;
             }
         }
 
-        private bool ConsumeFuel(int fuelToConsume)
+        private int AmountInInventory(GameObject prefab)
         {
-            var consumableFuels = new Dictionary<string, int>();
-            var fuelAvailable = 0;
-            foreach (var fuel in Fuels.Value.Split(','))
-            {
-                var fuelPrefab = ZNetScene.instance.GetPrefab(fuel);
-                if (fuelPrefab == null) continue;
-                var fuelName = fuelPrefab.GetComponent<ItemDrop>().m_itemData.m_shared.m_name;
-                var canConsume = _inventory.CountItems(fuelName);
-                consumableFuels[fuelName] = canConsume;
-                fuelAvailable += canConsume;
-
-                if (fuelAvailable >= fuelToConsume) break;
-            }
-
-            // not enough fuel
-            if (fuelAvailable < fuelToConsume) return false;
-            
-            // enough fuel; consume
-            foreach (var key in consumableFuels.Keys)
-            {
-                var fuel = consumableFuels[key];
-                if (fuelToConsume <= fuel)
-                {
-                    _inventory.RemoveItem(key, fuelToConsume);
-                    return true;
-                }
-                
-                fuelToConsume -= fuel;
-                _inventory.RemoveItem(key, fuel);
-            }
-
-            return true;
-        }
-
-        private bool ConsumeFuel(WearNTear wearNTear)
-        {
-            // first pay any fuel debts
-            if (_fuelAccumulator >= 1 && FuelInInventory >= _fuelAccumulator)
-            {
-                ConsumeFuel((int)_fuelAccumulator);
-                _fuelAccumulator -= (int)_fuelAccumulator;
-            }
-            
-            // debts paid - continue on to repair the current damage
-            var percentage = wearNTear.GetHealthPercentage();
-            if (percentage <= 0) return false;
-
-            var fuelToConsume = (100 - (percentage * 100)) * FuelConsumedPerPointOfDamage.Value;
-            // fuel to consume is too small to be currently deducated -> remember the amount and attempt to deduct
-            // once it is larger
-            if (fuelToConsume < 1) _fuelAccumulator += fuelToConsume;
-
-            if (fuelToConsume > FuelInInventory) return false;
-
-            ConsumeFuel((int)fuelToConsume);
-
-            return true;
-        }
-
-        private List<WearNTear> PiecesInRange()
-        {
-            var nearbyColliders = Physics.OverlapSphere(transform.position + Vector3.up, SightRadius.Value, pieceMask);
-            if (nearbyColliders.Length < 1) return null;
-
-            var result = new List<WearNTear>();
-            //var repairPylonSkipped = new List<string>();
-            foreach (var nearbyCollider in nearbyColliders)
-            {
-                var wearAndTear = nearbyCollider.GetComponentInParent<WearNTear>();
-                if (wearAndTear == null || !wearAndTear.m_nview.IsValid())
-                {
-                    //repairPylonSkipped.Add($"{nearbyCollider.name}");
-                    continue;
-                }
-                result.Add(wearAndTear);
-            }
-            //Jotunn.Logger.LogInfo($"Skipped {string.Join(",", repairPylonSkipped)}");
-
-            return result;
+            return _inventory.CountItems(prefab.GetComponent<ItemDrop>()?.m_itemData.m_shared.m_name);
         }
     }
 }
