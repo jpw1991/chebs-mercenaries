@@ -4,6 +4,7 @@ using System.IO;
 using BepInEx;
 using BepInEx.Configuration;
 using ChebsMercenaries.Minions;
+using ChebsMercenaries.Structure;
 using ChebsNecromancy.Minions;
 using ChebsValheimLibrary.Minions.AI;
 using HarmonyLib;
@@ -18,7 +19,7 @@ namespace ChebsMercenaries
     [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
     [BepInDependency(Jotunn.Main.ModGuid)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.Minor)]
-    public class ChebsMercenaries : BaseUnityPlugin
+    public class BasePlugin : BaseUnityPlugin
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
@@ -32,6 +33,36 @@ namespace ChebsMercenaries
         public static ConfigEntry<bool> RadeonFriendly;
         
         public static CustomLocalization Localization = LocalizationManager.Instance.GetLocalization();
+        
+        #region ConfigStuff
+        // Global Config Acceptable Values
+        public AcceptableValueList<bool> BoolValue = new(true, false);
+        public AcceptableValueRange<float> FloatQuantityValue = new(1f, 1000f);
+        public AcceptableValueRange<int> IntQuantityValue = new(1, 1000);
+        
+        public ConfigEntry<T> ModConfig<T>(
+            string group,
+            string name,
+            T default_value,
+            string description = "",
+            AcceptableValueBase acceptableValues = null,
+            bool serverSync = false,
+            params object[] tags)
+        {
+            // Create extended description with list of valid values and server sync
+            ConfigDescription extendedDescription = new(
+                description + (serverSync
+                    ? " [Synced with Server]"
+                    : " [Not Synced with Server]"),
+                acceptableValues,
+                new ConfigurationManagerAttributes { IsAdminOnly = serverSync },
+                tags);
+
+            var configEntry = Config.Bind(group, name, default_value, extendedDescription);
+
+            return configEntry;
+        }
+        #endregion
 
         private void Awake()
         {
@@ -55,6 +86,8 @@ namespace ChebsMercenaries
             HumanMinion.CreateConfigs(this);
             HumanWoodcutterMinion.CreateConfigs(this);
             HumanMinerMinion.CreateConfigs(this);
+            
+            MercenaryChest.CreateConfigs(this);
         }
 
         private void SetupWatcher()
@@ -79,6 +112,7 @@ namespace ChebsMercenaries
                 
                 HumanMinerMinion.SyncInternalsWithConfigs();
                 HumanWoodcutterMinion.SyncInternalsWithConfigs();
+                MercenaryChest.ParseMercCosts();
             }
             catch (Exception exc)
             {

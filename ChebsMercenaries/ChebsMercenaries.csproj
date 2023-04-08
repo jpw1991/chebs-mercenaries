@@ -128,8 +128,9 @@
     <Compile Include="Patches\TameablePatches.cs" />
     <Compile Include="Patches\WearNTearPatches.cs" />
     <Compile Include="Properties\IgnoreAccessModifiers.cs" />
-    <Compile Include="ChebsMercenaries.cs" />
+    <Compile Include="BasePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Structure\MercenaryChest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

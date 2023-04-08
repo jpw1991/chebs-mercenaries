@@ -29,11 +29,11 @@ namespace ChebsMercenaries.Patches
             {
                 if (__instance.TryGetComponent(out HumanMinion humanMinion))
                 {
+                    var isWorker = humanMinion is HumanMinerMinion or HumanWoodcutterMinion;
                     // use our custom implementation with custom follow distance
-                    float num = Vector3.Distance(go.transform.position, __instance.transform.position);
-                    bool run = num > HumanMinion.RunDistance.Value;
-                    var approachRange = 
-                        humanMinion is HumanMinerMinion or HumanWoodcutterMinion
+                    var num = Vector3.Distance(go.transform.position, __instance.transform.position);
+                    var run = isWorker && num > 3f || num > HumanMinion.RunDistance.Value;
+                    var approachRange = isWorker
                             ? 0f//.25f
                             : HumanMinion.FollowDistance.Value;
                     if (num < approachRange)
