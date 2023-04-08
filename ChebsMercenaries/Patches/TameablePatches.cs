@@ -28,6 +28,9 @@ namespace ChebsMercenaries.Patches
             if (__instance.TryGetComponent(out HumanMinion humanMinion)
                 && user.TryGetComponent(out Player player))
             {
+                // if nobody owns the minion yet, claim ownership
+                if (humanMinion.UndeadMinionMaster == "") humanMinion.UndeadMinionMaster = player.GetPlayerName();
+
                 if (!humanMinion.BelongsToPlayer(player.GetPlayerName()))
                 {
                     user.Message(MessageHud.MessageType.Center, "$chebgonaz_mercenaries_notyourminion");

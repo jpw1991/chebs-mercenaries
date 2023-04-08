@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -8,6 +9,7 @@ using ChebsValheimLibrary.Common;
 using ChebsValheimLibrary.Minions;
 using UnityEngine;
 using Logger = Jotunn.Logger;
+using Random = UnityEngine.Random;
 
 namespace ChebsMercenaries.Structure
 {
@@ -63,7 +65,7 @@ namespace ChebsMercenaries.Structure
             ObjectName = MethodBase.GetCurrentMethod().DeclaringType.Name
         };
 
-        private static Dictionary<MercenaryType, List<(GameObject, int)>> _mercCosts;
+        private static Dictionary<MercenaryType, List<Tuple<GameObject, int>>> _mercCosts;
         private static Dictionary<MercenaryType, string> _prefabNames = new()
         {
             { MercenaryType.WarriorTier1, "ChebGonaz_HumanWarrior" },
@@ -81,7 +83,7 @@ namespace ChebsMercenaries.Structure
         {
             ChebsRecipeConfig.UpdateRecipe(ChebsRecipeConfig.CraftingCost);
         }
-        
+
         public static void CreateConfigs(BasePlugin plugin)
         {
             ChebsRecipeConfig.Allowed = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "Allowed", true,
@@ -98,52 +100,69 @@ namespace ChebsMercenaries.Structure
 
             ContainerHeight = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ContainerHeight", 4,
                 "Inventory size = width * height = 4 * 4 = 16.", new AcceptableValueRange<int>(4, 20), true);
-            
+
             RecruitmentInterval = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "RecruitmentInterval", 60f,
-                "Every X seconds, attempt to recruit a mercenary", new AcceptableValueRange<int>(4, 20), true);
-            
-            WarriorTier1Cost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "WarriorTier1Cost", InternalName.GetName(MercenaryType.WarriorTier1),
-                "The items that are consumed when creating the Warrior Tier 1 mercenary. Please use a comma-delimited list of prefab names.", null, true);
+                "Every X seconds, attempt to recruit a mercenary", null, true);
 
-            WarriorTier2Cost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "WarriorTier2Cost", InternalName.GetName(MercenaryType.WarriorTier2),
-                            "The items that are consumed when creating the Warrior Tier 2 mercenary. Please use a comma-delimited list of prefab names.", null, true);
+            WarriorTier1Cost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "WarriorTier1Cost",
+                InternalName.GetName(MercenaryType.WarriorTier1),
+                "The items that are consumed when creating the Warrior Tier 1 mercenary. Please use a comma-delimited list of prefab names.",
+                null, true);
 
-            WarriorTier3Cost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "WarriorTier3Cost", InternalName.GetName(MercenaryType.WarriorTier3),
-                            "The items that are consumed when creating the Warrior Tier 3 mercenary. Please use a comma-delimited list of prefab names.", null, true);
+            WarriorTier2Cost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "WarriorTier2Cost",
+                InternalName.GetName(MercenaryType.WarriorTier2),
+                "The items that are consumed when creating the Warrior Tier 2 mercenary. Please use a comma-delimited list of prefab names.",
+                null, true);
 
-            WarriorTier4Cost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "WarriorTier4Cost", InternalName.GetName(MercenaryType.WarriorTier4),
-                            "The items that are consumed when creating the Warrior Tier 4 mercenary. Please use a comma-delimited list of prefab names.", null, true);
+            WarriorTier3Cost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "WarriorTier3Cost",
+                InternalName.GetName(MercenaryType.WarriorTier3),
+                "The items that are consumed when creating the Warrior Tier 3 mercenary. Please use a comma-delimited list of prefab names.",
+                null, true);
 
-            ArcherTier1Cost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ArcherTier1Cost", InternalName.GetName(MercenaryType.ArcherTier1),
-                            "The items that are consumed when creating the Archer Tier 1 mercenary. Please use a comma-delimited list of prefab names.", null, true);
+            WarriorTier4Cost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "WarriorTier4Cost",
+                InternalName.GetName(MercenaryType.WarriorTier4),
+                "The items that are consumed when creating the Warrior Tier 4 mercenary. Please use a comma-delimited list of prefab names.",
+                null, true);
 
-            ArcherTier2Cost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ArcherTier2Cost", InternalName.GetName(MercenaryType.ArcherTier2),
-                            "The items that are consumed when creating the Archer Tier 2 mercenary. Please use a comma-delimited list of prefab names.", null, true);
+            ArcherTier1Cost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ArcherTier1Cost",
+                InternalName.GetName(MercenaryType.ArcherTier1),
+                "The items that are consumed when creating the Archer Tier 1 mercenary. Please use a comma-delimited list of prefab names.",
+                null, true);
 
-            ArcherTier3Cost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ArcherTier3Cost", InternalName.GetName(MercenaryType.ArcherTier3),
-                            "The items that are consumed when creating the Archer Tier 3 mercenary. Please use a comma-delimited list of prefab names.", null, true);
+            ArcherTier2Cost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ArcherTier2Cost",
+                InternalName.GetName(MercenaryType.ArcherTier2),
+                "The items that are consumed when creating the Archer Tier 2 mercenary. Please use a comma-delimited list of prefab names.",
+                null, true);
 
-            MinerCost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "MinerCost", InternalName.GetName(MercenaryType.Miner),
-                            "The items that are consumed when creating the Miner mercenary. Please use a comma-delimited list of prefab names.", null, true);
+            ArcherTier3Cost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ArcherTier3Cost",
+                InternalName.GetName(MercenaryType.ArcherTier3),
+                "The items that are consumed when creating the Archer Tier 3 mercenary. Please use a comma-delimited list of prefab names.",
+                null, true);
 
-            WoodcutterCost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "WoodcutterCost", InternalName.GetName(MercenaryType.Woodcutter),
-                            "The items that are consumed when creating the Woodcutter mercenary. Please use a comma-delimited list of prefab names.", null, true);
-            
-            ArmorLeatherScrapsRequiredConfig = plugin.Config.Bind("General (Server Synced)", "ArmorLeatherScrapsRequired",
-                2, new ConfigDescription("The amount of LeatherScraps required to craft a minion in leather armor.", null,
-                    new ConfigurationManagerAttributes { IsAdminOnly = true }));
+            MinerCost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "MinerCost",
+                InternalName.GetName(MercenaryType.Miner),
+                "The items that are consumed when creating the Miner mercenary. Please use a comma-delimited list of prefab names.",
+                null, true);
 
-            ArmorBronzeRequiredConfig = plugin.Config.Bind("General (Server Synced)", "ArmorBronzeRequired",
-                1, new ConfigDescription("The amount of Bronze required to craft a minion in bronze armor.", null,
-                    new ConfigurationManagerAttributes { IsAdminOnly = true }));
+            WoodcutterCost = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "WoodcutterCost",
+                InternalName.GetName(MercenaryType.Woodcutter),
+                "The items that are consumed when creating the Woodcutter mercenary. Please use a comma-delimited list of prefab names.",
+                null, true);
 
-            ArmorIronRequiredConfig = plugin.Config.Bind("General (Server Synced)", "ArmoredIronRequired",
-                1, new ConfigDescription("The amount of Iron required to craft a minion in iron armor.", null,
-                    new ConfigurationManagerAttributes { IsAdminOnly = true }));
+            ArmorLeatherScrapsRequiredConfig = plugin.ModConfig(ChebsRecipeConfig.ObjectName,
+                "ArmorLeatherScrapsRequired", 2,
+                "The amount of LeatherScraps required to craft a minion in leather armor.", null, true);
 
-            ArmorBlackIronRequiredConfig = plugin.Config.Bind("General (Server Synced)", "ArmorBlackIronRequired",
-                1, new ConfigDescription("The amount of Black Metal required to craft a minion in black iron armor.", null,
-                    new ConfigurationManagerAttributes { IsAdminOnly = true }));
+            ArmorBronzeRequiredConfig = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ArmorBronzeRequired",
+                1, "The amount of Bronze required to craft a minion in bronze armor.", null, true);
+
+            ArmorIronRequiredConfig = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ArmoredIronRequired",
+                1, "The amount of Iron required to craft a minion in iron armor.", null,
+                true);
+
+            ArmorBlackIronRequiredConfig = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ArmorBlackIronRequired",
+                1, "The amount of Black Metal required to craft a minion in black iron armor.", null,
+                true);
         }
 
         public static void ParseMercCosts()
@@ -151,24 +170,25 @@ namespace ChebsMercenaries.Structure
             bool ValidRequirement(string nameValue, string amountValue,
                 out GameObject prefab, out int amount)
             {
+                //Logger.LogInfo($"Processing {nameValue} and {amountValue}");
                 prefab = ZNetScene.instance.GetPrefab(nameValue);
                 return int.TryParse(amountValue, out amount) && prefab != null;
             }
 
-            var enumAndConfigs = new List<(MercenaryType, ConfigEntry<string>)>
+            var enumAndConfigs = new List<Tuple<MercenaryType, ConfigEntry<string>>>
             {
-                (MercenaryType.WarriorTier1, WarriorTier1Cost),
-                (MercenaryType.WarriorTier2, WarriorTier2Cost),
-                (MercenaryType.WarriorTier3, WarriorTier3Cost),
-                (MercenaryType.WarriorTier4, WarriorTier4Cost),
-                (MercenaryType.ArcherTier1, ArcherTier1Cost),
-                (MercenaryType.ArcherTier2, ArcherTier2Cost),
-                (MercenaryType.ArcherTier3, ArcherTier3Cost),
-                (MercenaryType.Miner, MinerCost),
-                (MercenaryType.Woodcutter, WoodcutterCost)
+                new (MercenaryType.WarriorTier1, WarriorTier1Cost),
+                new (MercenaryType.WarriorTier2, WarriorTier2Cost),
+                new (MercenaryType.WarriorTier3, WarriorTier3Cost),
+                new (MercenaryType.WarriorTier4, WarriorTier4Cost),
+                new (MercenaryType.ArcherTier1, ArcherTier1Cost),
+                new (MercenaryType.ArcherTier2, ArcherTier2Cost),
+                new (MercenaryType.ArcherTier3, ArcherTier3Cost),
+                new (MercenaryType.Miner, MinerCost),
+                new (MercenaryType.Woodcutter, WoodcutterCost)
             };
             
-            _mercCosts = new Dictionary<MercenaryType, List<(GameObject, int)>>();
+            _mercCosts = new Dictionary<MercenaryType, List<Tuple<GameObject, int>>>();
             
             foreach (var enumAndConfig in enumAndConfigs)
             {
@@ -177,7 +197,7 @@ namespace ChebsMercenaries.Structure
                 
                 // splut = ["Coins:10", "Club:1"]
                 var configValueSplut = configValue.Value.Split(',');
-                _mercCosts[enumValue] = new List<(GameObject, int)>();
+                _mercCosts[enumValue] = new List<Tuple<GameObject, int>>();
                 foreach (var splut in configValueSplut)
                 {
                     // splat = ["Coins", "10"]
@@ -190,7 +210,7 @@ namespace ChebsMercenaries.Structure
                 
                     if (ValidRequirement(splat[0], splat[1], out GameObject splatPrefab, out int splatAmount))
                     {
-                        _mercCosts[enumValue].Add((splatPrefab, splatAmount));
+                        _mercCosts[enumValue].Add(new Tuple<GameObject, int>(splatPrefab, splatAmount));
                     }
                     else
                     {
@@ -202,11 +222,21 @@ namespace ChebsMercenaries.Structure
         
         private void Awake()
         {
-            _container = GetComponent<Container>();
+            _container = gameObject.AddComponent<Container>();
             _inventory = _container.GetInventory();
+            
+            if (_container == null) Logger.LogError("Container is null!");
+            if (_inventory == null) Logger.LogError("Inventory is null!");
+            
+            if (TryGetComponent(out Piece piece))
+            {
+                _container.m_name = Localization.instance.Localize(piece.m_name);
+            }
 
             _container.m_width = ContainerWidth.Value;
             _container.m_height = ContainerHeight.Value;
+            
+            if (_mercCosts == null) ParseMercCosts();
 
             StartCoroutine(Recruitment());
         }
@@ -333,12 +363,6 @@ namespace ChebsMercenaries.Structure
             if (mercenaryType != MercenaryType.Miner && mercenaryType != MercenaryType.Woodcutter)
                 minion.Roam();
 
-            var piece = GetComponent<Piece>();
-            var playerName = Player.GetAllPlayers().Find(p => p.m_nview.m_zdo.m_owner == piece.m_creator)
-                .GetPlayerName();
-            Logger.LogInfo($"MercenaryChest's creator = {piece.m_creator} which corresponds to {playerName}");
-            minion.UndeadMinionMaster = playerName;
-            
             // handle refunding of resources on death
             if (HumanMinion.DropOnDeath.Value == ChebGonazMinion.DropType.Nothing) return;
             
@@ -399,29 +423,28 @@ namespace ChebsMercenaries.Structure
         IEnumerator Recruitment()
         {
             yield return new WaitWhile(() => ZInput.instance == null);
-
+            
             // prevent coroutine from doing its thing while the pylon isn't
             // yet constructed
             var piece = GetComponent<Piece>();
             yield return new WaitWhile(() => !piece.IsPlacedByPlayer());
-
+            
             while (true)
             {
-                yield return new WaitWhile(() => Player.m_localPlayer != null && Player.m_localPlayer.m_sleeping);
-                
+                yield return new WaitWhile(() => Player.m_localPlayer == null || Player.m_localPlayer.m_sleeping);
                 yield return new WaitForSeconds(5);
                 
                 var nextMerc = NextMercenary();
-                
                 var player = Player.m_localPlayer;
                 if (Vector3.Distance(player.transform.position, transform.position) < 5)
                 {
-                    Chat.instance.SetNpcText(gameObject, Vector3.up, 5f, 2f, "", 
-                        $"Recruiting {nextMerc} in {(RecruitmentInterval.Value - (Time.time - _lastRecruitmentAt)).ToString("0.##")}%)...", false);
+                    Chat.instance.SetNpcText(gameObject, Vector3.up, 5f, 4f, "", 
+                        $"Recruiting {nextMerc} in {(RecruitmentInterval.Value - (Time.time - _lastRecruitmentAt)).ToString("0")} seconds...", false);
                 }
-
-                if (nextMerc != MercenaryType.None)
+                
+                if (Time.time - _lastRecruitmentAt > RecruitmentInterval.Value && nextMerc != MercenaryType.None)
                 {
+                    _lastRecruitmentAt = Time.time;
                     PayForMercenary(nextMerc);
                     SpawnMercenary(nextMerc, UpgradeMercenaryEquipment());
                 }

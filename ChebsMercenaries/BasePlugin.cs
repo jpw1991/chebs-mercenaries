@@ -62,16 +62,7 @@ namespace ChebsMercenaries
 
             return configEntry;
         }
-        #endregion
 
-        private void Awake()
-        {
-            CreateConfigValues();
-            LoadChebGonazAssetBundle();
-            harmony.PatchAll();
-            SetupWatcher();
-        }
-        
         private void CreateConfigValues()
         {
             Config.SaveOnConfigSet = true;
@@ -119,6 +110,15 @@ namespace ChebsMercenaries
                 Logger.LogError($"There was an issue loading your {ConfigFileName}: {exc}");
                 Logger.LogError("Please check your config entries for spelling and format!");
             }
+        }
+        #endregion
+        
+        private void Awake()
+        {
+            CreateConfigValues();
+            LoadChebGonazAssetBundle();
+            harmony.PatchAll();
+            SetupWatcher();
         }
         
         private void LoadChebGonazAssetBundle()
@@ -181,6 +181,13 @@ namespace ChebsMercenaries
                     var prefab = LoadPrefabFromBundle(prefabName, chebgonazAssetBundle);
                     CreatureManager.Instance.AddCreature(new CustomCreature(prefab, true));
                 });
+                #endregion
+                #region Structures
+                var mercenaryChestPrefab = chebgonazAssetBundle.LoadAsset<GameObject>(MercenaryChest.ChebsRecipeConfig.PrefabName);
+                PieceManager.Instance.AddPiece(
+                    MercenaryChest.ChebsRecipeConfig.GetCustomPieceFromPrefab(mercenaryChestPrefab,
+                        chebgonazAssetBundle.LoadAsset<Sprite>(MercenaryChest.ChebsRecipeConfig.IconName))
+                );
                 #endregion
             }
             catch (Exception ex)

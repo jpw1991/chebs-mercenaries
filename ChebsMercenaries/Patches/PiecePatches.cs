@@ -1,3 +1,4 @@
+using ChebsMercenaries.Structure;
 using HarmonyLib;
 
 // ReSharper disable InconsistentNaming
@@ -24,13 +25,13 @@ namespace ChebsMercenaries.Patches
         {
             if (__instance.name.StartsWith("ChebGonaz"))
             {
-                // if (__instance.name.Contains("SpiritPylon"))
-                // {
-                //     if (!__instance.TryGetComponent(out SpiritPylon _))
-                //     {
-                //         __instance.gameObject.AddComponent<SpiritPylon>();
-                //     }
-                // }
+                if (__instance.name.Contains("MercenaryChest"))
+                {
+                    if (!__instance.TryGetComponent(out MercenaryChest _))
+                    {
+                        __instance.gameObject.AddComponent<MercenaryChest>();
+                    }
+                }
             }
         }
     }
