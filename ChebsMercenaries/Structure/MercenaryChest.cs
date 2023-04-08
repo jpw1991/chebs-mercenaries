@@ -46,8 +46,7 @@ namespace ChebsMercenaries.Structure
             [InternalName("HardAntler:1")] Miner,
             [InternalName("Flint:1")] Woodcutter,
         }
-
-
+        
         private Container _container;
         private Inventory _inventory;
 
