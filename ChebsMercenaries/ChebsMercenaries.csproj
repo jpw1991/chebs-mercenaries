@@ -15,6 +15,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,6 +49,21 @@
     <Reference Include="0Harmony, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\HarmonyX.2.9.0\lib\net45\0Harmony.dll</HintPath>
     </Reference>
+    <Reference Include="assembly_guiutils">
+      <HintPath>libs\assembly_guiutils_publicized.dll</HintPath>
+    </Reference>
+    <Reference Include="assembly_postprocessing">
+      <HintPath>libs\assembly_postprocessing_publicized.dll</HintPath>
+    </Reference>
+    <Reference Include="assembly_utils">
+      <HintPath>libs\assembly_utils_publicized.dll</HintPath>
+    </Reference>
+    <Reference Include="BepInEx">
+      <HintPath>libs\BepInEx.dll</HintPath>
+    </Reference>
+    <Reference Include="ChebsValheimLibrary">
+      <HintPath>libs\ChebsValheimLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="Jotunn, Version=2.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\JotunnLib.2.11.0\lib\net462\Jotunn.dll</HintPath>
     </Reference>
@@ -79,8 +95,37 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>libs\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>libs\UnityEngine.AssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>libs\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule">
+      <HintPath>libs\UnityEngine.ParticleSystemModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Physics2DModule">
+      <HintPath>libs\UnityEngine.Physics2DModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>libs\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Minions\HumanMinion.cs" />
+    <Compile Include="Minions\HumanMinerMinion.cs" />
+    <Compile Include="Minions\HumanWoodcutterMinion.cs" />
+    <Compile Include="Patches\AoePatches.cs" />
+    <Compile Include="Patches\CharacterDropPatches.cs" />
+    <Compile Include="Patches\CharacterPatches.cs" />
+    <Compile Include="Patches\ImpactEffectPatches.cs" />
+    <Compile Include="Patches\MonsterAIPatches.cs" />
+    <Compile Include="Patches\PiecePatches.cs" />
+    <Compile Include="Patches\TameablePatches.cs" />
+    <Compile Include="Patches\WearNTearPatches.cs" />
     <Compile Include="Properties\IgnoreAccessModifiers.cs" />
     <Compile Include="ChebsMercenaries.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
