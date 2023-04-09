@@ -104,6 +104,7 @@ namespace ChebsMercenaries
                 HumanMinerMinion.SyncInternalsWithConfigs();
                 HumanWoodcutterMinion.SyncInternalsWithConfigs();
                 MercenaryChest.ParseMercCosts();
+                MercenaryChest.UpdateRecipe();
             }
             catch (Exception exc)
             {
