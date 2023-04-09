@@ -27,6 +27,8 @@ namespace ChebsMercenaries
         private const string ConfigFileName =  PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
+        public readonly System.Version ChebsValheimLibraryVersion = new("1.0.0");
+
         private readonly Harmony harmony = new(PluginGuid);
         
         // if set to true, the particle effects that for some reason hurt radeon are dynamically disabled
@@ -116,6 +118,11 @@ namespace ChebsMercenaries
         
         private void Awake()
         {
+            if (!ChebsValheimLibrary.Base.VersionCheck(ChebsValheimLibraryVersion, out string message))
+            {
+                Jotunn.Logger.LogWarning(message);
+            }
+            
             CreateConfigValues();
             LoadChebGonazAssetBundle();
             harmony.PatchAll();
