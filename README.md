@@ -108,6 +108,11 @@ You can also edit the configs manually. Almost everything can be tweaked to your
 
 - Players with Radeon cards may experience weird issues. I don't know what's causing it, but it's linked to the particle effects. You can switch them off by turning `RadeonFriendly = true` in the config.
 
+## Known Incompatibilities
+
+- Soft incompatibility with [slope combat fix](https://github.com/jpw1991/chebs-necromancy/issues/180) because it can mess up worker minion aiming. Not a big deal - especially if you never use miners/woodcutters.
+- Soft incompatibility with [Ward is Love](https://github.com/jpw1991/chebs-necromancy/issues/177) because it will identify workers as enemies and yeet them.
+
 ## Future Ideas
 
 - None at the moment.
