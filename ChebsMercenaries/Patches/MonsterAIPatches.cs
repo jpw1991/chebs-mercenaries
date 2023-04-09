@@ -25,7 +25,7 @@ namespace ChebsNecromancy.Patches
         [HarmonyPatch(nameof(MonsterAI.Awake))]
         static void AwakePostfix(ref Character __instance)
         {
-            if (__instance.name.StartsWith("ChebGonaz"))
+            if (__instance.name.StartsWith("ChebGonaz") && __instance.name.Contains("Human"))
             {
                 if (!__instance.TryGetComponent(out ChebGonazMinion _))
                 {
@@ -33,10 +33,13 @@ namespace ChebsNecromancy.Patches
                     {
                         __instance.gameObject.AddComponent<HumanMinerMinion>();
                     }
-                        
-                    if (__instance.name.Contains("Woodcutter"))
+                    else if (__instance.name.Contains("Woodcutter"))
                     {
                         __instance.gameObject.AddComponent<HumanWoodcutterMinion>();
+                    }
+                    else
+                    {
+                        __instance.gameObject.AddComponent<HumanMinion>();
                     }
                 }
             }

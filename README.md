@@ -71,8 +71,8 @@ Detailed info in the [wiki](https://github.com/jpw1991/chebs-necromancy/wiki). H
   - **Tier 1 archer:** 5 CookedMeat, 20 ArrowWood
   - **Tier 2 archer:** 50 Coins, 10 ArrowBronze
   - **Tier 3 archer:** 100 Coins, 10 ArrowIron
-  - **Miner:** 1 HardAntler
-  - **Woodcutter:** 1 Flint
+  - **Miner:** 5 CookedMeat, 1 HardAntler
+  - **Woodcutter:** 5 CookedMeat,  1 Flint
 - Put extra stuff in there to give the mercenary clothing:
   - **Leather armor:** 2 DeerHide/LeatherScraps/Scales
   - **Troll armor:** 2 TrollHide

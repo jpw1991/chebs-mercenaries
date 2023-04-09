@@ -43,8 +43,8 @@ namespace ChebsMercenaries.Structure
             [InternalName("CookedMeat:5,ArrowWood:20")] ArcherTier1,
             [InternalName("Coins:50,ArrowBronze:10")] ArcherTier2,
             [InternalName("Coins:100,ArrowIron:10")] ArcherTier3,
-            [InternalName("HardAntler:1")] Miner,
-            [InternalName("Flint:1")] Woodcutter,
+            [InternalName("Coins:5,HardAntler:1")] Miner,
+            [InternalName("Coins:5,Flint:1")] Woodcutter,
         }
         
         private Container _container;
@@ -260,15 +260,21 @@ namespace ChebsMercenaries.Structure
             foreach (var merc in orderedByPreference)
             {
                 var costs = _mercCosts[merc];
+                var costsSatisfied = 0;
                 foreach (var cost in costs)
                 {
                     var prefab = cost.Item1;
                     var amount = cost.Item2;
                     if (AmountInInventory(prefab) >= amount)
                     {
-                        mercenaryType = merc;
-                        return mercenaryType;
+                        costsSatisfied++;
                     }
+                }
+
+                if (costs.Count == costsSatisfied)
+                {
+                    mercenaryType = merc;
+                    return mercenaryType;
                 }
             }
 
@@ -326,10 +332,10 @@ namespace ChebsMercenaries.Structure
                     _inventory.RemoveItem("$item_loxpelt", ArmorLeatherScrapsRequiredConfig.Value);
                     break;
                 case ChebGonazMinion.ArmorType.LeatherTroll:
-                    _inventory.RemoveItem("$item_wolfpelt", ArmorLeatherScrapsRequiredConfig.Value);
+                    _inventory.RemoveItem("$item_trollhide", ArmorLeatherScrapsRequiredConfig.Value);
                     break;
                 case ChebGonazMinion.ArmorType.LeatherWolf:
-                    _inventory.RemoveItem("$item_trollhide", ArmorLeatherScrapsRequiredConfig.Value);
+                    _inventory.RemoveItem("$item_wolfpelt", ArmorLeatherScrapsRequiredConfig.Value);
                     break;
 
             }
