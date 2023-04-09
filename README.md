@@ -1,4 +1,4 @@
-﻿# Cheb's Mercenaries
+# Cheb's Mercenaries
 
 Cheb's Mercenaries adds mercenaries to Valheim that you can purchase with gold and upgrade with materials to fight (warriors, archers) or perform work (lumberjacks, miners).
 
@@ -49,12 +49,12 @@ plugins/
 └── ... other mods ...
 ```
 
-File | Purpose
---- | ---
-`Translations` | Folder containing translations.
-`chebgonaz`, `chebgonaz.manifest` | Contains all custom models, structures, items
-`ChebsMercenaries.dll` | This mod and its code.
-`ChebsValheimLibrary.dll` | Code shared by Cheb's Mercenaries and Cheb's Necromancy.
+| File                              | Purpose                                                  |
+|-----------------------------------|----------------------------------------------------------|
+| `Translations`                    | Folder containing translations.                          |
+| `chebgonaz`, `chebgonaz.manifest` | Contains all custom models, structures, items            |
+| `ChebsMercenaries.dll`            | This mod and its code.                                   |
+| `ChebsValheimLibrary.dll`         | Code shared by Cheb's Mercenaries and Cheb's Necromancy. |
 
 ## Features
 
@@ -131,9 +131,10 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 <details>
 <summary>2023</summary>
 
-Date | Version | Notes
---- |---------| ---
-09/04/2023 | 0.0.2   | Bug fixes 
-08/04/2023 | 0.0.1   | Initial release 
+| Date       | Version | Notes           |
+|------------|---------|-----------------|
+| 09/04/2023 | 0.0.2   | Bug fixes       |
+| 08/04/2023 | 0.0.1   | Initial release |
+
 </details>
 
