@@ -58,11 +58,11 @@ File | Purpose
 
 ## Features
 
-Detailed info in the [wiki](https://github.com/jpw1991/chebs-necromancy/wiki). Here's the short version:
+Detailed info in the [wiki](https://github.com/jpw1991/chebs-mercenaries/wiki). Here's the short version:
 
 - Almost everything is, or will soon be, configurable. Minions too weak/overpowered? Tweak them.
 - Craftable structure at the workbench:
-    + [**Mercenaries Chest**](https://github.com/jpw1991/chebs-mercenaries/wiki/MercenariesChest): Hire warriors, archers, miners, and lumberjacks.
+    + [**Mercenaries Chest**](https://github.com/jpw1991/chebs-mercenaries/wiki/MercenaryChest): Hire warriors, archers, miners, and lumberjacks.
 - Put coins and other items in the chest to recruit a mercenary:
   - **Tier 1 warrior**: 5 CookedMeat, 1 Club
   - **Tier 2 warrior:** 25 Coins
@@ -95,6 +95,7 @@ If you have Cheb's Necromancy 3.0.0 or newer installed beside the mod, the wand 
     + **T** will make all nearby minions **wait**.
     + **Shift+T** will make minions **roam**.
     + **G** will teleport all following minions to your position (useful if stuck or to get them on boats)
+
 ### Config
 
 **Attention:** To edit the config as described, the [Configuration Manager](https://github.com/BepInEx/BepInEx.ConfigurationManager/releases) is the most user friendly way. This is a separate mod. Please download and install it.
@@ -126,7 +127,8 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 <summary>2023</summary>
 
 Date | Version | Notes
---- |-------| ---
-08/04/2023 | 0.0.1 | Initial release 
+--- |---------| ---
+09/04/2023 | 0.0.2   | Bug fixes 
+08/04/2023 | 0.0.1   | Initial release 
 </details>
 
