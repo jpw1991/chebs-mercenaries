@@ -71,16 +71,16 @@ Detailed info in the [wiki](https://github.com/jpw1991/chebs-mercenaries/wiki). 
   - **Tier 1 archer:** 5 CookedMeat, 20 ArrowWood
   - **Tier 2 archer:** 50 Coins, 10 ArrowBronze
   - **Tier 3 archer:** 100 Coins, 10 ArrowIron
-  - **Miner:** 5 CookedMeat, 1 HardAntler
-  - **Woodcutter:** 5 CookedMeat,  1 Flint
+  - **Miner:** 5 Coins, 1 HardAntler
+  - **Woodcutter:** 5 Coins,  1 Flint
 - Put extra stuff in there to give the mercenary clothing:
   - **Leather armor:** 2 DeerHide/LeatherScraps/Scales
   - **Troll armor:** 2 TrollHide
   - **Wolf armor:** 2 WolfPelt
   - **Lox armor:** 2 LoxPelt
   - **Bronze armor:** 1 Bronze
-  - **Iron armor:** 1 Bronze
-  - **Black metal armor:** 1 Bronze
+  - **Iron armor:** 1 Iron
+  - **Black metal armor:** 1 Black Metal
 - Ownership
   - Mercenaries have no owner until first activated (with E), after which they only ever respond to that one player.
 - Roam/Wait/Follow
