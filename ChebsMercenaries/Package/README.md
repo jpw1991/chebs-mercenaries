@@ -58,11 +58,11 @@ File | Purpose
 
 ## Features
 
-Detailed info in the [wiki](https://github.com/jpw1991/chebs-necromancy/wiki). Here's the short version:
+Detailed info in the [wiki](https://github.com/jpw1991/chebs-mercenaries/wiki). Here's the short version:
 
 - Almost everything is, or will soon be, configurable. Minions too weak/overpowered? Tweak them.
 - Craftable structure at the workbench:
-    + [**Mercenaries Chest**](https://github.com/jpw1991/chebs-mercenaries/wiki/MercenariesChest): Hire warriors, archers, miners, and lumberjacks.
+    + [**Mercenaries Chest**](https://github.com/jpw1991/chebs-mercenaries/wiki/MercenaryChest): Hire warriors, archers, miners, and lumberjacks.
 - Put coins and other items in the chest to recruit a mercenary:
   - **Tier 1 warrior**: 5 CookedMeat, 1 Club
   - **Tier 2 warrior:** 25 Coins
@@ -71,8 +71,8 @@ Detailed info in the [wiki](https://github.com/jpw1991/chebs-necromancy/wiki). H
   - **Tier 1 archer:** 5 CookedMeat, 20 ArrowWood
   - **Tier 2 archer:** 50 Coins, 10 ArrowBronze
   - **Tier 3 archer:** 100 Coins, 10 ArrowIron
-  - **Miner:** 1 HardAntler
-  - **Woodcutter:** 1 Flint
+  - **Miner:** 5 CookedMeat, 1 HardAntler
+  - **Woodcutter:** 5 CookedMeat,  1 Flint
 - Put extra stuff in there to give the mercenary clothing:
   - **Leather armor:** 2 DeerHide/LeatherScraps/Scales
   - **Troll armor:** 2 TrollHide
@@ -95,6 +95,7 @@ If you have Cheb's Necromancy 3.0.0 or newer installed beside the mod, the wand 
     + **T** will make all nearby minions **wait**.
     + **Shift+T** will make minions **roam**.
     + **G** will teleport all following minions to your position (useful if stuck or to get them on boats)
+
 ### Config
 
 **Attention:** To edit the config as described, the [Configuration Manager](https://github.com/BepInEx/BepInEx.ConfigurationManager/releases) is the most user friendly way. This is a separate mod. Please download and install it.
@@ -106,6 +107,11 @@ You can also edit the configs manually. Almost everything can be tweaked to your
 ## Known issues
 
 - Players with Radeon cards may experience weird issues. I don't know what's causing it, but it's linked to the particle effects. You can switch them off by turning `RadeonFriendly = true` in the config.
+
+## Known Incompatibilities
+
+- Soft incompatibility with [slope combat fix](https://github.com/jpw1991/chebs-necromancy/issues/180) because it can mess up worker minion aiming. Not a big deal - especially if you never use miners/woodcutters.
+- Soft incompatibility with [Ward is Love](https://github.com/jpw1991/chebs-necromancy/issues/177) because it will identify workers as enemies and yeet them.
 
 ## Future Ideas
 
@@ -126,7 +132,8 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 <summary>2023</summary>
 
 Date | Version | Notes
---- |-------| ---
-08/04/2023 | 0.0.1 | Initial release 
+--- |---------| ---
+09/04/2023 | 0.0.2   | Bug fixes 
+08/04/2023 | 0.0.1   | Initial release 
 </details>
 
