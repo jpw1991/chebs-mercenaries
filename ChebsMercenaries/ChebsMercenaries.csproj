@@ -58,6 +58,9 @@
     <Reference Include="assembly_utils">
       <HintPath>libs\assembly_utils_publicized.dll</HintPath>
     </Reference>
+    <Reference Include="assembly_valheim">
+      <HintPath>..\..\chebs-necromancy\ChebsNecromancy\libs\assembly_valheim_publicized.dll</HintPath>
+    </Reference>
     <Reference Include="BepInEx">
       <HintPath>libs\BepInEx.dll</HintPath>
     </Reference>
