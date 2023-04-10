@@ -375,3 +375,4 @@ Environment.props
 */Package/plugins/*
 
 /ChebsMercenaries/libs/
+*.backup

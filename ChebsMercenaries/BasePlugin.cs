@@ -23,7 +23,7 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "0.0.2";
+        public const string PluginVersion = "0.0.3";
         private const string ConfigFileName =  PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
@@ -126,6 +126,10 @@ namespace ChebsMercenaries
             CreateConfigValues();
             LoadChebGonazAssetBundle();
             harmony.PatchAll();
+            
+            HumanMinerMinion.SyncInternalsWithConfigs();
+            HumanWoodcutterMinion.SyncInternalsWithConfigs();
+            
             SetupWatcher();
         }
         
