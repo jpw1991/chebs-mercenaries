@@ -1,0 +1,10 @@
+{
+    "$chebgonaz_mercenarychest_name": "Söldnertruhe",
+    "$chebgonaz_mercenarychest_desc": "Söldner kommen von weit her, um dieses Gold zu bekommen.",
+    "$chebgonaz_mercenaries_notyourminion": "Der Söldner ignoriert dich.",
+    "$chebgonaz_mercenaries_humanwaiting": "Wartet",
+    "$chebgonaz_mercenaries_humanfollowing": "Folgt",
+    "$chebgonaz_mercenaries_wait": "Warte",
+    "$chebgonaz_mercenaries_follow": "Folge",
+    "$chebgonaz_mercenaries_owner": "Arbeitgeber"
+}
