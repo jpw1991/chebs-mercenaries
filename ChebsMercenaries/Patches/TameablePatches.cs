@@ -1,4 +1,5 @@
 using ChebsMercenaries.Minions;
+using ChebsValheimLibrary.Minions;
 using HarmonyLib;
 
 // ReSharper disable InconsistentNaming
@@ -42,19 +43,31 @@ namespace ChebsMercenaries.Patches
                     return false; // deny base method completion
                 }
 
-                // use the minion methods to ensure the ZDO is updated
-                if (humanMinion.Status == HumanMinion.State.Following)
+                var currentStatus = humanMinion.Status;
+                var nextStatus = currentStatus switch
                 {
-                    user.Message(MessageHud.MessageType.Center, "$chebgonaz_mercenaries_humanwaiting");
-                    humanMinion.Wait(player.transform.position);
-                    return false; // deny base method completion
-                }
-                else
+                    ChebGonazMinion.State.Following => ChebGonazMinion.State.Waiting,
+                    ChebGonazMinion.State.Waiting => ChebGonazMinion.State.Roaming,
+                    _ => ChebGonazMinion.State.Following
+                };
+
+                // use the minion methods to ensure the ZDO is updated
+                if (nextStatus.Equals(ChebGonazMinion.State.Following))
                 {
                     user.Message(MessageHud.MessageType.Center, "$chebgonaz_mercenaries_humanfollowing");
                     humanMinion.Follow(player.gameObject);
                     return false; // deny base method completion
                 }
+                if (nextStatus.Equals(ChebGonazMinion.State.Waiting))
+                {
+                    user.Message(MessageHud.MessageType.Center, "$chebgonaz_mercenaries_humanwaiting");
+                    humanMinion.Wait(player.transform.position);
+                    return false; // deny base method completion
+                }
+                
+                user.Message(MessageHud.MessageType.Center, "$chebgonaz_mercenaries_humanroaming");
+                humanMinion.Roam();
+                return false; // deny base method completion
             }
 
             return true; // permit base method to complete
@@ -70,13 +83,15 @@ namespace ChebsMercenaries.Patches
         {
             if (__instance.m_nview.IsValid()
                 && __instance.m_commandable
-                && __instance.TryGetComponent(out HumanMinion _)
-                && __instance.TryGetComponent(out MonsterAI monsterAI)
+                && __instance.TryGetComponent(out HumanMinion humanMinion)
                 && Player.m_localPlayer != null)
             {
-                __result = monsterAI.GetFollowTarget() == Player.m_localPlayer.gameObject
-                    ? Localization.instance.Localize("$chebgonaz_mercenaries_wait")
-                    : Localization.instance.Localize("$chebgonaz_mercenaries_follow");
+                __result = humanMinion.Status switch
+                {
+                    ChebGonazMinion.State.Following => Localization.instance.Localize("$chebgonaz_mercenaries_wait"),
+                    ChebGonazMinion.State.Waiting => Localization.instance.Localize("$chebgonaz_mercenaries_roam"),
+                    _ => Localization.instance.Localize("$chebgonaz_mercenaries_follow")
+                };
             }
         }
     }

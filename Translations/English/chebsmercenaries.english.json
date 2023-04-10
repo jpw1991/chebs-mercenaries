@@ -4,7 +4,9 @@
     "$chebgonaz_mercenaries_notyourminion": "The mercenary ignores you.",
     "$chebgonaz_mercenaries_humanwaiting": "Waiting",
     "$chebgonaz_mercenaries_humanfollowing": "Following",
+    "$chebgonaz_mercenaries_humanroaming": "Roaming",
     "$chebgonaz_mercenaries_wait": "Wait",
+    "$chebgonaz_mercenaries_roam": "Roam",
     "$chebgonaz_mercenaries_follow": "Follow",
     "$chebgonaz_mercenaries_owner": "Employer"
 }
