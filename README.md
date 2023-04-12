@@ -135,6 +135,7 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 
 | Date       | Version | Notes           |
 |------------|---------|-----------------|
+| 11/04/2023 | 0.0.5   | upgrade ChebsValheimLib to 1.0.1 to fix ToolTier |
 | 09/04/2023 | 0.0.2   | Bug fixes       |
 | 08/04/2023 | 0.0.1   | Initial release |
 
