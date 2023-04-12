@@ -6,6 +6,7 @@ using BepInEx.Configuration;
 using ChebsMercenaries.Minions;
 using ChebsMercenaries.Structure;
 using ChebsNecromancy.Minions;
+using ChebsValheimLibrary.Items.Tools;
 using ChebsValheimLibrary.Minions.AI;
 using HarmonyLib;
 using Jotunn.Entities;
@@ -23,11 +24,11 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "0.0.4";
+        public const string PluginVersion = "0.0.5";
         private const string ConfigFileName =  PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
-        public readonly System.Version ChebsValheimLibraryVersion = new("1.0.0");
+        public readonly System.Version ChebsValheimLibraryVersion = new("1.0.1");
 
         private readonly Harmony harmony = new(PluginGuid);
         
@@ -105,6 +106,8 @@ namespace ChebsMercenaries
                 
                 HumanMinerMinion.SyncInternalsWithConfigs();
                 HumanWoodcutterMinion.SyncInternalsWithConfigs();
+                SkeletonPickaxe.SyncInternalsWithConfigs(HumanMinerMinion.ToolTier.Value);
+                SkeletonWoodAxe.SyncInternalsWithConfigs(HumanWoodcutterMinion.ToolTier.Value);
                 MercenaryChest.ParseMercCosts();
                 MercenaryChest.UpdateRecipe();
             }
@@ -129,6 +132,8 @@ namespace ChebsMercenaries
             
             HumanMinerMinion.SyncInternalsWithConfigs();
             HumanWoodcutterMinion.SyncInternalsWithConfigs();
+            SkeletonPickaxe.SyncInternalsWithConfigs(HumanMinerMinion.ToolTier.Value);
+            SkeletonWoodAxe.SyncInternalsWithConfigs(HumanWoodcutterMinion.ToolTier.Value);
             
             SetupWatcher();
         }
