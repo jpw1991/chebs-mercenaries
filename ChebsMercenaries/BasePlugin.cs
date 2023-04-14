@@ -24,11 +24,11 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "0.0.5";
+        public const string PluginVersion = "1.1.0";
         private const string ConfigFileName =  PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
-        public readonly System.Version ChebsValheimLibraryVersion = new("1.0.1");
+        public readonly System.Version ChebsValheimLibraryVersion = new("1.1.0");
 
         private readonly Harmony harmony = new(PluginGuid);
         
@@ -160,6 +160,16 @@ namespace ChebsMercenaries
                 prefabNames.Add("ChebGonaz_HumanWarriorTier2.prefab");
                 prefabNames.Add("ChebGonaz_HumanWarriorTier3.prefab");
                 prefabNames.Add("ChebGonaz_HumanWarriorTier4.prefab");
+                
+                prefabNames.Add("ChebGonaz_HumanMinerFemale.prefab");
+                prefabNames.Add("ChebGonaz_HumanWoodcutterFemale.prefab");
+                prefabNames.Add("ChebGonaz_HumanArcherFemale.prefab");
+                prefabNames.Add("ChebGonaz_HumanArcherTier2Female.prefab");
+                prefabNames.Add("ChebGonaz_HumanArcherTier3Female.prefab");
+                prefabNames.Add("ChebGonaz_HumanWarriorFemale.prefab");
+                prefabNames.Add("ChebGonaz_HumanWarriorTier2Female.prefab");
+                prefabNames.Add("ChebGonaz_HumanWarriorTier3Female.prefab");
+                prefabNames.Add("ChebGonaz_HumanWarriorTier4Female.prefab");
 
                 prefabNames.ForEach(prefabName =>
                 {
