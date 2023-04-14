@@ -46,7 +46,7 @@ cp -f "$BUN.manifest" "$PLUGINS" || { echo "Error: Failed to copy $BUN.manifest"
 
 # create dir if not existing
 if [ ! -d "$DEBUGDIR/merged" ]; then
-    mkdir -f $DEBUGDIR/merged
+    mkdir $DEBUGDIR/merged
 fi
 
 cp -f $BEPINEX $DEBUGDIR
