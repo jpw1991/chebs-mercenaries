@@ -1,0 +1,13 @@
+{
+    "$chebgonaz_mercenarychest_name": "Skrzynia najemników",
+    "$chebgonaz_mercenarychest_desc": "Najemnicy będą zbierać się wszędzie byleby zdobyć to złoto.",
+    "$chebgonaz_mercenaries_notyourminion": "Najemnik cię olewa.",
+    "$chebgonaz_mercenaries_humanwaiting": "Najemnik czeka",
+    "$chebgonaz_mercenaries_humanfollowing": "Najemnik podąża za tobą.",
+    "$chebgonaz_mercenaries_humanroaming": "Najemnik wędruje",
+    "$chebgonaz_mercenaries_wait": "Czekaj",
+    "$chebgonaz_mercenaries_roam": "Wędruj",
+    "$chebgonaz_mercenaries_follow": "Podążaj",
+    "$chebgonaz_mercenaries_owner": "Pracodawca"
+}
+
