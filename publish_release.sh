@@ -57,7 +57,7 @@ cp -rf "$TRANSLATIONS" "$PLUGINS/"  || { echo "Error: Failed to copy Translation
 
 # create dir if not existing
 if [ ! -d "$RELEASEDIR/merged" ]; then
-    mkdir -f $RELEASEDIR/merged
+    mkdir $RELEASEDIR/merged
 fi
 
 cp -f $BEPINEX $RELEASEDIR
