@@ -32,6 +32,8 @@ namespace ChebsMercenaries.Structure
         public static ConfigEntry<int> ArmorBronzeRequiredConfig;
         public static ConfigEntry<int> ArmorIronRequiredConfig;
         public static ConfigEntry<int> ArmorBlackIronRequiredConfig;
+        
+        public static ConfigEntry<float> ChanceOfFemale;
 
         public enum MercenaryType
         {
@@ -76,6 +78,18 @@ namespace ChebsMercenaries.Structure
             { MercenaryType.ArcherTier3, "ChebGonaz_HumanArcherTier3" },
             { MercenaryType.Miner, "ChebGonaz_HumanMiner" },
             { MercenaryType.Woodcutter, "ChebGonaz_HumanWoodcutter" },
+        };
+        private static Dictionary<MercenaryType, string> _prefabNamesFemale = new()
+        {
+            { MercenaryType.WarriorTier1, "ChebGonaz_HumanWarriorFemale" },
+            { MercenaryType.WarriorTier2, "ChebGonaz_HumanWarriorTier2Female" },
+            { MercenaryType.WarriorTier3, "ChebGonaz_HumanWarriorTier3Female" },
+            { MercenaryType.WarriorTier4, "ChebGonaz_HumanWarriorTier4Female" },
+            { MercenaryType.ArcherTier1, "ChebGonaz_HumanArcherFemale" },
+            { MercenaryType.ArcherTier2, "ChebGonaz_HumanArcherTier2Female" },
+            { MercenaryType.ArcherTier3, "ChebGonaz_HumanArcherTier3Female" },
+            { MercenaryType.Miner, "ChebGonaz_HumanMinerFemale" },
+            { MercenaryType.Woodcutter, "ChebGonaz_HumanWoodcutterFemale" },
         };
 
         public new static void UpdateRecipe()
@@ -162,6 +176,10 @@ namespace ChebsMercenaries.Structure
             ArmorBlackIronRequiredConfig = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ArmorBlackIronRequired",
                 1, "The amount of Black Metal required to craft a minion in black iron armor.", null,
                 true);
+            
+            ChanceOfFemale = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ChanceOfFemale", 0.5f,
+                "Chance of a mercenary spawning being female. 0 = 0%, 1 = 100% (Default = 0.5 = 50%)", 
+                new AcceptableValueRange<float>(0f, 1f), true);
         }
 
         public static void ParseMercCosts()
@@ -347,7 +365,9 @@ namespace ChebsMercenaries.Structure
         {
             if (mercenaryType is MercenaryType.None) return;
 
-            var prefabName = _prefabNames[mercenaryType];
+            var female = Random.value < ChanceOfFemale.Value;
+            
+            var prefabName = female ? _prefabNamesFemale[mercenaryType] : _prefabNames[mercenaryType];
             var prefab = ZNetScene.instance.GetPrefab(prefabName);
             if (!prefab)
             {

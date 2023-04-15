@@ -1,11 +1,13 @@
 #!/bin/bash
 
-DLL=ChebsMercenaries/bin/Release/ChebsMercenaries.dll
-LIB=ChebsMercenaries/bin/Release/ChebsValheimLibrary.dll
+RELEASEDIR=ChebsMercenaries/bin/Release
+DLL=$RELEASEDIR/ChebsMercenaries.dll
+LIB=$RELEASEDIR/ChebsValheimLibrary.dll
 BUN=../chebs-necromancy/ChebsNecromancyUnity/Assets/AssetBundles/chebgonaz
 PLUGINS=ChebsMercenaries/Package/plugins
 README=README.md
 TRANSLATIONS=Translations
+BEPINEX=ChebsMercenaries/libs/BepInEx.dll
 
 VERSION=$1
 
@@ -41,12 +43,35 @@ if [ ! -f "$README" ]; then
     exit 1
 fi
 
-cp -f "$DLL" "$PLUGINS" || { echo "Error: Failed to copy $DLL"; exit 1; }
-cp -f "$LIB" "$PLUGINS" || { echo "Error: Failed to copy $LIB"; exit 1; }
+if [ ! -f "$BEPINEX" ]; then
+    echo "Error: $BEPINEX does not exist or is not readable."
+    exit 1
+fi
+
+#cp -f "$DLL" "$PLUGINS" || { echo "Error: Failed to copy $DLL"; exit 1; }
+#cp -f "$LIB" "$PLUGINS" || { echo "Error: Failed to copy $LIB"; exit 1; }
 cp -f "$BUN" "$PLUGINS" || { echo "Error: Failed to copy $BUN"; exit 1; }
 cp -f "$BUN.manifest" "$PLUGINS" || { echo "Error: Failed to copy $BUN.manifest"; exit 1; }
 cp -f "$README" "$PLUGINS/../README.md" || { echo "Error: Failed to copy $README"; exit 1; }
 cp -rf "$TRANSLATIONS" "$PLUGINS/"  || { echo "Error: Failed to copy Translations"; exit 1; }
+
+# create dir if not existing
+if [ ! -d "$RELEASEDIR/merged" ]; then
+    mkdir $RELEASEDIR/merged
+fi
+
+cp -f $BEPINEX $RELEASEDIR
+cd $RELEASEDIR
+
+mono ../../../packages/ILRepack.2.0.18/tools/ILRepack.exe /out:merged/ChebsMercenaries.dll $(basename "$LIB") $(basename "$DLL")
+
+if [ $? != 0 ]; then
+    echo "Merging failed"
+    exit 1
+fi
+
+cd ../../../
+cp -f $RELEASEDIR/merged/ChebsMercenaries.dll $PLUGINS
 
 ZIPDESTINATION="../bin/Release/ChebsMercenaries.$VERSION.zip"
 
