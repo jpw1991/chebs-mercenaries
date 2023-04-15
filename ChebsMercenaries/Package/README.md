@@ -45,7 +45,6 @@ plugins/
 ├── chebgonaz
 ├── chebgonaz.manifest
 ├── ChebsMercenaries.dll
-├── ChebsValheimLibrary.dll
 └── ... other mods ...
 ```
 
@@ -54,7 +53,6 @@ plugins/
 | `Translations`                    | Folder containing translations.                          |
 | `chebgonaz`, `chebgonaz.manifest` | Contains all custom models, structures, items            |
 | `ChebsMercenaries.dll`            | This mod and its code.                                   |
-| `ChebsValheimLibrary.dll`         | Code shared by Cheb's Mercenaries and Cheb's Necromancy. |
 
 ## Features
 
@@ -136,6 +134,7 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 
 | Date       | Version | Notes           |
 |------------|---------|-----------------|
+| 14/04/2023 | 1.1.0   | Add female mercenaries; merge ChebsValheimLibrary.dll into ChebsMercenaries.dll for user convenience; add Polish translation |
 | 11/04/2023 | 0.0.5   | upgrade ChebsValheimLib to 1.0.1 to fix ToolTier |
 | 09/04/2023 | 0.0.2   | Bug fixes       |
 | 08/04/2023 | 0.0.1   | Initial release |
