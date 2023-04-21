@@ -126,6 +126,7 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
     + **Ramblez** (aka **[Thorngor](https://www.nexusmods.com/users/21532784)** on the Nexus) - Most of custom textures and icons.
 - Translations
 	+ [**pandory**](https://github.com/pandory-network) - German language localization.
+	+ [**Cordain**](https://github.com/Cordain) - Polish language localization.
 
 ## Changelog
 
