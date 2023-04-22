@@ -133,12 +133,13 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 <details>
 <summary>2023</summary>
 
-| Date       | Version | Notes           |
-|------------|---------|-----------------|
-| 14/04/2023 | 1.1.0   | Add female mercenaries; merge ChebsValheimLibrary.dll into ChebsMercenaries.dll for user convenience; add Polish translation |
-| 11/04/2023 | 0.0.5   | upgrade ChebsValheimLib to 1.0.1 to fix ToolTier |
-| 09/04/2023 | 0.0.2   | Bug fixes       |
-| 08/04/2023 | 0.0.1   | Initial release |
+ Date | Version | Notes 
+--- | --- | ---
+21/04/2023 | 1.1.1 | Possible frozen minions fix; mercenary laugh interval made 5x more infrequent
+ 14/04/2023 | 1.1.0   | Add female mercenaries; merge ChebsValheimLibrary.dll into ChebsMercenaries.dll for user convenience; add Polish translation 
+ 11/04/2023 | 0.0.5   | upgrade ChebsValheimLib to 1.0.1 to fix ToolTier
+ 09/04/2023 | 0.0.2   | Bug fixes
+ 08/04/2023 | 0.0.1   | Initial release 
 
 </details>
 
