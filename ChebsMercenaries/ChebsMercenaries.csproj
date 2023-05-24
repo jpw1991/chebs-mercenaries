@@ -123,6 +123,13 @@
     <Compile Include="Minions\HumanMinion.cs" />
     <Compile Include="Minions\HumanMinerMinion.cs" />
     <Compile Include="Minions\HumanWoodcutterMinion.cs" />
+    <Compile Include="Minions\MercenaryArcherTier1Minion.cs" />
+    <Compile Include="Minions\MercenaryArcherTier2Minion.cs" />
+    <Compile Include="Minions\MercenaryArcherTier3Minion.cs" />
+    <Compile Include="Minions\MercenaryWarriorTier1Minion.cs" />
+    <Compile Include="Minions\MercenaryWarriorTier2Minion.cs" />
+    <Compile Include="Minions\MercenaryWarriorTier3Minion.cs" />
+    <Compile Include="Minions\MercenaryWarriorTier4Minion.cs" />
     <Compile Include="Patches\AoePatches.cs" />
     <Compile Include="Patches\BaseAIPatches.cs" />
     <Compile Include="Patches\CharacterDropPatches.cs" />

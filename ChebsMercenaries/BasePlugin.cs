@@ -24,11 +24,11 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "1.2.1";
+        public const string PluginVersion = "1.3.0";
         private const string ConfigFileName =  PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
-        public readonly System.Version ChebsValheimLibraryVersion = new("1.2.1");
+        public readonly System.Version ChebsValheimLibraryVersion = new("1.2.2");
 
         private readonly Harmony harmony = new(PluginGuid);
         
@@ -81,6 +81,14 @@ namespace ChebsMercenaries
             HumanWoodcutterMinion.CreateConfigs(this);
             HumanMinerMinion.CreateConfigs(this);
             
+            MercenaryArcherTier1Minion.CreateConfigs(this);
+            MercenaryArcherTier2Minion.CreateConfigs(this);
+            MercenaryArcherTier3Minion.CreateConfigs(this);
+            MercenaryWarriorTier1Minion.CreateConfigs(this);
+            MercenaryWarriorTier2Minion.CreateConfigs(this);
+            MercenaryWarriorTier3Minion.CreateConfigs(this);
+            MercenaryWarriorTier4Minion.CreateConfigs(this);
+            
             MercenaryChest.CreateConfigs(this);
         }
 
@@ -103,10 +111,9 @@ namespace ChebsMercenaries
             {
                 Logger.LogInfo("Read updated config values");
                 Config.Reload();
-                
+
                 HumanMinerMinion.SyncInternalsWithConfigs();
                 HumanWoodcutterMinion.SyncInternalsWithConfigs();
-                MercenaryChest.ParseMercCosts();
                 MercenaryChest.UpdateRecipe();
             }
             catch (Exception exc)

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using BepInEx;
 using BepInEx.Configuration;
 using ChebsMercenaries.Structure;
+using ChebsNecromancy.Minions;
+using ChebsValheimLibrary.Common;
 using ChebsValheimLibrary.Minions;
 using UnityEngine;
 using Logger = Jotunn.Logger;
@@ -15,28 +17,74 @@ namespace ChebsMercenaries.Minions
         public static ConfigEntry<bool> PackDropItemsIntoCargoCrate;
         public static ConfigEntry<bool> Commandable;
         public static ConfigEntry<float> FollowDistance, RunDistance;
+        public static ConfigEntry<float> ChanceOfFemale;
 
-        public static void CreateConfigs(BaseUnityPlugin plugin)
+        public static void CreateConfigs(BasePlugin plugin)
         {
-            DropOnDeath = plugin.Config.Bind("HumanMinion (Server Synced)", 
+            const string serverSync = "HumanMinion (Server Synced)";
+            const string client = "HumanMinion (Client)";
+            DropOnDeath = plugin.Config.Bind(serverSync, 
                 "DropOnDeath",
                 DropType.JustResources, new ConfigDescription("Whether a minion refunds anything when it dies.", null,
                 new ConfigurationManagerAttributes { IsAdminOnly = true }));
 
-            PackDropItemsIntoCargoCrate = plugin.Config.Bind("HumanMinion (Server Synced)", 
+            PackDropItemsIntoCargoCrate = plugin.Config.Bind(serverSync, 
                 "PackDroppedItemsIntoCargoCrate",
                 true, new ConfigDescription("If set to true, dropped items will be packed into a cargo crate. This means they won't sink in water, which is useful for more valuable drops like Surtling Cores and metal ingots.", null,
                 new ConfigurationManagerAttributes { IsAdminOnly = true }));
             
-            Commandable = plugin.Config.Bind("HumanMinion (Client)", "Commandable",
+            Commandable = plugin.Config.Bind(client, "Commandable",
                 true, new ConfigDescription("If true, minions can be commanded individually with E (or equivalent) keybind."));
             
-            FollowDistance = plugin.Config.Bind("HumanMinion (Client)", "FollowDistance",
+            FollowDistance = plugin.Config.Bind(client, "FollowDistance",
                 3f, new ConfigDescription("How closely a minion will follow you (0 = standing on top of you, 3 = default)."));
             
-            RunDistance = plugin.Config.Bind("HumanMinion (Client)", "RunDistance",
+            RunDistance = plugin.Config.Bind(client, "RunDistance",
                 3f, new ConfigDescription("How close a following minion needs to be to you before it stops running and starts walking (0 = always running, 10 = default)."));
+            
+            ChanceOfFemale = plugin.ModConfig(serverSync, "ChanceOfFemale", 0.5f,
+                "Chance of a mercenary spawning being female. 0 = 0%, 1 = 100% (Default = 0.5 = 50%)", 
+                new AcceptableValueRange<float>(0f, 1f), true);
         }
+        
+        public enum MercenaryType
+        {
+            None,
+            WarriorTier1,
+            WarriorTier2,
+            WarriorTier3,
+            WarriorTier4,
+            ArcherTier1,
+            ArcherTier2,
+            ArcherTier3,
+            Miner,
+            Woodcutter,
+        }
+
+        public static readonly Dictionary<MercenaryType, string> PrefabNames = new()
+        {
+            { MercenaryType.WarriorTier1, "ChebGonaz_HumanWarrior" },
+            { MercenaryType.WarriorTier2, "ChebGonaz_HumanWarriorTier2" },
+            { MercenaryType.WarriorTier3, "ChebGonaz_HumanWarriorTier3" },
+            { MercenaryType.WarriorTier4, "ChebGonaz_HumanWarriorTier4" },
+            { MercenaryType.ArcherTier1, "ChebGonaz_HumanArcher" },
+            { MercenaryType.ArcherTier2, "ChebGonaz_HumanArcherTier2" },
+            { MercenaryType.ArcherTier3, "ChebGonaz_HumanArcherTier3" },
+            { MercenaryType.Miner, "ChebGonaz_HumanMiner" },
+            { MercenaryType.Woodcutter, "ChebGonaz_HumanWoodcutter" },
+        };
+        public static readonly Dictionary<MercenaryType, string> PrefabNamesFemale = new()
+        {
+            { MercenaryType.WarriorTier1, "ChebGonaz_HumanWarriorFemale" },
+            { MercenaryType.WarriorTier2, "ChebGonaz_HumanWarriorTier2Female" },
+            { MercenaryType.WarriorTier3, "ChebGonaz_HumanWarriorTier3Female" },
+            { MercenaryType.WarriorTier4, "ChebGonaz_HumanWarriorTier4Female" },
+            { MercenaryType.ArcherTier1, "ChebGonaz_HumanArcherFemale" },
+            { MercenaryType.ArcherTier2, "ChebGonaz_HumanArcherTier2Female" },
+            { MercenaryType.ArcherTier3, "ChebGonaz_HumanArcherTier3Female" },
+            { MercenaryType.Miner, "ChebGonaz_HumanMinerFemale" },
+            { MercenaryType.Woodcutter, "ChebGonaz_HumanWoodcutterFemale" },
+        };
 
         private void Awake()
         {
@@ -99,7 +147,7 @@ namespace ChebsMercenaries.Minions
             RestoreDrops();
         }
         
-        public void ScaleEquipment(MercenaryChest.MercenaryType mercenaryType, ArmorType armorType)
+        public void ScaleEquipment(MercenaryType mercenaryType, ArmorType armorType)
         {
             var defaultItems = new List<GameObject>();
 
@@ -183,6 +231,114 @@ namespace ChebsMercenaries.Minions
             humanoid.m_defaultItems = defaultItems.ToArray();
 
             humanoid.GiveDefaultItems();
+        }
+        
+        public static void Spawn(MercenaryType mercenaryType, ArmorType armorType, Transform spawner)
+        {
+            if (mercenaryType is MercenaryType.None) return;
+
+            var female = Random.value < ChanceOfFemale.Value;
+            
+            var prefabName = female ? PrefabNamesFemale[mercenaryType] : PrefabNames[mercenaryType];
+            var prefab = ZNetScene.instance.GetPrefab(prefabName);
+            if (!prefab)
+            {
+                Logger.LogError($"Spawn: spawning {prefabName} failed");
+                return;
+            }
+            var spawnedChar = Instantiate(prefab,
+                spawner.position + spawner.forward * 2f + Vector3.up, Quaternion.identity);
+            spawnedChar.AddComponent<FreshMinion>();
+            
+            // // try adding hair
+            // var humanoid =spawnedChar.GetComponent<Humanoid>(); 
+            // humanoid.m_hairItem = "$customization_hair21";
+            // humanoid.m_visEquipment.SetHairItem(humanoid.m_hairItem);
+            // //humanoid.m_visEquipment.SetHairColor(new Vector3(255,0,0));
+            // humanoid.m_visEquipment.UpdateVisuals();
+
+            var minion = mercenaryType switch
+            {
+                MercenaryType.Miner => spawnedChar.AddComponent<HumanMinerMinion>(),
+                MercenaryType.Woodcutter => spawnedChar.AddComponent<HumanWoodcutterMinion>(),
+                _ => spawnedChar.AddComponent<HumanMinion>()
+            };
+            
+            minion.ScaleEquipment(mercenaryType, armorType);
+            
+            if (mercenaryType != MercenaryType.Miner && mercenaryType != MercenaryType.Woodcutter)
+                minion.Roam();
+
+            // handle refunding of resources on death
+            if (DropOnDeath.Value == DropType.Nothing) return;
+
+            CharacterDrop characterDrop = null;
+
+            switch (mercenaryType)
+            {
+                case MercenaryType.Miner:
+                    characterDrop = minion.GenerateDeathDrops(DropOnDeath, HumanMinerMinion.ItemsCost);
+                    break;
+                case MercenaryType.Woodcutter:
+                    characterDrop = minion.GenerateDeathDrops(DropOnDeath, HumanWoodcutterMinion.ItemsCost);
+                    break;
+                case MercenaryType.ArcherTier1:
+                    characterDrop = minion.GenerateDeathDrops(DropOnDeath, MercenaryArcherTier1Minion.ItemsCost);
+                    break;
+                case MercenaryType.ArcherTier2:
+                    characterDrop = minion.GenerateDeathDrops(DropOnDeath, MercenaryArcherTier2Minion.ItemsCost);
+                    break;
+                case MercenaryType.ArcherTier3:
+                    characterDrop = minion.GenerateDeathDrops(DropOnDeath, MercenaryArcherTier3Minion.ItemsCost);
+                    break;
+                case MercenaryType.WarriorTier1:
+                    characterDrop = minion.GenerateDeathDrops(DropOnDeath, MercenaryWarriorTier1Minion.ItemsCost);
+                    break;
+                case MercenaryType.WarriorTier2:
+                    characterDrop = minion.GenerateDeathDrops(DropOnDeath, MercenaryWarriorTier2Minion.ItemsCost);
+                    break;
+                case MercenaryType.WarriorTier3:
+                    characterDrop = minion.GenerateDeathDrops(DropOnDeath, MercenaryWarriorTier3Minion.ItemsCost);
+                    break;
+                case MercenaryType.WarriorTier4:
+                    characterDrop = minion.GenerateDeathDrops(DropOnDeath, MercenaryWarriorTier4Minion.ItemsCost);
+                    break;
+            }
+
+            if (characterDrop == null) return;
+
+            switch (armorType)
+            {
+                case ArmorType.Leather:
+                    AddOrUpdateDrop(characterDrop, 
+                        Random.value > .5f ? "DeerHide" : "LeatherScraps", // flip a coin for deer or scraps
+                        MercenaryChest.ArmorLeatherScrapsRequiredConfig.Value);
+                    break;
+                case ArmorType.LeatherTroll:
+                    AddOrUpdateDrop(characterDrop, "TrollHide", MercenaryChest.ArmorLeatherScrapsRequiredConfig.Value);
+                    break;
+                case ArmorType.LeatherWolf:
+                    AddOrUpdateDrop(characterDrop, "WolfPelt", MercenaryChest.ArmorLeatherScrapsRequiredConfig.Value);
+                    break;
+                case ArmorType.LeatherLox:
+                    AddOrUpdateDrop(characterDrop, "LoxPelt", MercenaryChest.ArmorLeatherScrapsRequiredConfig.Value);
+                    break;
+                case ArmorType.Bronze:
+                    AddOrUpdateDrop(characterDrop, "Bronze", MercenaryChest.ArmorBronzeRequiredConfig.Value);
+                    break;
+                case ArmorType.Iron:
+                    AddOrUpdateDrop(characterDrop, "Iron", MercenaryChest.ArmorIronRequiredConfig.Value);
+                    break;
+                case ArmorType.BlackMetal:
+                    AddOrUpdateDrop(characterDrop, "BlackMetal", MercenaryChest.ArmorBlackIronRequiredConfig.Value);
+                    break;
+            }
+
+            // the component won't be remembered by the game on logout because
+            // only what is on the prefab is remembered. Even changes to the prefab
+            // aren't remembered. So we must write what we're dropping into
+            // the ZDO as well and then read & restore this on Awake
+            minion.RecordDrops(characterDrop);
         }
     }
 }

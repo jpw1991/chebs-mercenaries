@@ -4,7 +4,7 @@ Cheb's Mercenaries adds mercenaries to Valheim that you can purchase with gold a
 
 It is related to my other mod called [Cheb's Necromancy](https://github.com/jpw1991/chebs-necromancy) and shares a lot of concepts and functionality. It's basically for people that want living human minions rather than the undead.
 
-##  About Me
+## About Me
 
 [![image1](https://imgur.com/Fahi6sP.png)](https://chebgonaz.pythonanywhere.com)
 [![image2](https://imgur.com/X18OyQs.png)](https://ko-fi.com/chebgonaz)
@@ -48,13 +48,6 @@ plugins/
 ├── ChebsValheimLibrary.dll
 └── ... other mods ...
 ```
-
-| File                              | Purpose                                                  |
-|-----------------------------------|----------------------------------------------------------|
-| `Translations`                    | Folder containing translations.                          |
-| `chebgonaz`, `chebgonaz.manifest` | Contains all custom models, structures, items            |
-| `ChebsMercenaries.dll`            | This mod and its code.                                   |
-| `ChebsValheimLibrary.dll`         | Code common to Cheb's mods and permits cross-compatibility eg. Wands to command mercenaries.                                   |
 
 ## Features
 
@@ -116,7 +109,9 @@ You can also edit the configs manually. Almost everything can be tweaked to your
 
 ## Future Ideas
 
-- None at the moment.
+- Add hair/beards.
+- Add backpack mercenary.
+- Add resource gathering mercenary.
 
 ## Source
 
@@ -137,6 +132,7 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 
  Date | Version | Notes 
 --- | --- | ---
+24/05/2023 | 1.3.0 | Incorporate new resource requirement parsing
 11/05/2023 | 1.2.1 | Unbundle DLL to fix bug of wands not working; ignore collision with carts
 02/05/2023 | 1.2.0 | Commandable workers; If a woodcutter is swinging, but missing, the damage gets dealt anyway; remove tooltier stuff for simplicity and streamlining. People can use 3rd party item-alteration mods instead
 21/04/2023 | 1.1.1 | Possible frozen minions fix; mercenary laugh interval made 5x more infrequent
