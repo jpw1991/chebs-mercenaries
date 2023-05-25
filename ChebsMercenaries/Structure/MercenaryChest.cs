@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -8,8 +7,6 @@ using ChebsNecromancy.Minions;
 using ChebsValheimLibrary.Common;
 using ChebsValheimLibrary.Minions;
 using UnityEngine;
-using Logger = Jotunn.Logger;
-using Random = UnityEngine.Random;
 
 namespace ChebsMercenaries.Structure
 {
@@ -43,6 +40,8 @@ namespace ChebsMercenaries.Structure
         
         private List<HumanMinion.MercenaryType> _orderedByPreference = new()
         {
+            HumanMinion.MercenaryType.Woodcutter,
+            HumanMinion.MercenaryType.Miner,
             HumanMinion.MercenaryType.ArcherTier3,
             HumanMinion.MercenaryType.ArcherTier2,
             HumanMinion.MercenaryType.ArcherTier1,
@@ -50,8 +49,6 @@ namespace ChebsMercenaries.Structure
             HumanMinion.MercenaryType.WarriorTier3,
             HumanMinion.MercenaryType.WarriorTier2,
             HumanMinion.MercenaryType.WarriorTier1,
-            HumanMinion.MercenaryType.Woodcutter,
-            HumanMinion.MercenaryType.Miner
         };
         
         public new static void UpdateRecipe()

@@ -1,10 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using BepInEx;
 using BepInEx.Configuration;
 using ChebsMercenaries.Structure;
 using ChebsNecromancy.Minions;
-using ChebsValheimLibrary.Common;
 using ChebsValheimLibrary.Minions;
 using UnityEngine;
 using Logger = Jotunn.Logger;
@@ -272,40 +270,40 @@ namespace ChebsMercenaries.Minions
             // handle refunding of resources on death
             if (DropOnDeath.Value == DropType.Nothing) return;
 
-            CharacterDrop characterDrop = null;
-
-            switch (mercenaryType)
+            var characterDrop = spawnedChar.AddComponent<CharacterDrop>();
+            if (DropOnDeath.Value == DropType.Everything)
             {
-                case MercenaryType.Miner:
-                    characterDrop = minion.GenerateDeathDrops(DropOnDeath, HumanMinerMinion.ItemsCost);
-                    break;
-                case MercenaryType.Woodcutter:
-                    characterDrop = minion.GenerateDeathDrops(DropOnDeath, HumanWoodcutterMinion.ItemsCost);
-                    break;
-                case MercenaryType.ArcherTier1:
-                    characterDrop = minion.GenerateDeathDrops(DropOnDeath, MercenaryArcherTier1Minion.ItemsCost);
-                    break;
-                case MercenaryType.ArcherTier2:
-                    characterDrop = minion.GenerateDeathDrops(DropOnDeath, MercenaryArcherTier2Minion.ItemsCost);
-                    break;
-                case MercenaryType.ArcherTier3:
-                    characterDrop = minion.GenerateDeathDrops(DropOnDeath, MercenaryArcherTier3Minion.ItemsCost);
-                    break;
-                case MercenaryType.WarriorTier1:
-                    characterDrop = minion.GenerateDeathDrops(DropOnDeath, MercenaryWarriorTier1Minion.ItemsCost);
-                    break;
-                case MercenaryType.WarriorTier2:
-                    characterDrop = minion.GenerateDeathDrops(DropOnDeath, MercenaryWarriorTier2Minion.ItemsCost);
-                    break;
-                case MercenaryType.WarriorTier3:
-                    characterDrop = minion.GenerateDeathDrops(DropOnDeath, MercenaryWarriorTier3Minion.ItemsCost);
-                    break;
-                case MercenaryType.WarriorTier4:
-                    characterDrop = minion.GenerateDeathDrops(DropOnDeath, MercenaryWarriorTier4Minion.ItemsCost);
-                    break;
+                switch (mercenaryType)
+                {
+                    case MercenaryType.Miner:
+                        GenerateDeathDrops(characterDrop, HumanMinerMinion.ItemsCost);
+                        break;
+                    case MercenaryType.Woodcutter:
+                        GenerateDeathDrops(characterDrop, HumanWoodcutterMinion.ItemsCost);
+                        break;
+                    case MercenaryType.ArcherTier1:
+                        GenerateDeathDrops(characterDrop, MercenaryArcherTier1Minion.ItemsCost);
+                        break;
+                    case MercenaryType.ArcherTier2:
+                        GenerateDeathDrops(characterDrop, MercenaryArcherTier2Minion.ItemsCost);
+                        break;
+                    case MercenaryType.ArcherTier3:
+                        GenerateDeathDrops(characterDrop, MercenaryArcherTier3Minion.ItemsCost);
+                        break;
+                    case MercenaryType.WarriorTier1:
+                        GenerateDeathDrops(characterDrop, MercenaryWarriorTier1Minion.ItemsCost);
+                        break;
+                    case MercenaryType.WarriorTier2:
+                        GenerateDeathDrops(characterDrop, MercenaryWarriorTier2Minion.ItemsCost);
+                        break;
+                    case MercenaryType.WarriorTier3:
+                        GenerateDeathDrops(characterDrop, MercenaryWarriorTier3Minion.ItemsCost);
+                        break;
+                    case MercenaryType.WarriorTier4:
+                        GenerateDeathDrops(characterDrop, MercenaryWarriorTier4Minion.ItemsCost);
+                        break;
+                }
             }
-
-            if (characterDrop == null) return;
 
             switch (armorType)
             {

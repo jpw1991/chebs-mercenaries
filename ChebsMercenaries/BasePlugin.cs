@@ -6,9 +6,9 @@ using BepInEx.Configuration;
 using ChebsMercenaries.Minions;
 using ChebsMercenaries.Structure;
 using ChebsNecromancy.Minions;
-using ChebsValheimLibrary.Items.Tools;
-using ChebsValheimLibrary.Minions.AI;
+using ChebsValheimLibrary;
 using HarmonyLib;
+using Jotunn;
 using Jotunn.Entities;
 using Jotunn.Managers;
 using Jotunn.Utils;
@@ -18,17 +18,17 @@ using Paths = BepInEx.Paths;
 namespace ChebsMercenaries
 {
     [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
-    [BepInDependency(Jotunn.Main.ModGuid)]
+    [BepInDependency(Main.ModGuid)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.Minor)]
     public class BasePlugin : BaseUnityPlugin
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "1.3.0";
+        public const string PluginVersion = "1.3.1";
         private const string ConfigFileName =  PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
-        public readonly System.Version ChebsValheimLibraryVersion = new("1.2.2");
+        public readonly System.Version ChebsValheimLibraryVersion = new("1.2.3");
 
         private readonly Harmony harmony = new(PluginGuid);
         
@@ -126,7 +126,7 @@ namespace ChebsMercenaries
         
         private void Awake()
         {
-            if (!ChebsValheimLibrary.Base.VersionCheck(ChebsValheimLibraryVersion, out string message))
+            if (!Base.VersionCheck(ChebsValheimLibraryVersion, out string message))
             {
                 Jotunn.Logger.LogWarning(message);
             }
@@ -149,7 +149,7 @@ namespace ChebsMercenaries
             try
             {
                 #region Items
-                ChebsValheimLibrary.Base.LoadMinionItems(chebgonazAssetBundle, RadeonFriendly.Value);
+                Base.LoadMinionItems(chebgonazAssetBundle, RadeonFriendly.Value);
                 #endregion
                 #region Creatures
                 var prefabNames = new List<string>();
@@ -176,7 +176,7 @@ namespace ChebsMercenaries
 
                 prefabNames.ForEach(prefabName =>
                 {
-                    var prefab = ChebsValheimLibrary.Base.LoadPrefabFromBundle(prefabName, chebgonazAssetBundle, RadeonFriendly.Value);
+                    var prefab = Base.LoadPrefabFromBundle(prefabName, chebgonazAssetBundle, RadeonFriendly.Value);
                     CreatureManager.Instance.AddCreature(new CustomCreature(prefab, true));
                 });
                 #endregion
