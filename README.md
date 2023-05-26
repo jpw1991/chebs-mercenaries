@@ -132,6 +132,8 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 
  Date | Version | Notes 
 --- | --- | ---
+26/05/2023 | 1.3.2 | Add beards and hair
+25/05/2023 | 1.3.1 | drops fixes
 24/05/2023 | 1.3.0 | Incorporate new resource requirement parsing
 11/05/2023 | 1.2.1 | Unbundle DLL to fix bug of wands not working; ignore collision with carts
 02/05/2023 | 1.2.0 | Commandable workers; If a woodcutter is swinging, but missing, the damage gets dealt anyway; remove tooltier stuff for simplicity and streamlining. People can use 3rd party item-alteration mods instead

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using BepInEx.Configuration;
 using ChebsMercenaries.Structure;
 using ChebsNecromancy.Minions;
@@ -16,6 +17,8 @@ namespace ChebsMercenaries.Minions
         public static ConfigEntry<bool> Commandable;
         public static ConfigEntry<float> FollowDistance, RunDistance;
         public static ConfigEntry<float> ChanceOfFemale;
+
+        private static List<ItemDrop> _hairs, _beards;
 
         public static void CreateConfigs(BasePlugin plugin)
         {
@@ -86,6 +89,9 @@ namespace ChebsMercenaries.Minions
 
         private void Awake()
         {
+            _hairs ??= ObjectDB.instance.GetAllItems(ItemDrop.ItemData.ItemType.Customization, "Hair");
+            _beards ??= ObjectDB.instance.GetAllItems(ItemDrop.ItemData.ItemType.Customization, "Beard");
+            
             StartCoroutine(WaitForZNet());
         }
 
@@ -247,13 +253,19 @@ namespace ChebsMercenaries.Minions
             var spawnedChar = Instantiate(prefab,
                 spawner.position + spawner.forward * 2f + Vector3.up, Quaternion.identity);
             spawnedChar.AddComponent<FreshMinion>();
-            
-            // // try adding hair
-            // var humanoid =spawnedChar.GetComponent<Humanoid>(); 
-            // humanoid.m_hairItem = "$customization_hair21";
-            // humanoid.m_visEquipment.SetHairItem(humanoid.m_hairItem);
-            // //humanoid.m_visEquipment.SetHairColor(new Vector3(255,0,0));
-            // humanoid.m_visEquipment.UpdateVisuals();
+
+            // todo hair color and skin color
+            var humanoid = spawnedChar.GetComponent<Humanoid>();
+            var randomHair = _hairs[Random.Range(0, _hairs.Count)].gameObject.name;
+            humanoid.SetHair(randomHair);
+            if (!female)
+            {
+                var randomBeard = _beards[Random.Range(0, _beards.Count)].gameObject.name;
+                humanoid.SetBeard(randomBeard);
+                humanoid.m_visEquipment.SetBeardItem(humanoid.m_beardItem);
+            }
+            humanoid.m_visEquipment.SetHairItem(humanoid.m_hairItem);
+            humanoid.m_visEquipment.UpdateEquipmentVisuals();
 
             var minion = mercenaryType switch
             {
