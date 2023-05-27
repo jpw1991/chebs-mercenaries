@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using BepInEx.Configuration;
 using ChebsMercenaries.Structure;
 using ChebsNecromancy.Minions;
+using ChebsValheimLibrary.Common;
 using ChebsValheimLibrary.Minions;
 using UnityEngine;
 using Logger = Jotunn.Logger;
@@ -16,6 +18,9 @@ namespace ChebsMercenaries.Minions
         public static ConfigEntry<bool> Commandable;
         public static ConfigEntry<float> FollowDistance, RunDistance;
         public static ConfigEntry<float> ChanceOfFemale;
+        public static MemoryConfigEntry<string, List<Vector3>> HairColors, SkinColors;
+
+        private static List<ItemDrop> _hairs, _beards;
 
         public static void CreateConfigs(BasePlugin plugin)
         {
@@ -43,6 +48,28 @@ namespace ChebsMercenaries.Minions
             ChanceOfFemale = plugin.ModConfig(serverSync, "ChanceOfFemale", 0.5f,
                 "Chance of a mercenary spawning being female. 0 = 0%, 1 = 100% (Default = 0.5 = 50%)", 
                 new AcceptableValueRange<float>(0f, 1f), true);
+            
+            var hairColors = plugin.ModConfig(serverSync, "HairColors", "#F7DC6F,#935116,#AFABAB,#FF5733,#1C2833",
+                "Comma delimited list of HTML color codes.", null, true);
+            HairColors = new MemoryConfigEntry<string, List<Vector3>>(hairColors, s =>
+            {
+                var cols = s?.Split(',').ToList().Select(colorCode => 
+                    ColorUtility.TryParseHtmlString(colorCode, out Color color)
+                    ? Utils.ColorToVec3(color)
+                    : Vector3.zero).ToList();
+                return cols;
+            });
+            
+            var skinColors = plugin.ModConfig(serverSync, "SkinColors", "#FEF5E7,#F5CBA7,#784212,#F5B041",
+                "Comma delimited list of HTML color codes.", null, true);
+            SkinColors = new MemoryConfigEntry<string, List<Vector3>>(skinColors, s =>
+            {
+                var cols = s?.Split(',').ToList().Select(colorCode => 
+                    ColorUtility.TryParseHtmlString(colorCode, out Color color)
+                        ? Utils.ColorToVec3(color)
+                        : Vector3.zero).ToList();
+                return cols;
+            });
         }
         
         public enum MercenaryType
@@ -86,6 +113,9 @@ namespace ChebsMercenaries.Minions
 
         private void Awake()
         {
+            _hairs ??= ObjectDB.instance.GetAllItems(ItemDrop.ItemData.ItemType.Customization, "Hair");
+            _beards ??= ObjectDB.instance.GetAllItems(ItemDrop.ItemData.ItemType.Customization, "Beard");
+            
             StartCoroutine(WaitForZNet());
         }
 
@@ -247,13 +277,23 @@ namespace ChebsMercenaries.Minions
             var spawnedChar = Instantiate(prefab,
                 spawner.position + spawner.forward * 2f + Vector3.up, Quaternion.identity);
             spawnedChar.AddComponent<FreshMinion>();
-            
-            // // try adding hair
-            // var humanoid =spawnedChar.GetComponent<Humanoid>(); 
-            // humanoid.m_hairItem = "$customization_hair21";
-            // humanoid.m_visEquipment.SetHairItem(humanoid.m_hairItem);
-            // //humanoid.m_visEquipment.SetHairColor(new Vector3(255,0,0));
-            // humanoid.m_visEquipment.UpdateVisuals();
+
+            // set hair and skin color
+            var humanoid = spawnedChar.GetComponent<Humanoid>();
+            var randomSkinColor = SkinColors.Value[Random.Range(0, SkinColors.Value.Count)];
+            humanoid.m_visEquipment.SetSkinColor(randomSkinColor);
+            var randomHair = _hairs[Random.Range(0, _hairs.Count)].gameObject.name;
+            humanoid.SetHair(randomHair);
+            var randomHairColor = HairColors.Value[Random.Range(0, HairColors.Value.Count)];
+            humanoid.m_visEquipment.SetHairColor(randomHairColor);
+            if (!female)
+            {
+                var randomBeard = _beards[Random.Range(0, _beards.Count)].gameObject.name;
+                humanoid.SetBeard(randomBeard);
+                humanoid.m_visEquipment.SetBeardItem(humanoid.m_beardItem);
+            }
+            humanoid.m_visEquipment.SetHairItem(humanoid.m_hairItem);
+            humanoid.m_visEquipment.UpdateEquipmentVisuals();
 
             var minion = mercenaryType switch
             {
