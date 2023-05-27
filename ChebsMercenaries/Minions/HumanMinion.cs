@@ -4,6 +4,7 @@ using System.Linq;
 using BepInEx.Configuration;
 using ChebsMercenaries.Structure;
 using ChebsNecromancy.Minions;
+using ChebsValheimLibrary.Common;
 using ChebsValheimLibrary.Minions;
 using UnityEngine;
 using Logger = Jotunn.Logger;
@@ -17,6 +18,7 @@ namespace ChebsMercenaries.Minions
         public static ConfigEntry<bool> Commandable;
         public static ConfigEntry<float> FollowDistance, RunDistance;
         public static ConfigEntry<float> ChanceOfFemale;
+        public static MemoryConfigEntry<string, List<Vector3>> HairColors, SkinColors;
 
         private static List<ItemDrop> _hairs, _beards;
 
@@ -46,6 +48,28 @@ namespace ChebsMercenaries.Minions
             ChanceOfFemale = plugin.ModConfig(serverSync, "ChanceOfFemale", 0.5f,
                 "Chance of a mercenary spawning being female. 0 = 0%, 1 = 100% (Default = 0.5 = 50%)", 
                 new AcceptableValueRange<float>(0f, 1f), true);
+            
+            var hairColors = plugin.ModConfig(serverSync, "HairColors", "#F7DC6F,#935116,#AFABAB,#FF5733,#1C2833",
+                "Comma delimited list of HTML color codes.", null, true);
+            HairColors = new MemoryConfigEntry<string, List<Vector3>>(hairColors, s =>
+            {
+                var cols = s?.Split(',').ToList().Select(colorCode => 
+                    ColorUtility.TryParseHtmlString(colorCode, out Color color)
+                    ? Utils.ColorToVec3(color)
+                    : Vector3.zero).ToList();
+                return cols;
+            });
+            
+            var skinColors = plugin.ModConfig(serverSync, "SkinColors", "#FEF5E7,#F5CBA7,#784212,#F5B041",
+                "Comma delimited list of HTML color codes.", null, true);
+            SkinColors = new MemoryConfigEntry<string, List<Vector3>>(skinColors, s =>
+            {
+                var cols = s?.Split(',').ToList().Select(colorCode => 
+                    ColorUtility.TryParseHtmlString(colorCode, out Color color)
+                        ? Utils.ColorToVec3(color)
+                        : Vector3.zero).ToList();
+                return cols;
+            });
         }
         
         public enum MercenaryType
@@ -254,10 +278,14 @@ namespace ChebsMercenaries.Minions
                 spawner.position + spawner.forward * 2f + Vector3.up, Quaternion.identity);
             spawnedChar.AddComponent<FreshMinion>();
 
-            // todo hair color and skin color
+            // set hair and skin color
             var humanoid = spawnedChar.GetComponent<Humanoid>();
+            var randomSkinColor = SkinColors.Value[Random.Range(0, SkinColors.Value.Count)];
+            humanoid.m_visEquipment.SetSkinColor(randomSkinColor);
             var randomHair = _hairs[Random.Range(0, _hairs.Count)].gameObject.name;
             humanoid.SetHair(randomHair);
+            var randomHairColor = HairColors.Value[Random.Range(0, HairColors.Value.Count)];
+            humanoid.m_visEquipment.SetHairColor(randomHairColor);
             if (!female)
             {
                 var randomBeard = _beards[Random.Range(0, _beards.Count)].gameObject.name;
