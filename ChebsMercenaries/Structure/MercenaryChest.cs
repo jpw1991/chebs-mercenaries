@@ -225,7 +225,7 @@ namespace ChebsMercenaries.Structure
                 yield return new WaitForSeconds(5);
                 
                 var playersInRange = new List<Player>();
-                Player.GetPlayersInRange(transform.position, 50f, playersInRange);
+                Player.GetPlayersInRange(transform.position, PlayerDetectionDistance, playersInRange);
                 if (playersInRange.Count < 1) continue;
 
                 yield return new WaitWhile(() => playersInRange[0].IsSleeping());
