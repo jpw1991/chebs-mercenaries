@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using BepInEx.Configuration;
 using ChebsMercenaries.Minions;
@@ -221,12 +222,17 @@ namespace ChebsMercenaries.Structure
 
             while (true)
             {
-                yield return new WaitWhile(() => Player.m_localPlayer == null || Player.m_localPlayer.m_sleeping);
                 yield return new WaitForSeconds(5);
+                
+                var playersInRange = new List<Player>();
+                Player.GetPlayersInRange(transform.position, 50f, playersInRange);
+                if (playersInRange.Count < 1) continue;
 
+                yield return new WaitWhile(() => playersInRange[0].IsSleeping());
+                
                 var nextMerc = NextMercenary();
-                var player = Player.m_localPlayer;
-                if (Vector3.Distance(player.transform.position, transform.position) < 5)
+
+                if (playersInRange.Any(player => Vector3.Distance(player.transform.position, transform.position) < 5))
                 {
                     Chat.instance.SetNpcText(gameObject, Vector3.up, 5f, 4f, "",
                         $"Recruiting {nextMerc} in {(RecruitmentInterval.Value - (Time.time - _lastRecruitmentAt)).ToString("0")} seconds...",
