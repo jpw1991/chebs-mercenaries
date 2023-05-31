@@ -230,7 +230,7 @@ namespace ChebsMercenaries.Items
 
                 if (character.GetComponent<MonsterAI>().GetFollowTarget() != player.gameObject) continue;
 
-                MessageHud.instance.ShowMessage(MessageHud.MessageType.Center, "$chebgonaz_roaming");
+                MessageHud.instance.ShowMessage(MessageHud.MessageType.Center, "$chebgonaz_mercenaries_humanroaming");
                 minion.Roam();
             }
         }
@@ -261,8 +261,8 @@ namespace ChebsMercenaries.Items
 
                 MessageHud.instance.ShowMessage(MessageHud.MessageType.Center,
                     follow
-                        ? "$chebsmercenaries_weaponofcommand_following"
-                        : "$chebsmercenaries_weaponofcommand_waiting");
+                        ? "chebgonaz_mercenaries_humanfollowing"
+                        : "chebgonaz_mercenaries_humanwaiting");
                 if (follow)
                 {
                     minion.Follow(player.gameObject);

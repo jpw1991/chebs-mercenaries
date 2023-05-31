@@ -56,6 +56,6 @@ if __name__ == '__main__':
                 if merged_contents[key] == '' and english is not None:
                     merged_contents[key] = english[key]
             print('Writing...')
-            json.dump(merged_contents, f, indent=4)
+            json.dump(merged_contents, f, indent=4, ensure_ascii=False)
             if english is None:
                 english = merged_contents
