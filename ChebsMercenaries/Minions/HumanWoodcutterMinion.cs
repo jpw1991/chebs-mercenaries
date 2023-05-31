@@ -15,7 +15,9 @@ namespace ChebsMercenaries.Minions
         {
             const string serverSynced = "HumanWoodcutter (Server Synced)";
             UpdateDelay = plugin.Config.Bind(serverSynced, "UpdateDelay",
-                6f, new ConfigDescription("The delay, in seconds, between wood searching attempts. Attention: small values may impact performance.", null,
+                6f, new ConfigDescription(
+                    "The delay, in seconds, between wood searching attempts. Attention: small values may impact performance.",
+                    null,
                     new ConfigurationManagerAttributes { IsAdminOnly = true }));
             LookRadius = plugin.Config.Bind(serverSynced, "LookRadius",
                 50f, new ConfigDescription("How far it can see wood. High values may damage performance.", null,
@@ -27,7 +29,7 @@ namespace ChebsMercenaries.Minions
                 "The items that are consumed when creating a minion. Please use a comma-delimited list of prefab names with a : and integer for amount. Alternative items can be specified with a | eg. Wood|Coal:5 to mean wood and/or coal.",
                 null, true);
             ItemsCost = new MemoryConfigEntry<string, List<string>>(itemsCost, s => s?.Split(',').ToList());
-            
+
             SyncInternalsWithConfigs();
         }
 

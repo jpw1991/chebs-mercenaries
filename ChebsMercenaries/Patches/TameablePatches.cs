@@ -37,7 +37,7 @@ namespace ChebsMercenaries.Patches
                     user.Message(MessageHud.MessageType.Center, "$chebgonaz_mercenaries_notyourminion");
                     return false; // deny base method completion
                 }
-                
+
                 if (!HumanMinion.Commandable.Value)
                 {
                     return false; // deny base method completion
@@ -58,13 +58,14 @@ namespace ChebsMercenaries.Patches
                     humanMinion.Follow(player.gameObject);
                     return false; // deny base method completion
                 }
+
                 if (nextStatus.Equals(ChebGonazMinion.State.Waiting))
                 {
                     user.Message(MessageHud.MessageType.Center, "$chebgonaz_mercenaries_humanwaiting");
                     humanMinion.Wait(player.transform.position);
                     return false; // deny base method completion
                 }
-                
+
                 user.Message(MessageHud.MessageType.Center, "$chebgonaz_mercenaries_humanroaming");
                 humanMinion.Roam();
                 return false; // deny base method completion
@@ -95,7 +96,7 @@ namespace ChebsMercenaries.Patches
             }
         }
     }
-    
+
     [HarmonyPatch(typeof(Tameable))]
     class TameablePatch3
     {
@@ -106,7 +107,8 @@ namespace ChebsMercenaries.Patches
             if (__instance.m_nview.IsValid()
                 && __instance.TryGetComponent(out HumanMinion humanMinion))
             {
-                __result = $"{Localization.instance.Localize("$chebgonaz_mercenaries_owner")}: {humanMinion.UndeadMinionMaster} ({humanMinion.Status})";
+                __result =
+                    $"{Localization.instance.Localize("$chebgonaz_mercenaries_owner")}: {humanMinion.UndeadMinionMaster} ({humanMinion.Status})";
             }
         }
     }

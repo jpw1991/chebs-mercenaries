@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using BepInEx.Configuration;
 using ChebsMercenaries.Structure;
-using ChebsNecromancy.Minions;
 using ChebsValheimLibrary.Common;
 using ChebsValheimLibrary.Minions;
 using UnityEngine;
@@ -26,52 +25,60 @@ namespace ChebsMercenaries.Minions
         {
             const string serverSync = "HumanMinion (Server Synced)";
             const string client = "HumanMinion (Client)";
-            DropOnDeath = plugin.Config.Bind(serverSync, 
+            DropOnDeath = plugin.Config.Bind(serverSync,
                 "DropOnDeath",
                 DropType.JustResources, new ConfigDescription("Whether a minion refunds anything when it dies.", null,
-                new ConfigurationManagerAttributes { IsAdminOnly = true }));
+                    new ConfigurationManagerAttributes { IsAdminOnly = true }));
 
-            PackDropItemsIntoCargoCrate = plugin.Config.Bind(serverSync, 
+            PackDropItemsIntoCargoCrate = plugin.Config.Bind(serverSync,
                 "PackDroppedItemsIntoCargoCrate",
-                true, new ConfigDescription("If set to true, dropped items will be packed into a cargo crate. This means they won't sink in water, which is useful for more valuable drops like Surtling Cores and metal ingots.", null,
-                new ConfigurationManagerAttributes { IsAdminOnly = true }));
-            
+                true, new ConfigDescription(
+                    "If set to true, dropped items will be packed into a cargo crate. This means they won't sink in water, which is useful for more valuable drops like Surtling Cores and metal ingots.",
+                    null,
+                    new ConfigurationManagerAttributes { IsAdminOnly = true }));
+
             Commandable = plugin.Config.Bind(client, "Commandable",
-                true, new ConfigDescription("If true, minions can be commanded individually with E (or equivalent) keybind."));
-            
+                true,
+                new ConfigDescription(
+                    "If true, minions can be commanded individually with E (or equivalent) keybind."));
+
             FollowDistance = plugin.Config.Bind(client, "FollowDistance",
-                3f, new ConfigDescription("How closely a minion will follow you (0 = standing on top of you, 3 = default)."));
-            
+                3f,
+                new ConfigDescription(
+                    "How closely a minion will follow you (0 = standing on top of you, 3 = default)."));
+
             RunDistance = plugin.Config.Bind(client, "RunDistance",
-                3f, new ConfigDescription("How close a following minion needs to be to you before it stops running and starts walking (0 = always running, 10 = default)."));
-            
+                3f,
+                new ConfigDescription(
+                    "How close a following minion needs to be to you before it stops running and starts walking (0 = always running, 10 = default)."));
+
             ChanceOfFemale = plugin.ModConfig(serverSync, "ChanceOfFemale", 0.5f,
-                "Chance of a mercenary spawning being female. 0 = 0%, 1 = 100% (Default = 0.5 = 50%)", 
+                "Chance of a mercenary spawning being female. 0 = 0%, 1 = 100% (Default = 0.5 = 50%)",
                 new AcceptableValueRange<float>(0f, 1f), true);
-            
+
             var hairColors = plugin.ModConfig(serverSync, "HairColors", "#F7DC6F,#935116,#AFABAB,#FF5733,#1C2833",
                 "Comma delimited list of HTML color codes.", null, true);
             HairColors = new MemoryConfigEntry<string, List<Vector3>>(hairColors, s =>
             {
-                var cols = s?.Split(',').ToList().Select(colorCode => 
+                var cols = s?.Split(',').ToList().Select(colorCode =>
                     ColorUtility.TryParseHtmlString(colorCode, out Color color)
-                    ? Utils.ColorToVec3(color)
-                    : Vector3.zero).ToList();
+                        ? Utils.ColorToVec3(color)
+                        : Vector3.zero).ToList();
                 return cols;
             });
-            
+
             var skinColors = plugin.ModConfig(serverSync, "SkinColors", "#FEF5E7,#F5CBA7,#784212,#F5B041",
                 "Comma delimited list of HTML color codes.", null, true);
             SkinColors = new MemoryConfigEntry<string, List<Vector3>>(skinColors, s =>
             {
-                var cols = s?.Split(',').ToList().Select(colorCode => 
+                var cols = s?.Split(',').ToList().Select(colorCode =>
                     ColorUtility.TryParseHtmlString(colorCode, out Color color)
                         ? Utils.ColorToVec3(color)
                         : Vector3.zero).ToList();
                 return cols;
             });
         }
-        
+
         public enum MercenaryType
         {
             None,
@@ -98,6 +105,7 @@ namespace ChebsMercenaries.Minions
             { MercenaryType.Miner, "ChebGonaz_HumanMiner" },
             { MercenaryType.Woodcutter, "ChebGonaz_HumanWoodcutter" },
         };
+
         public static readonly Dictionary<MercenaryType, string> PrefabNamesFemale = new()
         {
             { MercenaryType.WarriorTier1, "ChebGonaz_HumanWarriorFemale" },
@@ -115,7 +123,7 @@ namespace ChebsMercenaries.Minions
         {
             _hairs ??= ObjectDB.instance.GetAllItems(ItemDrop.ItemData.ItemType.Customization, "Hair");
             _beards ??= ObjectDB.instance.GetAllItems(ItemDrop.ItemData.ItemType.Customization, "Beard");
-            
+
             StartCoroutine(WaitForZNet());
         }
 
@@ -174,7 +182,7 @@ namespace ChebsMercenaries.Minions
 
             RestoreDrops();
         }
-        
+
         public void ScaleEquipment(MercenaryType mercenaryType, ArmorType armorType)
         {
             var defaultItems = new List<GameObject>();
@@ -196,7 +204,8 @@ namespace ChebsMercenaries.Minions
             switch (armorType)
             {
                 case ArmorType.Leather:
-                    defaultItems.AddRange(new[] {
+                    defaultItems.AddRange(new[]
+                    {
                         ZNetScene.instance.GetPrefab("HelmetLeather"),
                         ZNetScene.instance.GetPrefab("ArmorLeatherChest"),
                         ZNetScene.instance.GetPrefab("ArmorLeatherLegs"),
@@ -204,7 +213,8 @@ namespace ChebsMercenaries.Minions
                     });
                     break;
                 case ArmorType.LeatherTroll:
-                    defaultItems.AddRange(new[] {
+                    defaultItems.AddRange(new[]
+                    {
                         ZNetScene.instance.GetPrefab("ChebGonaz_HelmetLeatherTroll"),
                         ZNetScene.instance.GetPrefab("ChebGonaz_ArmorLeatherChestTroll"),
                         ZNetScene.instance.GetPrefab("ChebGonaz_ArmorLeatherLegsTroll"),
@@ -212,7 +222,8 @@ namespace ChebsMercenaries.Minions
                     });
                     break;
                 case ArmorType.LeatherWolf:
-                    defaultItems.AddRange(new[] {
+                    defaultItems.AddRange(new[]
+                    {
                         ZNetScene.instance.GetPrefab("ChebGonaz_HelmetLeatherWolf"),
                         ZNetScene.instance.GetPrefab("ChebGonaz_ArmorLeatherChestWolf"),
                         ZNetScene.instance.GetPrefab("ChebGonaz_ArmorLeatherLegsWolf"),
@@ -220,7 +231,8 @@ namespace ChebsMercenaries.Minions
                     });
                     break;
                 case ArmorType.LeatherLox:
-                    defaultItems.AddRange(new[] {
+                    defaultItems.AddRange(new[]
+                    {
                         ZNetScene.instance.GetPrefab("ChebGonaz_HelmetLeatherLox"),
                         ZNetScene.instance.GetPrefab("ChebGonaz_ArmorLeatherChestLox"),
                         ZNetScene.instance.GetPrefab("ChebGonaz_ArmorLeatherLegsLox"),
@@ -228,7 +240,8 @@ namespace ChebsMercenaries.Minions
                     });
                     break;
                 case ArmorType.Bronze:
-                    defaultItems.AddRange(new[] {
+                    defaultItems.AddRange(new[]
+                    {
                         ZNetScene.instance.GetPrefab("HelmetBronze"),
                         ZNetScene.instance.GetPrefab("ArmorBronzeChest"),
                         ZNetScene.instance.GetPrefab("ArmorBronzeLegs"),
@@ -237,7 +250,8 @@ namespace ChebsMercenaries.Minions
                     //Emblem = InternalName.GetName(NecromancerCape.EmblemConfig.Value);
                     break;
                 case ArmorType.Iron:
-                    defaultItems.AddRange(new[] {
+                    defaultItems.AddRange(new[]
+                    {
                         ZNetScene.instance.GetPrefab("HelmetIron"),
                         ZNetScene.instance.GetPrefab("ArmorIronChest"),
                         ZNetScene.instance.GetPrefab("ArmorIronLegs"),
@@ -246,7 +260,8 @@ namespace ChebsMercenaries.Minions
                     //Emblem = InternalName.GetName(NecromancerCape.EmblemConfig.Value);
                     break;
                 case ArmorType.BlackMetal:
-                    defaultItems.AddRange(new[] {
+                    defaultItems.AddRange(new[]
+                    {
                         ZNetScene.instance.GetPrefab("ChebGonaz_HelmetBlackIron"),
                         ZNetScene.instance.GetPrefab("ChebGonaz_ArmorBlackIronChest"),
                         ZNetScene.instance.GetPrefab("ChebGonaz_ArmorBlackIronLegs"),
@@ -260,13 +275,13 @@ namespace ChebsMercenaries.Minions
 
             humanoid.GiveDefaultItems();
         }
-        
+
         public static void Spawn(MercenaryType mercenaryType, ArmorType armorType, Transform spawner)
         {
             if (mercenaryType is MercenaryType.None) return;
 
             var female = Random.value < ChanceOfFemale.Value;
-            
+
             var prefabName = female ? PrefabNamesFemale[mercenaryType] : PrefabNames[mercenaryType];
             var prefab = ZNetScene.instance.GetPrefab(prefabName);
             if (!prefab)
@@ -274,6 +289,7 @@ namespace ChebsMercenaries.Minions
                 Logger.LogError($"Spawn: spawning {prefabName} failed");
                 return;
             }
+
             var spawnedChar = Instantiate(prefab,
                 spawner.position + spawner.forward * 2f + Vector3.up, Quaternion.identity);
             spawnedChar.AddComponent<FreshMinion>();
@@ -292,6 +308,7 @@ namespace ChebsMercenaries.Minions
                 humanoid.SetBeard(randomBeard);
                 humanoid.m_visEquipment.SetBeardItem(humanoid.m_beardItem);
             }
+
             humanoid.m_visEquipment.SetHairItem(humanoid.m_hairItem);
             humanoid.m_visEquipment.UpdateEquipmentVisuals();
 
@@ -301,9 +318,9 @@ namespace ChebsMercenaries.Minions
                 MercenaryType.Woodcutter => spawnedChar.AddComponent<HumanWoodcutterMinion>(),
                 _ => spawnedChar.AddComponent<HumanMinion>()
             };
-            
+
             minion.ScaleEquipment(mercenaryType, armorType);
-            
+
             if (mercenaryType != MercenaryType.Miner && mercenaryType != MercenaryType.Woodcutter)
                 minion.Roam();
 
@@ -348,7 +365,7 @@ namespace ChebsMercenaries.Minions
             switch (armorType)
             {
                 case ArmorType.Leather:
-                    AddOrUpdateDrop(characterDrop, 
+                    AddOrUpdateDrop(characterDrop,
                         Random.value > .5f ? "DeerHide" : "LeatherScraps", // flip a coin for deer or scraps
                         MercenaryChest.ArmorLeatherScrapsRequiredConfig.Value);
                     break;

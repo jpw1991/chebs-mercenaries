@@ -24,7 +24,7 @@ namespace ChebsMercenaries.Patches
         {
             if (hit == null) return;
             Character attacker = hit.GetAttacker();
-            if (attacker != null 
+            if (attacker != null
                 && attacker.TryGetComponent(out HumanMinion _))
             {
                 if (___m_piece != null && ___m_piece.IsPlacedByPlayer())

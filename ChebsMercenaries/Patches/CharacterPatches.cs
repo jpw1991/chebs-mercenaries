@@ -32,14 +32,17 @@ namespace ChebsMercenaries.Patches
                 {
                     float bodyArmor = 0f;
                     bodyArmor += humanoid.m_chestItem != null
-                        ? humanoid.m_chestItem.m_shared.m_armor : 0;
+                        ? humanoid.m_chestItem.m_shared.m_armor
+                        : 0;
 
                     bodyArmor += humanoid.m_legItem != null
-                        ? humanoid.m_legItem.m_shared.m_armor : 0;
+                        ? humanoid.m_legItem.m_shared.m_armor
+                        : 0;
 
                     bodyArmor += humanoid.m_helmetItem != null
-                        ? humanoid.m_helmetItem.m_shared.m_armor : 0;
-                    
+                        ? humanoid.m_helmetItem.m_shared.m_armor
+                        : 0;
+
                     hit.ApplyArmor(bodyArmor);
                 }
             }

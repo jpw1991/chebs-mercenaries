@@ -17,7 +17,7 @@ using Jotunn;
 //
 // This is because all of this has a special meaning to Harmony.
 
-namespace ChebsNecromancy.Patches
+namespace ChebsMercenaries.Patches
 {
     [HarmonyPatch(typeof(CharacterDrop), "GenerateDropList")]
     class CharacterDrop_Patches
