@@ -57,11 +57,11 @@ Detailed info in the [wiki](https://github.com/jpw1991/chebs-mercenaries/wiki). 
 - Craftable structure at the workbench:
     + [**Mercenaries Chest**](https://github.com/jpw1991/chebs-mercenaries/wiki/MercenaryChest): Hire warriors, archers, miners, and lumberjacks.
 - Put coins and other items in the chest to recruit a mercenary:
-  - **Tier 1 warrior**: 5 CookedMeat, 1 Club
+  - **Tier 1 warrior**: 5 CookedMeat/Coins, 1 Club
   - **Tier 2 warrior:** 25 Coins
   - **Tier 3 warrior:** 50 Coins
   - **Tier 4 warrior:** 100 Coins
-  - **Tier 1 archer:** 5 CookedMeat, 20 ArrowWood
+  - **Tier 1 archer:** 5 CookedMeat/Coins, 20 ArrowWood
   - **Tier 2 archer:** 50 Coins, 10 ArrowBronze
   - **Tier 3 archer:** 100 Coins, 10 ArrowIron
   - **Miner:** 5 Coins, 1 HardAntler
@@ -78,16 +78,15 @@ Detailed info in the [wiki](https://github.com/jpw1991/chebs-mercenaries/wiki). 
   - Mercenaries have no owner until first activated (with E), after which they only ever respond to that one player.
 - Roam/Wait/Follow
   - Works the same as in Cheb's Necromancy
+- [**Weapons of Command**](https://github.com/jpw1991/chebs-mercenaries/wiki/Weapon-of-Command) can be crafted at the forge. They're equivalent to black metal weaponry and can be used to command groups of nearby mercenaries with:
+  + **F** will make all nearby minions **follow** you.
+  + **T** will make all nearby minions **wait**.
+  + **Shift+T** will make minions **roam**.
+  + **G** will teleport all following minions to your position (useful if stuck or to get them on boats)
 
 ### With Cheb's Necromancy Installed
 
-If you have Cheb's Necromancy 3.0.0 or newer installed beside the mod, the wand should also work to command the mercenaries with:
-
-- While holding a Skeleton Wand, Draugr Wand, or Orb of Beckoning you can control the minions:
-    + **F** will make all nearby minions **follow** you.
-    + **T** will make all nearby minions **wait**.
-    + **Shift+T** will make minions **roam**.
-    + **G** will teleport all following minions to your position (useful if stuck or to get them on boats)
+If you have Cheb's Necromancy 3.0.0 or newer installed beside the mod, the wand should also work to command the mercenaries with. Weapons of Command should also work to command the undead minions with.
 
 ### Config
 
@@ -132,6 +131,7 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 
  Date | Version | Notes 
 --- | --- | ---
+31/05/2023 | 1.3.3 | Add weapons of command
 26/05/2023 | 1.3.2 | Add beards and hair
 25/05/2023 | 1.3.1 | drops fixes
 24/05/2023 | 1.3.0 | Incorporate new resource requirement parsing
