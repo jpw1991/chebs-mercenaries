@@ -1,3 +1,4 @@
+using ChebsValheimLibrary.Minions;
 using HarmonyLib;
 using UnityEngine;
 
@@ -22,7 +23,7 @@ namespace ChebsMercenaries.Patches
         [HarmonyPrefix]
         static bool Prefix(Collider collider, Vector3 hitPoint, Aoe __instance)
         {
-            if (collider.TryGetComponent(out ChebsValheimLibrary.Minions.ChebGonazMinion _))
+            if (collider.TryGetComponent(out ChebGonazMinion _))
             {
                 Piece piece = __instance.GetComponentInParent<Piece>();
                 if (piece != null && piece.IsPlacedByPlayer())

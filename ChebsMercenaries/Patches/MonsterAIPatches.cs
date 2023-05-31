@@ -1,5 +1,4 @@
 using ChebsMercenaries.Minions;
-using ChebsNecromancy.Minions;
 using ChebsValheimLibrary.Minions;
 using HarmonyLib;
 
@@ -16,7 +15,7 @@ using HarmonyLib;
 //
 // This is because all of this has a special meaning to Harmony.
 
-namespace ChebsNecromancy.Patches
+namespace ChebsMercenaries.Patches
 {
     [HarmonyPatch(typeof(MonsterAI))]
     class FriendlySkeletonPatch

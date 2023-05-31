@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using BepInEx;
 using BepInEx.Configuration;
+using ChebsMercenaries.Items;
 using ChebsMercenaries.Minions;
 using ChebsMercenaries.Structure;
-using ChebsNecromancy.Minions;
 using ChebsValheimLibrary;
 using HarmonyLib;
 using Jotunn;
@@ -24,25 +24,35 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "1.3.2";
-        private const string ConfigFileName =  PluginGuid + ".cfg";
+        public const string PluginVersion = "1.3.3";
+        private const string ConfigFileName = PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
         public readonly System.Version ChebsValheimLibraryVersion = new("1.2.3");
 
         private readonly Harmony harmony = new(PluginGuid);
-        
+
+        private List<WeaponOfCommand> _weaponsOfCommand = new()
+        {
+            new AxeOfCommand(),
+            new MaceOfCommand(),
+            new SwordOfCommand(),
+        };
+
         // if set to true, the particle effects that for some reason hurt radeon are dynamically disabled
         public static ConfigEntry<bool> RadeonFriendly;
-        
+
         public static CustomLocalization Localization = LocalizationManager.Instance.GetLocalization();
-        
+
         #region ConfigStuff
+
         // Global Config Acceptable Values
         public AcceptableValueList<bool> BoolValue = new(true, false);
         public AcceptableValueRange<float> FloatQuantityValue = new(1f, 1000f);
         public AcceptableValueRange<int> IntQuantityValue = new(1, 1000);
-        
+
+        private double _inputDelay;
+
         public ConfigEntry<T> ModConfig<T>(
             string group,
             string name,
@@ -80,7 +90,7 @@ namespace ChebsMercenaries
             HumanMinion.CreateConfigs(this);
             HumanWoodcutterMinion.CreateConfigs(this);
             HumanMinerMinion.CreateConfigs(this);
-            
+
             MercenaryArcherTier1Minion.CreateConfigs(this);
             MercenaryArcherTier2Minion.CreateConfigs(this);
             MercenaryArcherTier3Minion.CreateConfigs(this);
@@ -88,8 +98,10 @@ namespace ChebsMercenaries
             MercenaryWarriorTier2Minion.CreateConfigs(this);
             MercenaryWarriorTier3Minion.CreateConfigs(this);
             MercenaryWarriorTier4Minion.CreateConfigs(this);
-            
+
             MercenaryChest.CreateConfigs(this);
+
+            _weaponsOfCommand.ForEach(w => w.CreateConfigs(this));
         }
 
         private void SetupWatcher()
@@ -115,6 +127,8 @@ namespace ChebsMercenaries
                 HumanMinerMinion.SyncInternalsWithConfigs();
                 HumanWoodcutterMinion.SyncInternalsWithConfigs();
                 MercenaryChest.UpdateRecipe();
+
+                _weaponsOfCommand.ForEach(w => w.UpdateRecipe());
             }
             catch (Exception exc)
             {
@@ -122,25 +136,26 @@ namespace ChebsMercenaries
                 Logger.LogError("Please check your config entries for spelling and format!");
             }
         }
+
         #endregion
-        
+
         private void Awake()
         {
             if (!Base.VersionCheck(ChebsValheimLibraryVersion, out string message))
             {
                 Jotunn.Logger.LogWarning(message);
             }
-            
+
             CreateConfigValues();
             LoadChebGonazAssetBundle();
             harmony.PatchAll();
-            
+
             HumanMinerMinion.SyncInternalsWithConfigs();
             HumanWoodcutterMinion.SyncInternalsWithConfigs();
 
             SetupWatcher();
         }
-        
+
         private void LoadChebGonazAssetBundle()
         {
             // order is important (I think): items, creatures, structures
@@ -149,9 +164,20 @@ namespace ChebsMercenaries
             try
             {
                 #region Items
+
                 Base.LoadMinionItems(chebgonazAssetBundle, RadeonFriendly.Value);
+                _weaponsOfCommand.ForEach(w =>
+                {
+                    var prefab = Base.LoadPrefabFromBundle(w.PrefabName, chebgonazAssetBundle, RadeonFriendly.Value);
+                    w.CreateButtons();
+                    KeyHintManager.Instance.AddKeyHint(w.GetKeyHint());
+                    ItemManager.Instance.AddItem(w.GetCustomItemFromPrefab(prefab));
+                });
+
                 #endregion
+
                 #region Creatures
+
                 var prefabNames = new List<string>();
 
                 prefabNames.Add("ChebGonaz_HumanMiner.prefab");
@@ -163,7 +189,7 @@ namespace ChebsMercenaries
                 prefabNames.Add("ChebGonaz_HumanWarriorTier2.prefab");
                 prefabNames.Add("ChebGonaz_HumanWarriorTier3.prefab");
                 prefabNames.Add("ChebGonaz_HumanWarriorTier4.prefab");
-                
+
                 prefabNames.Add("ChebGonaz_HumanMinerFemale.prefab");
                 prefabNames.Add("ChebGonaz_HumanWoodcutterFemale.prefab");
                 prefabNames.Add("ChebGonaz_HumanArcherFemale.prefab");
@@ -179,13 +205,18 @@ namespace ChebsMercenaries
                     var prefab = Base.LoadPrefabFromBundle(prefabName, chebgonazAssetBundle, RadeonFriendly.Value);
                     CreatureManager.Instance.AddCreature(new CustomCreature(prefab, true));
                 });
+
                 #endregion
+
                 #region Structures
-                var mercenaryChestPrefab = chebgonazAssetBundle.LoadAsset<GameObject>(MercenaryChest.ChebsRecipeConfig.PrefabName);
+
+                var mercenaryChestPrefab =
+                    chebgonazAssetBundle.LoadAsset<GameObject>(MercenaryChest.ChebsRecipeConfig.PrefabName);
                 PieceManager.Instance.AddPiece(
                     MercenaryChest.ChebsRecipeConfig.GetCustomPieceFromPrefab(mercenaryChestPrefab,
                         chebgonazAssetBundle.LoadAsset<Sprite>(MercenaryChest.ChebsRecipeConfig.IconName))
                 );
+
                 #endregion
             }
             catch (Exception ex)
@@ -195,6 +226,23 @@ namespace ChebsMercenaries
             finally
             {
                 chebgonazAssetBundle.Unload(false);
+            }
+        }
+
+        private void Update()
+        {
+            if (ZInput.instance != null)
+            {
+                if (Time.time > _inputDelay)
+                {
+                    _weaponsOfCommand.ForEach(w =>
+                    {
+                        if (w.HandleInputs())
+                        {
+                            _inputDelay = Time.time + .5f;
+                        }
+                    });
+                }
             }
         }
     }

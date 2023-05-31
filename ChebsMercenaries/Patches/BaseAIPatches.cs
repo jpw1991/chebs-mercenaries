@@ -1,5 +1,4 @@
 using ChebsMercenaries.Minions;
-using ChebsNecromancy.Minions;
 using HarmonyLib;
 using UnityEngine;
 
@@ -34,8 +33,8 @@ namespace ChebsMercenaries.Patches
                     var num = Vector3.Distance(go.transform.position, __instance.transform.position);
                     var run = isWorker && num > 3f || num > HumanMinion.RunDistance.Value;
                     var approachRange = isWorker
-                            ? 0f//.25f
-                            : HumanMinion.FollowDistance.Value;
+                        ? 0f //.25f
+                        : HumanMinion.FollowDistance.Value;
                     if (num < approachRange)
                     {
                         __instance.StopMoving();

@@ -120,6 +120,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Items\AxeOfCommand.cs" />
+    <Compile Include="Items\MaceOfCommand.cs" />
+    <Compile Include="Items\SwordOfCommand.cs" />
+    <Compile Include="Items\WeaponOfCommand.cs" />
     <Compile Include="Minions\HumanMinion.cs" />
     <Compile Include="Minions\HumanMinerMinion.cs" />
     <Compile Include="Minions\HumanWoodcutterMinion.cs" />

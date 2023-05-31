@@ -30,7 +30,7 @@ namespace ChebsMercenaries.Patches
             __instance.UpdateColors();
         }
     }
-    
+
     [HarmonyPatch(typeof(VisEquipment), "UpdateEquipmentVisuals")]
     class VisEquipmentPatch2
     {
@@ -40,7 +40,7 @@ namespace ChebsMercenaries.Patches
             // This is a copy of VisEquipment.UpdateEquipmentVisuals except there is no "isPlayer" check for the beard,
             // hair, etc. so the NPC can display the hair/beard
             if (!__instance.gameObject.name.StartsWith("ChebGonaz_Human")) return;
-            
+
             var hash1 = 0;
             var hash2 = 0;
             var hash3 = 0;

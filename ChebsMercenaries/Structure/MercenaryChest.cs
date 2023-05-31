@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using BepInEx.Configuration;
 using ChebsMercenaries.Minions;
-using ChebsNecromancy.Minions;
 using ChebsValheimLibrary.Common;
 using ChebsValheimLibrary.Minions;
 using UnityEngine;
@@ -37,7 +36,7 @@ namespace ChebsMercenaries.Structure
             PrefabName = "ChebGonaz_MercenaryChest.prefab",
             ObjectName = MethodBase.GetCurrentMethod().DeclaringType.Name
         };
-        
+
         private List<HumanMinion.MercenaryType> _orderedByPreference = new()
         {
             HumanMinion.MercenaryType.Woodcutter,
@@ -50,7 +49,7 @@ namespace ChebsMercenaries.Structure
             HumanMinion.MercenaryType.WarriorTier2,
             HumanMinion.MercenaryType.WarriorTier1,
         };
-        
+
         public new static void UpdateRecipe()
         {
             ChebsRecipeConfig.UpdateRecipe(ChebsRecipeConfig.CraftingCost);
@@ -66,7 +65,7 @@ namespace ChebsMercenaries.Structure
                 "Materials needed to build. None or Blank will use Default settings. Format: " +
                 ChebsRecipeConfig.RecipeValue,
                 null, true);
-            
+
             // Cannot set custom width/height due to https://github.com/jpw1991/chebs-necromancy/issues/100
             // ContainerWidth = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ContainerWidth", 4,
             //     "Inventory size = width * height = 4 * 4 = 16.", new AcceptableValueRange<int>(2, 10), true);
@@ -95,7 +94,8 @@ namespace ChebsMercenaries.Structure
 
         private void Awake()
         {
-            StartCoroutine(Recruitment());
+            if (ZNet.instance.IsServer())
+                StartCoroutine(Recruitment());
         }
 
         private HumanMinion.MercenaryType NextMercenary()
@@ -115,7 +115,7 @@ namespace ChebsMercenaries.Structure
                     HumanMinion.MercenaryType.Woodcutter => HumanWoodcutterMinion.ItemsCost,
                     _ => null
                 };
-                
+
                 if (ChebGonazMinion.CanSpawn(itemsCost, _inventory, out _))
                     return merc;
             }
@@ -168,7 +168,7 @@ namespace ChebsMercenaries.Structure
                         "$item_deerhide",
                         "$item_scalehide"
                     };
-                    
+
                     foreach (var leatherItem in leatherItemTypes)
                     {
                         var leatherItemsInInventory = _inventory.CountItems(leatherItem);
@@ -178,6 +178,7 @@ namespace ChebsMercenaries.Structure
                             break;
                         }
                     }
+
                     break;
                 case ChebGonazMinion.ArmorType.LeatherLox:
                     _inventory.RemoveItem("$item_loxpelt", ArmorLeatherScrapsRequiredConfig.Value);
@@ -188,21 +189,20 @@ namespace ChebsMercenaries.Structure
                 case ChebGonazMinion.ArmorType.LeatherWolf:
                     _inventory.RemoveItem("$item_wolfpelt", ArmorLeatherScrapsRequiredConfig.Value);
                     break;
-
             }
-            
+
             return armorType;
         }
 
         IEnumerator Recruitment()
         {
             yield return new WaitWhile(() => ZInput.instance == null);
-            
+
             // prevent coroutine from doing its thing while the pylon isn't
             // yet constructed
             var piece = GetComponent<Piece>();
             yield return new WaitWhile(() => !piece.IsPlacedByPlayer());
-            
+
             // originally the Container was set on the prefab in unity and set up properly, but it will cause the
             // problem here:  https://github.com/jpw1991/chebs-necromancy/issues/100
             // So we add it here like this instead.
@@ -218,27 +218,28 @@ namespace ChebsMercenaries.Structure
             // trying to set width causes error here: https://github.com/jpw1991/chebs-necromancy/issues/100
             // inv.m_width = ContainerWidth.Value;
             // inv.m_height = ContainerHeight.Value;
-            
+
             while (true)
             {
                 yield return new WaitWhile(() => Player.m_localPlayer == null || Player.m_localPlayer.m_sleeping);
                 yield return new WaitForSeconds(5);
-                
+
                 var nextMerc = NextMercenary();
                 var player = Player.m_localPlayer;
                 if (Vector3.Distance(player.transform.position, transform.position) < 5)
                 {
-                    Chat.instance.SetNpcText(gameObject, Vector3.up, 5f, 4f, "", 
-                        $"Recruiting {nextMerc} in {(RecruitmentInterval.Value - (Time.time - _lastRecruitmentAt)).ToString("0")} seconds...", false);
+                    Chat.instance.SetNpcText(gameObject, Vector3.up, 5f, 4f, "",
+                        $"Recruiting {nextMerc} in {(RecruitmentInterval.Value - (Time.time - _lastRecruitmentAt)).ToString("0")} seconds...",
+                        false);
                 }
-                
+
                 if (Time.time - _lastRecruitmentAt > RecruitmentInterval.Value)
                 {
                     _lastRecruitmentAt = Time.time;
                     if (nextMerc != HumanMinion.MercenaryType.None)
                     {
                         PayForMercenary(nextMerc);
-                        HumanMinion.Spawn(nextMerc, UpgradeMercenaryEquipment(), transform);   
+                        HumanMinion.Spawn(nextMerc, UpgradeMercenaryEquipment(), transform);
                     }
                 }
             }
