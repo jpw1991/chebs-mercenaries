@@ -95,8 +95,7 @@ namespace ChebsMercenaries.Structure
 
         private void Awake()
         {
-            if (ZNet.instance.IsServer())
-                StartCoroutine(Recruitment());
+            StartCoroutine(Recruitment());
         }
 
         private HumanMinion.MercenaryType NextMercenary()
@@ -197,7 +196,7 @@ namespace ChebsMercenaries.Structure
 
         IEnumerator Recruitment()
         {
-            yield return new WaitWhile(() => ZInput.instance == null);
+            //yield return new WaitWhile(() => ZInput.instance == null);
 
             // prevent coroutine from doing its thing while the pylon isn't
             // yet constructed
@@ -223,6 +222,8 @@ namespace ChebsMercenaries.Structure
             while (true)
             {
                 yield return new WaitForSeconds(5);
+                
+                if (!piece.m_nview.IsOwner()) continue;
                 
                 var playersInRange = new List<Player>();
                 Player.GetPlayersInRange(transform.position, PlayerDetectionDistance, playersInRange);

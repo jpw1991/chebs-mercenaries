@@ -24,7 +24,7 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "1.4.0";
+        public const string PluginVersion = "1.4.1";
         private const string ConfigFileName = PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
@@ -203,6 +203,18 @@ namespace ChebsMercenaries
                 prefabNames.ForEach(prefabName =>
                 {
                     var prefab = Base.LoadPrefabFromBundle(prefabName, chebgonazAssetBundle, RadeonFriendly.Value);
+                    switch (prefabName)
+                    {
+                        case "ChebGonaz_HumanMiner.prefab":
+                            prefab.AddComponent<HumanMinerMinion>();
+                            break;
+                        case "ChebGonaz_HumanWoodcutter.prefab":
+                            prefab.AddComponent<HumanWoodcutterMinion>();
+                            break;
+                        default:
+                            prefab.gameObject.AddComponent<HumanMinion>();
+                            break;
+                    }
                     CreatureManager.Instance.AddCreature(new CustomCreature(prefab, true));
                 });
 
@@ -212,6 +224,7 @@ namespace ChebsMercenaries
 
                 var mercenaryChestPrefab =
                     chebgonazAssetBundle.LoadAsset<GameObject>(MercenaryChest.ChebsRecipeConfig.PrefabName);
+                mercenaryChestPrefab.AddComponent<MercenaryChest>();
                 PieceManager.Instance.AddPiece(
                     MercenaryChest.ChebsRecipeConfig.GetCustomPieceFromPrefab(mercenaryChestPrefab,
                         chebgonazAssetBundle.LoadAsset<Sprite>(MercenaryChest.ChebsRecipeConfig.IconName))
