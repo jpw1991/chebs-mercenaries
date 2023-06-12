@@ -169,7 +169,7 @@ namespace ChebsMercenaries.Items
         {
             if (MessageHud.instance == null
                 || Player.m_localPlayer == null
-                || Player.m_localPlayer.GetInventory().GetEquipedtems().Find(
+                || Player.m_localPlayer.GetInventory().GetEquippedItems().Find(
                     equippedItem => equippedItem.TokenName().Equals(NameLocalization)
                 ) == null) return false;
 

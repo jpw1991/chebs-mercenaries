@@ -298,6 +298,7 @@ namespace ChebsMercenaries.Minions
             var humanoid = spawnedChar.GetComponent<Humanoid>();
             var randomSkinColor = SkinColors.Value[Random.Range(0, SkinColors.Value.Count)];
             humanoid.m_visEquipment.SetSkinColor(randomSkinColor);
+            humanoid.m_nview.GetZDO().Set("SkinColor", randomSkinColor);
             var randomHair = _hairs[Random.Range(0, _hairs.Count)].gameObject.name;
             humanoid.SetHair(randomHair);
             var randomHairColor = HairColors.Value[Random.Range(0, HairColors.Value.Count)];
