@@ -100,20 +100,20 @@ namespace ChebsMercenaries.Patches
             }
 
             var flag1 = false;
-            var flag2 = __instance.SetRightHandEquiped(hash2) | flag1;
-            var flag3 = __instance.SetLeftHandEquiped(hash1, leftItemVariant) | flag2;
-            var flag4 = __instance.SetChestEquiped(hash3) | flag3;
-            var flag5 = __instance.SetLegEquiped(hash4) | flag4;
-            var flag6 = __instance.SetHelmetEquiped(hash5, num) | flag5;
-            var flag7 = __instance.SetShoulderEquiped(hash7, shoulderItemVariant) | flag6;
-            var flag8 = __instance.SetUtilityEquiped(hash8) | flag7;
+            var flag2 = __instance.SetRightHandEquipped(hash2) | flag1;
+            var flag3 = __instance.SetLeftHandEquipped(hash1, leftItemVariant) | flag2;
+            var flag4 = __instance.SetChestEquipped(hash3) | flag3;
+            var flag5 = __instance.SetLegEquipped(hash4) | flag4;
+            var flag6 = __instance.SetHelmetEquipped(hash5, num) | flag5;
+            var flag7 = __instance.SetShoulderEquipped(hash7, shoulderItemVariant) | flag6;
+            var flag8 = __instance.SetUtilityEquipped(hash8) | flag7;
             if (__instance.m_helmetHideBeard)
                 hash6 = 0;
-            var flag9 = __instance.SetBeardEquiped(hash6) | flag8;
-            var flag10 = __instance.SetBackEquiped(leftItem, rightItem, leftBackItemVariant) | flag9;
+            var flag9 = __instance.SetBeardEquipped(hash6) | flag8;
+            var flag10 = __instance.SetBackEquipped(leftItem, rightItem, leftBackItemVariant) | flag9;
             if (__instance.m_helmetHideHair)
                 num = 0;
-            flag8 = __instance.SetHairEquiped(num) | flag10;
+            flag8 = __instance.SetHairEquipped(num) | flag10;
 
             if (!flag8)
                 return;
