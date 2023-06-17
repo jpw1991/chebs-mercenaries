@@ -1,0 +1,50 @@
+name: Publish package
+
+on:
+  release:
+    types: [published] # run when a new release is published
+
+env:
+  name: ChebsMercenaries
+  jsonf: manifest.json
+  desc: Cheb's Mercenaries adds mercenaries to Valheim that you can purchase with gold and upgrade with materials to fight (warriors, archers) or perform work (lumberjacks, miners).
+  dlpath: https://github.com/jpw1991/chebs-mercenaries/releases/download
+  dependencies: "ValheimModding-Jotunn@2.11.2" # dependencies separated by spaces
+  categories: "Mods" # categories separated by spaces
+  namespace: ChebGonaz
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get clean version
+        run: |
+          echo cleanVersion=$(echo ${{github.ref_name}} | sed s/v//g) >> $GITHUB_ENV
+      - name: Check that version matches
+        run: |
+          if [[ "$(jq -r '.version_number' $(find ./ -name ${{env.jsonf}}))" != "${{ env.cleanVersion }}" ]]; then
+            echo "::debug::${{env.cleanVersion}}"
+            echo "::debug::$(cat $(find ./ -name ${{env.jsonf}}))"
+            echo "::error::Version in ${{env.jsonf}} does not match tag version"
+            exit 1
+          fi
+  publish:
+    runs-on: ubuntu-latest
+    needs: verify
+    steps:
+      - uses: actions/checkout@v3
+      - run: wget ${{ env.dlpath }}/${{ github.ref_name }}/${{ env.name }}.${{ github.ref_name }}.zip
+      - name: Upload Thunderstore Package
+        uses: GreenTF/upload-thunderstore-package@v4
+        with:
+          community: valheim
+          namespace: ${{ env.namespace }}
+          name: ${{ env.name }}
+          version: ${{ github.ref_name }} # This is the tag that was created in the release
+          description: ${{ env.desc }}
+          token: ${{ secrets.TS_KEY }} 
+          deps: ${{ env.dependencies }}
+          categories: ${{ env.categories }}
+          file: ${{ env.name }}.${{ github.ref_name }}.zip
+

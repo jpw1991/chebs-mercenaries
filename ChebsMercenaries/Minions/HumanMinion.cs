@@ -15,7 +15,7 @@ namespace ChebsMercenaries.Minions
         public static ConfigEntry<DropType> DropOnDeath;
         public static ConfigEntry<bool> PackDropItemsIntoCargoCrate;
         public static ConfigEntry<bool> Commandable;
-        public static ConfigEntry<float> FollowDistance, RunDistance;
+        public static ConfigEntry<float> FollowDistance, RunDistance, RoamRange;
         public static ConfigEntry<float> ChanceOfFemale;
         public static MemoryConfigEntry<string, List<Vector3>> HairColors, SkinColors;
 
@@ -77,6 +77,9 @@ namespace ChebsMercenaries.Minions
                         : Vector3.zero).ToList();
                 return cols;
             });
+            
+            RoamRange = plugin.Config.Bind(client, "RoamRange",
+                10f, new ConfigDescription("How far a unit is allowed to roam from its current position."));
         }
 
         public enum MercenaryType
@@ -179,6 +182,14 @@ namespace ChebsMercenaries.Minions
             //         );   
             //     }
             // }
+            if (TryGetComponent(out MonsterAI monsterAI))
+            {
+                monsterAI.m_randomMoveRange = RoamRange.Value;
+            }
+            else
+            {
+                Logger.LogWarning($"{gameObject.name}: Failed to set roam range: no MonsterAI component.");
+            }
 
             RestoreDrops();
         }

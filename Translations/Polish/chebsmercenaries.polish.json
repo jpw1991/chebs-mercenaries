@@ -14,5 +14,9 @@
     "$chebgonaz_maceofcommand": "Mace of Command",
     "$chebgonaz_maceofcommand_desc": "Mercenaries respect the wielder of this weapon.",
     "$chebgonaz_swordofcommand": "Sword of Command",
-    "$chebgonaz_swordofcommand_desc": "Mercenaries respect the wielder of this weapon."
+    "$chebgonaz_swordofcommand_desc": "Mercenaries respect the wielder of this weapon.",
+    "$chebsmercenaries_weaponofcommand_follow": "Follow",
+    "$chebsmercenaries_weaponofcommand_wait": "Wait",
+    "$chebsmercenaries_weaponofcommand_teleport": "Teleport",
+    "$chebsmercenaries_weaponofcommand_shift": "Shift"
 }
