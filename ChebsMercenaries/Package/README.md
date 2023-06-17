@@ -137,6 +137,7 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 
  Date | Version | Notes 
 --- | --- | ---
+17/06/2023 | 1.5.1 | Fix roam distance not working; fix missing localizations
 12/06/2023 | 1.5.0 | Update for new Valheim version; mercs should now swim
 31/05/2023 | 1.3.3 | Add weapons of command
 26/05/2023 | 1.3.2 | Add beards and hair
