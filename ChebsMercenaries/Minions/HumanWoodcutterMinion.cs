@@ -41,8 +41,9 @@ namespace ChebsMercenaries.Minions
             WoodcutterAI.RoamRange = RoamRange.Value;
         }
 
-        public void Awake()
+        public override void Awake()
         {
+            base.Awake();
             canBeCommanded = false;
 
             if (!TryGetComponent(out WoodcutterAI _)) gameObject.AddComponent<WoodcutterAI>();

@@ -2,7 +2,7 @@
 
 DEBUGDIR=ChebsMercenaries/bin/Debug
 DLL=$DEBUGDIR/ChebsMercenaries.dll
-LIB=$DEBUGDIR/ChebsValheimLibrary.dll
+LIB=../chebs-valheim-library/ChebsValheimLibrary/bin/Release/ChebsValheimLibrary.dll
 BUN=../chebs-necromancy/ChebsNecromancyUnity/Assets/AssetBundles/chebgonaz
 PLUGINS=/home/joshua/.local/share/Steam/steamapps/common/Valheim/BepInEx/plugins
 BEPINEX=ChebsMercenaries/libs/BepInEx.dll

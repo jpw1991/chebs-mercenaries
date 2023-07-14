@@ -24,11 +24,11 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "1.5.1";
+        public const string PluginVersion = "1.6.0";
         private const string ConfigFileName = PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
-        public readonly System.Version ChebsValheimLibraryVersion = new("2.0.0");
+        public readonly System.Version ChebsValheimLibraryVersion = new("2.1.0");
 
         private readonly Harmony harmony = new(PluginGuid);
 

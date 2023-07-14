@@ -50,8 +50,10 @@ namespace ChebsMercenaries.Minions
             MinerAI.RockInternalIDsList = RockInternalIDsList.Value;
         }
 
-        public void Awake()
+        public override void Awake()
         {
+            base.Awake();
+            
             canBeCommanded = false;
 
             if (!TryGetComponent(out MinerAI _)) gameObject.AddComponent<MinerAI>();

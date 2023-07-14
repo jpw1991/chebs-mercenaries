@@ -2,7 +2,7 @@
 
 RELEASEDIR=ChebsMercenaries/bin/Release
 DLL=$RELEASEDIR/ChebsMercenaries.dll
-LIB=$RELEASEDIR/ChebsValheimLibrary.dll
+LIB=../chebs-valheim-library/ChebsValheimLibrary/bin/Release/ChebsValheimLibrary.dll
 BUN=../chebs-necromancy/ChebsNecromancyUnity/Assets/AssetBundles/chebgonaz
 PLUGINS=ChebsMercenaries/Package/plugins
 README=README.md

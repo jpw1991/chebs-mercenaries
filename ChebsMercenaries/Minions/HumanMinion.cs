@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using BepInEx.Configuration;
 using ChebsMercenaries.Structure;
 using ChebsValheimLibrary.Common;
@@ -121,12 +122,14 @@ namespace ChebsMercenaries.Minions
             { MercenaryType.Miner, "ChebGonaz_HumanMinerFemale" },
             { MercenaryType.Woodcutter, "ChebGonaz_HumanWoodcutterFemale" },
         };
-
-        private void Awake()
+        
+        public override void Awake()
         {
+            base.Awake();
+            
             _hairs ??= ObjectDB.instance.GetAllItems(ItemDrop.ItemData.ItemType.Customization, "Hair");
             _beards ??= ObjectDB.instance.GetAllItems(ItemDrop.ItemData.ItemType.Customization, "Beard");
-
+        
             StartCoroutine(WaitForZNet());
         }
 
