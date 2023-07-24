@@ -129,6 +129,7 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 - Translations
 	+ [**pandory**](https://github.com/pandory-network) - German language localization.
 	+ [**Cordain**](https://github.com/Cordain) - Polish language localization.
+	+ **007LEXX** - Russian language localization.
 
 ## Changelog
 
