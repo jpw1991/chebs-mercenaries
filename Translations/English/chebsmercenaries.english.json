@@ -18,5 +18,16 @@
     "$chebsmercenaries_weaponofcommand_follow": "Follow",
     "$chebsmercenaries_weaponofcommand_wait": "Wait",
     "$chebsmercenaries_weaponofcommand_teleport": "Teleport",
-    "$chebsmercenaries_weaponofcommand_shift": "Shift"
+    "$chebsmercenaries_weaponofcommand_shift": "Shift",
+    "$chebgonaz_mercenarychest_recruitmentmessage": "Recruiting %1 in %2 seconds...",
+    "$chebgonaz_mercenarytype_none": "Nobody",
+    "$chebgonaz_mercenarytype_warriortier1": "Warrior I",
+    "$chebgonaz_mercenarytype_warriortier2": "Warrior II",
+    "$chebgonaz_mercenarytype_warriortier3": "Warrior III",
+    "$chebgonaz_mercenarytype_warriortier4": "Warrior IV",
+    "$chebgonaz_mercenarytype_archertier1": "Archer I",
+    "$chebgonaz_mercenarytype_archertier2": "Archer II",
+    "$chebgonaz_mercenarytype_archertier3": "Archer III",
+    "$chebgonaz_mercenarytype_miner": "Miner",
+    "$chebgonaz_mercenarytype_woodcutter": "Woodcutter"
 }

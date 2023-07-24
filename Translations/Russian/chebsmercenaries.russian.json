@@ -1,0 +1,22 @@
+{
+    "$chebgonaz_mercenarychest_name": "Сундук наёмников",
+    "$chebgonaz_mercenarychest_desc": "Наемники будут стекаться отовсюду, чтобы заполучить это золото.",
+    "$chebgonaz_mercenaries_notyourminion": "Наёмник игнорирует вас.",
+    "$chebgonaz_mercenaries_humanfollowing": "Следую за тобой, босс!",
+    "$chebgonaz_mercenaries_humanwaiting": "Понял, буду ждать!",
+    "$chebgonaz_mercenaries_humanroaming": "Проверю окрестности, босс!",
+    "$chebgonaz_mercenaries_wait": "Ждать",
+    "$chebgonaz_mercenaries_roam": "Бродить",
+    "$chebgonaz_mercenaries_follow": "Следовать",
+    "$chebgonaz_mercenaries_owner": "Наниматель",
+    "$chebgonaz_axeofcommand": "Топор военачальника",
+    "$chebgonaz_axeofcommand_desc": "Наемники уважают владельца этого оружия.",
+    "$chebgonaz_maceofcommand": "Булава военачальника",
+    "$chebgonaz_maceofcommand_desc": "Наемники уважают владельца этого оружия.",
+    "$chebgonaz_swordofcommand": "Меч военачальника",
+    "$chebgonaz_swordofcommand_desc": "Наемники уважают владельца этого оружия.",
+    "$chebsmercenaries_weaponofcommand_follow": "Следовать",
+    "$chebsmercenaries_weaponofcommand_wait": "Ждать",
+    "$chebsmercenaries_weaponofcommand_teleport": "Переместить",
+    "$chebsmercenaries_weaponofcommand_shift": "Shift"
+}

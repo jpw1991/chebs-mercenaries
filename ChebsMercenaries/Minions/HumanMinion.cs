@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using ChebsValheimLibrary.Common;
 using ChebsValheimLibrary.Minions;
 using UnityEngine;
 using Logger = Jotunn.Logger;
+using Random = UnityEngine.Random;
 
 namespace ChebsMercenaries.Minions
 {
@@ -19,6 +21,8 @@ namespace ChebsMercenaries.Minions
         public static ConfigEntry<float> FollowDistance, RunDistance, RoamRange;
         public static ConfigEntry<float> ChanceOfFemale;
         public static MemoryConfigEntry<string, List<Vector3>> HairColors, SkinColors;
+        
+        public static ConfigEntry<float> Health;
 
         private static List<ItemDrop> _hairs, _beards;
 
@@ -81,6 +85,10 @@ namespace ChebsMercenaries.Minions
             
             RoamRange = plugin.Config.Bind(client, "RoamRange",
                 10f, new ConfigDescription("How far a unit is allowed to roam from its current position."));
+            
+            Health = plugin.Config.Bind(serverSync, "Health",
+                50f, new ConfigDescription("How much health the mercenary has (default fallback value).", null,
+                    new ConfigurationManagerAttributes { IsAdminOnly = true }));
         }
 
         public enum MercenaryType
@@ -122,18 +130,37 @@ namespace ChebsMercenaries.Minions
             { MercenaryType.Miner, "ChebGonaz_HumanMinerFemale" },
             { MercenaryType.Woodcutter, "ChebGonaz_HumanWoodcutterFemale" },
         };
-        
-        public override void Awake()
+
+        public sealed override void Awake()
         {
             base.Awake();
-            
             _hairs ??= ObjectDB.instance.GetAllItems(ItemDrop.ItemData.ItemType.Customization, "Hair");
             _beards ??= ObjectDB.instance.GetAllItems(ItemDrop.ItemData.ItemType.Customization, "Beard");
-        
+
             StartCoroutine(WaitForZNet());
+            
+            AfterAwake();
         }
 
-        IEnumerator WaitForZNet()
+        public virtual void AfterAwake()
+        {
+            ConfigureHealth();
+        }
+
+        protected virtual void ConfigureHealth()
+        {
+            if (TryGetComponent(out Humanoid humanoid))
+            {
+                humanoid.SetMaxHealth(Health.Value);
+                humanoid.SetHealth(Health.Value);
+            }
+            else
+            {
+                Logger.LogError("Error: Failed to get Humanoid component to set health value.");
+            }
+        }
+
+        protected IEnumerator WaitForZNet()
         {
             yield return new WaitUntil(() => ZNetScene.instance != null);
 
@@ -293,6 +320,12 @@ namespace ChebsMercenaries.Minions
         public static void Spawn(MercenaryType mercenaryType, ArmorType armorType, Transform spawner)
         {
             if (mercenaryType is MercenaryType.None) return;
+            
+            if (ZNetScene.instance == null)
+            {
+                Jotunn.Logger.LogWarning("Spawn: ZNetScene.instance is null, trying again later...");
+                return;
+            }
 
             var female = Random.value < ChanceOfFemale.Value;
 
@@ -306,10 +339,23 @@ namespace ChebsMercenaries.Minions
 
             var spawnedChar = Instantiate(prefab,
                 spawner.position + spawner.forward * 2f + Vector3.up, Quaternion.identity);
+            
+            if (spawnedChar == null)
+            {
+                Jotunn.Logger.LogError("Spawn: spawnedChar is null");
+                return;
+            }
+            
             spawnedChar.AddComponent<FreshMinion>();
 
             // set hair and skin color
-            var humanoid = spawnedChar.GetComponent<Humanoid>();
+
+            if (!spawnedChar.TryGetComponent(out Humanoid humanoid))
+            {
+                Jotunn.Logger.LogError("Spawn: spawnedChar has no humanoid component");
+                return;
+            }
+            
             var randomSkinColor = SkinColors.Value[Random.Range(0, SkinColors.Value.Count)];
             humanoid.m_visEquipment.SetSkinColor(randomSkinColor);
             humanoid.m_nview.GetZDO().Set("SkinColor", randomSkinColor);

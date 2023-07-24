@@ -107,8 +107,10 @@ namespace ChebsMercenaries.Patches
             if (__instance.m_nview.IsValid()
                 && __instance.TryGetComponent(out HumanMinion humanMinion))
             {
-                __result =
-                    $"{Localization.instance.Localize("$chebgonaz_mercenaries_owner")}: {humanMinion.UndeadMinionMaster} ({humanMinion.Status})";
+                __result = $@"{Localization.instance.Localize("$chebgonaz_mercenaries_owner")}: {humanMinion.UndeadMinionMaster} ({humanMinion.Status switch {
+                    ChebGonazMinion.State.Following => Localization.instance.Localize("$chebgonaz_minionstatus_following"),
+                    ChebGonazMinion.State.Roaming => Localization.instance.Localize("$chebgonaz_minionstatus_roaming"),
+                    _ => Localization.instance.Localize("$chebgonaz_minionstatus_waiting") }})";
             }
         }
     }

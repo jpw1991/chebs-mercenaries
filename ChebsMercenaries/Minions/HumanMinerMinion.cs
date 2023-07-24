@@ -8,7 +8,8 @@ namespace ChebsMercenaries.Minions
 {
     public class HumanMinerMinion : HumanMinion
     {
-        public static ConfigEntry<float> UpdateDelay, LookRadius, RoamRange;
+        public static ConfigEntry<float> UpdateDelay, LookRadius;
+        public new static ConfigEntry<float> RoamRange, Health;
         public static ConfigEntry<string> RockInternalIDsList;
         public static MemoryConfigEntry<string, List<string>> ItemsCost;
 
@@ -37,6 +38,9 @@ namespace ChebsMercenaries.Minions
                 "The items that are consumed when creating a minion. Please use a comma-delimited list of prefab names with a : and integer for amount. Alternative items can be specified with a | eg. Wood|Coal:5 to mean wood and/or coal.",
                 null, true);
             ItemsCost = new MemoryConfigEntry<string, List<string>>(itemsCost, s => s?.Split(',').ToList());
+            Health = plugin.Config.Bind(serverSynced, "Health",
+                50f, new ConfigDescription("How much health the mercenary has.", null,
+                    new ConfigurationManagerAttributes { IsAdminOnly = true }));
 
             SyncInternalsWithConfigs();
         }
@@ -50,13 +54,24 @@ namespace ChebsMercenaries.Minions
             MinerAI.RockInternalIDsList = RockInternalIDsList.Value;
         }
 
-        public override void Awake()
+        public override void AfterAwake()
         {
-            base.Awake();
-            
+            ConfigureHealth();
             canBeCommanded = false;
-
             if (!TryGetComponent(out MinerAI _)) gameObject.AddComponent<MinerAI>();
+        }
+
+        protected override void ConfigureHealth()
+        {
+            if (TryGetComponent(out Humanoid humanoid))
+            {
+                humanoid.SetMaxHealth(Health.Value);
+                humanoid.SetHealth(Health.Value);
+            }
+            else
+            {
+                Jotunn.Logger.LogError("Error: Failed to get Humanoid component to set health value.");
+            }
         }
     }
 }

@@ -24,11 +24,11 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "1.6.0";
+        public const string PluginVersion = "1.7.0";
         private const string ConfigFileName = PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
-        public readonly System.Version ChebsValheimLibraryVersion = new("2.1.0");
+        public readonly System.Version ChebsValheimLibraryVersion = new("2.1.2");
 
         private readonly Harmony harmony = new(PluginGuid);
 
@@ -206,11 +206,44 @@ namespace ChebsMercenaries
                     switch (prefabName)
                     {
                         case "ChebGonaz_HumanMiner.prefab":
+                        case "ChebGonaz_HumanMinerFemale.prefab":
                             prefab.AddComponent<HumanMinerMinion>();
                             break;
                         case "ChebGonaz_HumanWoodcutter.prefab":
+                        case "ChebGonaz_HumanWoodcutterFemale.prefab":
                             prefab.AddComponent<HumanWoodcutterMinion>();
                             break;
+                        
+                        case "ChebGonaz_HumanWarrior.prefab":
+                        case "ChebGonaz_HumanWarriorFemale.prefab":
+                            prefab.AddComponent<MercenaryWarriorTier1Minion>();
+                            break;
+                        case "ChebGonaz_HumanWarriorTier2.prefab":
+                        case "ChebGonaz_HumanWarriorTier2Female.prefab":
+                            prefab.AddComponent<MercenaryWarriorTier2Minion>();
+                            break;
+                        case "ChebGonaz_HumanWarriorTier3.prefab":
+                        case "ChebGonaz_HumanWarriorTier3Female.prefab":
+                            prefab.AddComponent<MercenaryWarriorTier3Minion>();
+                            break;
+                        case "ChebGonaz_HumanWarriorTier4.prefab":
+                        case "ChebGonaz_HumanWarriorTier4Female.prefab":
+                            prefab.AddComponent<MercenaryWarriorTier4Minion>();
+                            break;
+                        
+                        case "ChebGonaz_HumanArcher.prefab":
+                        case "ChebGonaz_HumanArcherFemale.prefab":
+                            prefab.AddComponent<MercenaryArcherTier1Minion>();
+                            break;
+                        case "ChebGonaz_HumanArcherTier2.prefab":
+                        case "ChebGonaz_HumanArcherTier2Female.prefab":
+                            prefab.AddComponent<MercenaryArcherTier2Minion>();
+                            break;
+                        case "ChebGonaz_HumanArcherTier3.prefab":
+                        case "ChebGonaz_HumanArcherTier3Female.prefab":
+                            prefab.AddComponent<MercenaryArcherTier3Minion>();
+                            break;
+
                         default:
                             prefab.gameObject.AddComponent<HumanMinion>();
                             break;

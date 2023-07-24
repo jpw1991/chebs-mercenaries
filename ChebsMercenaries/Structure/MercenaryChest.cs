@@ -235,8 +235,25 @@ namespace ChebsMercenaries.Structure
 
                 if (playersInRange.Any(player => Vector3.Distance(player.transform.position, transform.position) < 5))
                 {
+                    var nextMercLocalized = nextMerc switch
+                    {
+                        HumanMinion.MercenaryType.WarriorTier1 => Localization.instance.Localize("$chebgonaz_mercenarytype_warriortier1"),
+                        HumanMinion.MercenaryType.WarriorTier2 => Localization.instance.Localize("$chebgonaz_mercenarytype_warriortier2"),
+                        HumanMinion.MercenaryType.WarriorTier3 => Localization.instance.Localize("$chebgonaz_mercenarytype_warriortier3"),
+                        HumanMinion.MercenaryType.WarriorTier4 => Localization.instance.Localize("$chebgonaz_mercenarytype_warriortier4"),
+                        HumanMinion.MercenaryType.ArcherTier1 => Localization.instance.Localize("$chebgonaz_mercenarytype_archertier1"),
+                        HumanMinion.MercenaryType.ArcherTier2 => Localization.instance.Localize("$chebgonaz_mercenarytype_archertier2"),
+                        HumanMinion.MercenaryType.ArcherTier3 => Localization.instance.Localize("$chebgonaz_mercenarytype_archertier3"),
+                        HumanMinion.MercenaryType.Miner => Localization.instance.Localize("$chebgonaz_mercenarytype_miner"),
+                        HumanMinion.MercenaryType.Woodcutter => Localization.instance.Localize("$chebgonaz_mercenarytype_woodcutter"),
+                        _ => Localization.instance.Localize("$chebgonaz_mercenarytype_none")
+                    };
+                    var recruitmentMessage = 
+                        Localization.instance.Localize("$chebgonaz_mercenarychest_recruitmentmessage")
+                            .Replace("%1", nextMercLocalized)
+                            .Replace("%2", (RecruitmentInterval.Value - (Time.time - _lastRecruitmentAt)).ToString("0"));
                     Chat.instance.SetNpcText(gameObject, Vector3.up, 5f, 4f, "",
-                        $"Recruiting {nextMerc} in {(RecruitmentInterval.Value - (Time.time - _lastRecruitmentAt)).ToString("0")} seconds...",
+                        recruitmentMessage,
                         false);
                 }
 
