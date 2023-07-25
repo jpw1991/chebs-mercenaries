@@ -18,5 +18,16 @@
     "$chebsmercenaries_weaponofcommand_follow": "Следовать",
     "$chebsmercenaries_weaponofcommand_wait": "Ждать",
     "$chebsmercenaries_weaponofcommand_teleport": "Переместить",
-    "$chebsmercenaries_weaponofcommand_shift": "Shift"
+    "$chebsmercenaries_weaponofcommand_shift": "Shift",
+    "$chebgonaz_mercenarychest_recruitmentmessage": "Нанимается %1 через %2 секунд...",
+    "$chebgonaz_mercenarytype_none": "Никто",
+    "$chebgonaz_mercenarytype_warriortier1": "Воин I",
+    "$chebgonaz_mercenarytype_warriortier2": "Воин II",
+    "$chebgonaz_mercenarytype_warriortier3": "Воин III",
+    "$chebgonaz_mercenarytype_warriortier4": "Воин IV",
+    "$chebgonaz_mercenarytype_archertier1": "Лучник I",
+    "$chebgonaz_mercenarytype_archertier2": "Лучник II",
+    "$chebgonaz_mercenarytype_archertier3": "Лучник III",
+    "$chebgonaz_mercenarytype_miner": "Старатель",
+    "$chebgonaz_mercenarytype_woodcutter": "Лесоруб"
 }
