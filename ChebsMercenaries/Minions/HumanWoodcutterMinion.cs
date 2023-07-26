@@ -1,14 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using BepInEx.Configuration;
+using ChebsMercenaries.Minions.WorkerAI;
 using ChebsValheimLibrary.Common;
-using ChebsValheimLibrary.Minions.AI;
+using Jotunn;
 
 namespace ChebsMercenaries.Minions
 {
     public class HumanWoodcutterMinion : HumanMinion
     {
-        public static ConfigEntry<float> UpdateDelay, LookRadius;
+        public static ConfigEntry<float> UpdateDelay, LookRadius, ToolDamage, ChatInterval, ChatDistance;
+        public static ConfigEntry<short> ToolTier;
         public new static ConfigEntry<float> RoamRange, Health;
         public static MemoryConfigEntry<string, List<string>> ItemsCost;
 
@@ -33,23 +35,25 @@ namespace ChebsMercenaries.Minions
             Health = plugin.Config.Bind(serverSynced, "Health",
                 50f, new ConfigDescription("How much health the mercenary has.", null,
                     new ConfigurationManagerAttributes { IsAdminOnly = true }));
-
-            SyncInternalsWithConfigs();
-        }
-
-        public static void SyncInternalsWithConfigs()
-        {
-            // awful stuff. Is there a better way?
-            WoodcutterAI.UpdateDelay = UpdateDelay.Value;
-            WoodcutterAI.LookRadius = LookRadius.Value;
-            WoodcutterAI.RoamRange = RoamRange.Value;
+            ToolDamage = plugin.Config.Bind(serverSynced, "ToolDamage", 6f,
+                new ConfigDescription("Damage dealt by the worker's tool to stuff it's harvesting.", null,
+                    new ConfigurationManagerAttributes { IsAdminOnly = true }));
+            ToolTier = plugin.Config.Bind(serverSynced, "ToolTier", (short)2,
+                new ConfigDescription("Worker's tool tier (determines what stuff it can mine/harvest).", null,
+                    new ConfigurationManagerAttributes { IsAdminOnly = true }));
+            ChatInterval = plugin.Config.Bind(serverSynced, "ChatInterval", 6f,
+                new ConfigDescription("The delay, in seconds, between worker updates. Set to 0 for no chatting.", null,
+                    new ConfigurationManagerAttributes { IsAdminOnly = true }));
+            ChatDistance = plugin.Config.Bind(serverSynced, "ChatDistance", 6f,
+                new ConfigDescription("How close a player must be for the worker to speak.", null,
+                    new ConfigurationManagerAttributes { IsAdminOnly = true }));
         }
 
         public override void AfterAwake()
         {
             ConfigureHealth();
             canBeCommanded = false;
-            if (!TryGetComponent(out WoodcutterAI _)) gameObject.AddComponent<WoodcutterAI>();
+            if (!TryGetComponent(out HumanWoodcutterAI _)) gameObject.AddComponent<HumanWoodcutterAI>();
         }
         
         protected override void ConfigureHealth()
@@ -61,7 +65,7 @@ namespace ChebsMercenaries.Minions
             }
             else
             {
-                Jotunn.Logger.LogError("Error: Failed to get Humanoid component to set health value.");
+                Logger.LogError("Error: Failed to get Humanoid component to set health value.");
             }
         }
     }

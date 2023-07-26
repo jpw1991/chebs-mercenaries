@@ -135,6 +135,8 @@
     <Compile Include="Minions\MercenaryWarriorTier2Minion.cs" />
     <Compile Include="Minions\MercenaryWarriorTier3Minion.cs" />
     <Compile Include="Minions\MercenaryWarriorTier4Minion.cs" />
+    <Compile Include="Minions\WorkerAI\HumanMinerAI.cs" />
+    <Compile Include="Minions\WorkerAI\HumanWoodcutterAI.cs" />
     <Compile Include="Patches\AoePatches.cs" />
     <Compile Include="Patches\BaseAIPatches.cs" />
     <Compile Include="Patches\CharacterDropPatches.cs" />

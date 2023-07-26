@@ -24,11 +24,11 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "1.7.0";
+        public const string PluginVersion = "2.0.0";
         private const string ConfigFileName = PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
-        public readonly System.Version ChebsValheimLibraryVersion = new("2.1.2");
+        public readonly System.Version ChebsValheimLibraryVersion = new("2.2.0");
 
         private readonly Harmony harmony = new(PluginGuid);
 
@@ -123,9 +123,7 @@ namespace ChebsMercenaries
             {
                 Logger.LogInfo("Read updated config values");
                 Config.Reload();
-
-                HumanMinerMinion.SyncInternalsWithConfigs();
-                HumanWoodcutterMinion.SyncInternalsWithConfigs();
+                
                 MercenaryChest.UpdateRecipe();
 
                 _weaponsOfCommand.ForEach(w => w.UpdateRecipe());
@@ -149,9 +147,6 @@ namespace ChebsMercenaries
             CreateConfigValues();
             LoadChebGonazAssetBundle();
             harmony.PatchAll();
-
-            HumanMinerMinion.SyncInternalsWithConfigs();
-            HumanWoodcutterMinion.SyncInternalsWithConfigs();
 
             SetupWatcher();
         }
