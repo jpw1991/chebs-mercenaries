@@ -29,5 +29,8 @@
     "$chebgonaz_mercenarytype_archertier2": "Archer II",
     "$chebgonaz_mercenarytype_archertier3": "Archer III",
     "$chebgonaz_mercenarytype_miner": "Miner",
-    "$chebgonaz_mercenarytype_woodcutter": "Woodcutter"
+    "$chebgonaz_mercenarytype_woodcutter": "Woodcutter",
+    "$chebgonaz_worker_target": "Target",
+    "$chebgonaz_worker_cantfindtarget": "Can't find target.",
+    "$chebgonaz_minionstatus_following": "Following"
 }

@@ -129,6 +129,7 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 - Translations
 	+ [**pandory**](https://github.com/pandory-network) - German language localization.
 	+ [**Cordain**](https://github.com/Cordain) - Polish language localization.
+	+ **007LEXX** - Russian language localization.
 
 ## Changelog
 
@@ -137,6 +138,7 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 
  Date | Version | Notes 
 --- | --- | ---
+28/07/2023 | 2.0.0 | Workers should behave more realistically with gradual destruction of rocks, trees, etc.
 23/07/2023 | 1.7.0 | Add Russian translation & open untranslated parts of the mod up to future translation; update CVL to 2.1.2; permit tweaks of mercenary health in configs; fix diverse bugs eg. female workers not spawning with their AI attached
 13/07/2023 | 1.6.0 | Try to make workers behave better; update CVL to 2.1.0 to prepare for upcoming changes
 17/06/2023 | 1.5.1 | Fix roam distance not working; fix missing localizations
