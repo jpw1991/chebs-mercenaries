@@ -107,11 +107,11 @@ namespace ChebsMercenaries.Patches
             var flag6 = __instance.SetHelmetEquipped(hash5, num) | flag5;
             var flag7 = __instance.SetShoulderEquipped(hash7, shoulderItemVariant) | flag6;
             var flag8 = __instance.SetUtilityEquipped(hash8) | flag7;
-            if (__instance.m_helmetHideBeard)
+            if (__instance.m_helmetHideBeard != ItemDrop.ItemData.HelmetHairType.Default)
                 hash6 = 0;
             var flag9 = __instance.SetBeardEquipped(hash6) | flag8;
             var flag10 = __instance.SetBackEquipped(leftItem, rightItem, leftBackItemVariant) | flag9;
-            if (__instance.m_helmetHideHair)
+            if (__instance.m_helmetHideHair != ItemDrop.ItemData.HelmetHairType.Default)
                 num = 0;
             flag8 = __instance.SetHairEquipped(num) | flag10;
 
