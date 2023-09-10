@@ -1,15 +1,12 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Permissions;
 using BepInEx.Configuration;
 using ChebsMercenaries.Structure;
 using ChebsValheimLibrary.Common;
 using ChebsValheimLibrary.Minions;
 using UnityEngine;
 using Logger = Jotunn.Logger;
-using Random = UnityEngine.Random;
 
 namespace ChebsMercenaries.Minions
 {
@@ -222,6 +219,11 @@ namespace ChebsMercenaries.Minions
             }
 
             RestoreDrops();
+            
+            if (BasePlugin.HeavyLogging.Value)
+            {
+                Logger.LogInfo($"Health set for {gameObject.name}: humanoid.m_health={humanoid.m_health}");
+            }
         }
 
         public void ScaleEquipment(MercenaryType mercenaryType, ArmorType armorType)
@@ -314,7 +316,14 @@ namespace ChebsMercenaries.Minions
 
             humanoid.m_defaultItems = defaultItems.ToArray();
 
+            if (BasePlugin.HeavyLogging.Value)
+            {
+                var equipmentStringLog = string.Join(", ", defaultItems.Select(a => a.name));
+                Logger.LogInfo($"Provided equipment {mercenaryType} {armorType}: {equipmentStringLog}");
+            }
+
             humanoid.GiveDefaultItems();
+            humanoid.m_visEquipment.UpdateEquipmentVisuals();
         }
 
         public static void Spawn(MercenaryType mercenaryType, ArmorType armorType, Transform spawner)
@@ -323,13 +332,18 @@ namespace ChebsMercenaries.Minions
             
             if (ZNetScene.instance == null)
             {
-                Jotunn.Logger.LogWarning("Spawn: ZNetScene.instance is null, trying again later...");
+                Logger.LogWarning("Spawn: ZNetScene.instance is null, trying again later...");
                 return;
             }
 
             var female = Random.value < ChanceOfFemale.Value;
 
             var prefabName = female ? PrefabNamesFemale[mercenaryType] : PrefabNames[mercenaryType];
+            if (BasePlugin.HeavyLogging.Value)
+            {
+                var genderLog = female ? "female" : "male";
+                Logger.LogInfo($"Spawning {genderLog} {mercenaryType} with {armorType} from {prefabName}.");
+            };
             var prefab = ZNetScene.instance.GetPrefab(prefabName);
             if (!prefab)
             {
@@ -342,7 +356,7 @@ namespace ChebsMercenaries.Minions
             
             if (spawnedChar == null)
             {
-                Jotunn.Logger.LogError("Spawn: spawnedChar is null");
+                Logger.LogError("Spawn: spawnedChar is null");
                 return;
             }
             
@@ -352,7 +366,7 @@ namespace ChebsMercenaries.Minions
 
             if (!spawnedChar.TryGetComponent(out Humanoid humanoid))
             {
-                Jotunn.Logger.LogError("Spawn: spawnedChar has no humanoid component");
+                Logger.LogError("Spawn: spawnedChar has no humanoid component");
                 return;
             }
             
@@ -366,19 +380,26 @@ namespace ChebsMercenaries.Minions
             if (!female)
             {
                 var randomBeard = _beards[Random.Range(0, _beards.Count)].gameObject.name;
+                if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"Applying beard {randomBeard}.");
                 humanoid.SetBeard(randomBeard);
                 humanoid.m_visEquipment.SetBeardItem(humanoid.m_beardItem);
             }
 
+            if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"Applying hair {humanoid.m_hairItem}.");
             humanoid.m_visEquipment.SetHairItem(humanoid.m_hairItem);
             humanoid.m_visEquipment.UpdateEquipmentVisuals();
 
-            var minion = mercenaryType switch
+            // var minion = mercenaryType switch
+            // {
+            //     MercenaryType.Miner => spawnedChar.AddComponent<HumanMinerMinion>(),
+            //     MercenaryType.Woodcutter => spawnedChar.AddComponent<HumanWoodcutterMinion>(),
+            //     _ => spawnedChar.AddComponent<HumanMinion>()
+            // };
+            if (!spawnedChar.TryGetComponent(out HumanMinion minion))
             {
-                MercenaryType.Miner => spawnedChar.AddComponent<HumanMinerMinion>(),
-                MercenaryType.Woodcutter => spawnedChar.AddComponent<HumanWoodcutterMinion>(),
-                _ => spawnedChar.AddComponent<HumanMinion>()
-            };
+                Logger.LogError("Spawn: spawnedChar has no HumanMinion component");
+                return;
+            }
 
             minion.ScaleEquipment(mercenaryType, armorType);
 
