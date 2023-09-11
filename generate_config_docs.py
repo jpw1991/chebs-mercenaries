@@ -7,7 +7,7 @@ import json
 
 def main():
     parsed = parse_config_file(
-        '/home/joshua/.local/share/Steam/steamapps/common/Valheim/BepInEx/config/com.chebgonaz.chebsmercenaries.cfg')
+        '/home/joshua/.config/r2modmanPlus-local/Valheim/profiles/cheb-development/BepInEx/config/com.chebgonaz.chebsmercenaries.cfg')
     print(render_markdown(parsed))
 
 
