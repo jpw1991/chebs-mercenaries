@@ -24,7 +24,7 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "2.1.1";
+        public const string PluginVersion = "2.1.2";
         private const string ConfigFileName = PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
@@ -43,6 +43,29 @@ namespace ChebsMercenaries
         public static ConfigEntry<bool> RadeonFriendly, HeavyLogging;
 
         public static CustomLocalization Localization = LocalizationManager.Instance.GetLocalization();
+
+        public static readonly List<string> MercenaryPrefabPaths = new()
+        {
+            "ChebGonaz_HumanMiner.prefab",
+            "ChebGonaz_HumanWoodcutter.prefab",
+            "ChebGonaz_HumanArcher.prefab",
+            "ChebGonaz_HumanArcherTier2.prefab",
+            "ChebGonaz_HumanArcherTier3.prefab",
+            "ChebGonaz_HumanWarrior.prefab",
+            "ChebGonaz_HumanWarriorTier2.prefab",
+            "ChebGonaz_HumanWarriorTier3.prefab",
+            "ChebGonaz_HumanWarriorTier4.prefab",
+
+            "ChebGonaz_HumanMinerFemale.prefab",
+            "ChebGonaz_HumanWoodcutterFemale.prefab",
+            "ChebGonaz_HumanArcherFemale.prefab",
+            "ChebGonaz_HumanArcherTier2Female.prefab",
+            "ChebGonaz_HumanArcherTier3Female.prefab",
+            "ChebGonaz_HumanWarriorFemale.prefab",
+            "ChebGonaz_HumanWarriorTier2Female.prefab",
+            "ChebGonaz_HumanWarriorTier3Female.prefab",
+            "ChebGonaz_HumanWarriorTier4Female.prefab",
+        };
 
         #region ConfigStuff
 
@@ -175,30 +198,7 @@ namespace ChebsMercenaries
                 #endregion
 
                 #region Creatures
-
-                var prefabNames = new List<string>();
-
-                prefabNames.Add("ChebGonaz_HumanMiner.prefab");
-                prefabNames.Add("ChebGonaz_HumanWoodcutter.prefab");
-                prefabNames.Add("ChebGonaz_HumanArcher.prefab");
-                prefabNames.Add("ChebGonaz_HumanArcherTier2.prefab");
-                prefabNames.Add("ChebGonaz_HumanArcherTier3.prefab");
-                prefabNames.Add("ChebGonaz_HumanWarrior.prefab");
-                prefabNames.Add("ChebGonaz_HumanWarriorTier2.prefab");
-                prefabNames.Add("ChebGonaz_HumanWarriorTier3.prefab");
-                prefabNames.Add("ChebGonaz_HumanWarriorTier4.prefab");
-
-                prefabNames.Add("ChebGonaz_HumanMinerFemale.prefab");
-                prefabNames.Add("ChebGonaz_HumanWoodcutterFemale.prefab");
-                prefabNames.Add("ChebGonaz_HumanArcherFemale.prefab");
-                prefabNames.Add("ChebGonaz_HumanArcherTier2Female.prefab");
-                prefabNames.Add("ChebGonaz_HumanArcherTier3Female.prefab");
-                prefabNames.Add("ChebGonaz_HumanWarriorFemale.prefab");
-                prefabNames.Add("ChebGonaz_HumanWarriorTier2Female.prefab");
-                prefabNames.Add("ChebGonaz_HumanWarriorTier3Female.prefab");
-                prefabNames.Add("ChebGonaz_HumanWarriorTier4Female.prefab");
-
-                prefabNames.ForEach(prefabName =>
+                MercenaryPrefabPaths.ForEach(prefabName =>
                 {
                     if (HeavyLogging.Value) Jotunn.Logger.LogInfo($"Loading prefab {prefabName}...");
                     
