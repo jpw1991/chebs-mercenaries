@@ -145,6 +145,7 @@
     <Compile Include="Patches\TameablePatches.cs" />
     <Compile Include="Patches\VisEquipmentPatches.cs" />
     <Compile Include="Patches\WearNTearPatches.cs" />
+    <Compile Include="Patches\ZNetScenePatches.cs" />
     <Compile Include="Properties\IgnoreAccessModifiers.cs" />
     <Compile Include="BasePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

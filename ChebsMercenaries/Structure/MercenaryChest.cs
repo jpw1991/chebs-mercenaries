@@ -138,6 +138,11 @@ namespace ChebsMercenaries.Structure
                 HumanMinion.MercenaryType.Woodcutter => HumanWoodcutterMinion.ItemsCost,
                 _ => null
             };
+            if (BasePlugin.HeavyLogging.Value)
+            {
+                var itemsCostLog = itemsCost?.Value == null ? "" : string.Join(", ", itemsCost.Value);
+                Jotunn.Logger.LogInfo($"Paying for mercenary {mercenaryType} with {itemsCostLog}...");
+            }
             ChebGonazMinion.ConsumeRequirements(itemsCost, _inventory);
         }
 
@@ -149,6 +154,8 @@ namespace ChebsMercenaries.Structure
                 ArmorIronRequiredConfig.Value,
                 ArmorBronzeRequiredConfig.Value,
                 ArmorLeatherScrapsRequiredConfig.Value);
+            
+            if (BasePlugin.HeavyLogging.Value) Jotunn.Logger.LogInfo($"Determining mercenary's armour type: {armorType}.");
 
             switch (armorType)
             {
@@ -252,6 +259,7 @@ namespace ChebsMercenaries.Structure
                         Localization.instance.Localize("$chebgonaz_mercenarychest_recruitmentmessage")
                             .Replace("%1", nextMercLocalized)
                             .Replace("%2", (RecruitmentInterval.Value - (Time.time - _lastRecruitmentAt)).ToString("0"));
+                    if (BasePlugin.HeavyLogging.Value) Jotunn.Logger.LogInfo(recruitmentMessage);
                     Chat.instance.SetNpcText(gameObject, Vector3.up, 5f, 4f, "",
                         recruitmentMessage,
                         false);

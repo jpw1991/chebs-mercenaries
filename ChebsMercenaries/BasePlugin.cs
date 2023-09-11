@@ -24,11 +24,11 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "2.1.0";
+        public const string PluginVersion = "2.1.2";
         private const string ConfigFileName = PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
-        public readonly System.Version ChebsValheimLibraryVersion = new("2.2.0");
+        public readonly System.Version ChebsValheimLibraryVersion = new("2.3.1");
 
         private readonly Harmony harmony = new(PluginGuid);
 
@@ -40,9 +40,32 @@ namespace ChebsMercenaries
         };
 
         // if set to true, the particle effects that for some reason hurt radeon are dynamically disabled
-        public static ConfigEntry<bool> RadeonFriendly;
+        public static ConfigEntry<bool> RadeonFriendly, HeavyLogging;
 
         public static CustomLocalization Localization = LocalizationManager.Instance.GetLocalization();
+
+        public static readonly List<string> MercenaryPrefabPaths = new()
+        {
+            "ChebGonaz_HumanMiner.prefab",
+            "ChebGonaz_HumanWoodcutter.prefab",
+            "ChebGonaz_HumanArcher.prefab",
+            "ChebGonaz_HumanArcherTier2.prefab",
+            "ChebGonaz_HumanArcherTier3.prefab",
+            "ChebGonaz_HumanWarrior.prefab",
+            "ChebGonaz_HumanWarriorTier2.prefab",
+            "ChebGonaz_HumanWarriorTier3.prefab",
+            "ChebGonaz_HumanWarriorTier4.prefab",
+
+            "ChebGonaz_HumanMinerFemale.prefab",
+            "ChebGonaz_HumanWoodcutterFemale.prefab",
+            "ChebGonaz_HumanArcherFemale.prefab",
+            "ChebGonaz_HumanArcherTier2Female.prefab",
+            "ChebGonaz_HumanArcherTier3Female.prefab",
+            "ChebGonaz_HumanWarriorFemale.prefab",
+            "ChebGonaz_HumanWarriorTier2Female.prefab",
+            "ChebGonaz_HumanWarriorTier3Female.prefab",
+            "ChebGonaz_HumanWarriorTier4Female.prefab",
+        };
 
         #region ConfigStuff
 
@@ -86,6 +109,9 @@ namespace ChebsMercenaries
                                              "which seem to give users with Radeon cards trouble for unknown " +
                                              "reasons. If you have problems with lag it might also help to switch" +
                                              "this setting on."));
+            
+            HeavyLogging = Config.Bind("General (Client)", "HeavyLogging",
+                false, new ConfigDescription("Turn this on for debugging. Lots of things will get logged."));
 
             HumanMinion.CreateConfigs(this);
             HumanWoodcutterMinion.CreateConfigs(this);
@@ -172,74 +198,63 @@ namespace ChebsMercenaries
                 #endregion
 
                 #region Creatures
-
-                var prefabNames = new List<string>();
-
-                prefabNames.Add("ChebGonaz_HumanMiner.prefab");
-                prefabNames.Add("ChebGonaz_HumanWoodcutter.prefab");
-                prefabNames.Add("ChebGonaz_HumanArcher.prefab");
-                prefabNames.Add("ChebGonaz_HumanArcherTier2.prefab");
-                prefabNames.Add("ChebGonaz_HumanArcherTier3.prefab");
-                prefabNames.Add("ChebGonaz_HumanWarrior.prefab");
-                prefabNames.Add("ChebGonaz_HumanWarriorTier2.prefab");
-                prefabNames.Add("ChebGonaz_HumanWarriorTier3.prefab");
-                prefabNames.Add("ChebGonaz_HumanWarriorTier4.prefab");
-
-                prefabNames.Add("ChebGonaz_HumanMinerFemale.prefab");
-                prefabNames.Add("ChebGonaz_HumanWoodcutterFemale.prefab");
-                prefabNames.Add("ChebGonaz_HumanArcherFemale.prefab");
-                prefabNames.Add("ChebGonaz_HumanArcherTier2Female.prefab");
-                prefabNames.Add("ChebGonaz_HumanArcherTier3Female.prefab");
-                prefabNames.Add("ChebGonaz_HumanWarriorFemale.prefab");
-                prefabNames.Add("ChebGonaz_HumanWarriorTier2Female.prefab");
-                prefabNames.Add("ChebGonaz_HumanWarriorTier3Female.prefab");
-                prefabNames.Add("ChebGonaz_HumanWarriorTier4Female.prefab");
-
-                prefabNames.ForEach(prefabName =>
+                MercenaryPrefabPaths.ForEach(prefabName =>
                 {
+                    if (HeavyLogging.Value) Jotunn.Logger.LogInfo($"Loading prefab {prefabName}...");
+                    
                     var prefab = Base.LoadPrefabFromBundle(prefabName, chebgonazAssetBundle, RadeonFriendly.Value);
                     switch (prefabName)
                     {
                         case "ChebGonaz_HumanMiner.prefab":
                         case "ChebGonaz_HumanMinerFemale.prefab":
+                            if (HeavyLogging.Value) Jotunn.Logger.LogInfo($"Adding HumanMinerMinion component to {prefabName}.");
                             prefab.AddComponent<HumanMinerMinion>();
                             break;
                         case "ChebGonaz_HumanWoodcutter.prefab":
                         case "ChebGonaz_HumanWoodcutterFemale.prefab":
+                            if (HeavyLogging.Value) Jotunn.Logger.LogInfo($"Adding HumanWoodcutterMinion component to {prefabName}.");
                             prefab.AddComponent<HumanWoodcutterMinion>();
                             break;
                         
                         case "ChebGonaz_HumanWarrior.prefab":
                         case "ChebGonaz_HumanWarriorFemale.prefab":
+                            if (HeavyLogging.Value) Jotunn.Logger.LogInfo($"Adding MercenaryWarriorTier1Minion component to {prefabName}.");
                             prefab.AddComponent<MercenaryWarriorTier1Minion>();
                             break;
                         case "ChebGonaz_HumanWarriorTier2.prefab":
                         case "ChebGonaz_HumanWarriorTier2Female.prefab":
+                            if (HeavyLogging.Value) Jotunn.Logger.LogInfo($"Adding MercenaryWarriorTier2Minion component to {prefabName}.");
                             prefab.AddComponent<MercenaryWarriorTier2Minion>();
                             break;
                         case "ChebGonaz_HumanWarriorTier3.prefab":
                         case "ChebGonaz_HumanWarriorTier3Female.prefab":
+                            if (HeavyLogging.Value) Jotunn.Logger.LogInfo($"Adding MercenaryWarriorTier3Minion component to {prefabName}.");
                             prefab.AddComponent<MercenaryWarriorTier3Minion>();
                             break;
                         case "ChebGonaz_HumanWarriorTier4.prefab":
                         case "ChebGonaz_HumanWarriorTier4Female.prefab":
+                            if (HeavyLogging.Value) Jotunn.Logger.LogInfo($"Adding MercenaryWarriorTier4Minion component to {prefabName}.");
                             prefab.AddComponent<MercenaryWarriorTier4Minion>();
                             break;
                         
                         case "ChebGonaz_HumanArcher.prefab":
                         case "ChebGonaz_HumanArcherFemale.prefab":
+                            if (HeavyLogging.Value) Jotunn.Logger.LogInfo($"Adding MercenaryArcherTier1Minion component to {prefabName}.");
                             prefab.AddComponent<MercenaryArcherTier1Minion>();
                             break;
                         case "ChebGonaz_HumanArcherTier2.prefab":
                         case "ChebGonaz_HumanArcherTier2Female.prefab":
+                            if (HeavyLogging.Value) Jotunn.Logger.LogInfo($"Adding MercenaryArcherTier2Minion component to {prefabName}.");
                             prefab.AddComponent<MercenaryArcherTier2Minion>();
                             break;
                         case "ChebGonaz_HumanArcherTier3.prefab":
                         case "ChebGonaz_HumanArcherTier3Female.prefab":
+                            if (HeavyLogging.Value) Jotunn.Logger.LogInfo($"Adding MercenaryArcherTier3Minion component to {prefabName}.");
                             prefab.AddComponent<MercenaryArcherTier3Minion>();
                             break;
 
                         default:
+                            if (HeavyLogging.Value) Jotunn.Logger.LogInfo($"Adding HumanMinion component to {prefabName}.");
                             prefab.gameObject.AddComponent<HumanMinion>();
                             break;
                     }

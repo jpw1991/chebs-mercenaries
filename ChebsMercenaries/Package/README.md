@@ -138,6 +138,8 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 
  Date | Version | Notes 
 --- | --- | ---
+12/09/2023 | 2.1.2 | Fix issue of armor not displaying properly on mercs; fix issue of skin colors not changing for mercs
+10/09/2023 | 2.1.1 | CVL updated to 2.3.1; add HeavyLogging config for optional heavy debugging; optimize adding of components to HumanMinion; add shebang to python scripts
 23/08/2023 | 2.1.0 | update for new valheim patch
 28/07/2023 | 2.0.0 | Workers should behave more realistically with gradual destruction of rocks, trees, etc.
 23/07/2023 | 1.7.0 | Add Russian translation & open untranslated parts of the mod up to future translation; update CVL to 2.1.2; permit tweaks of mercenary health in configs; fix diverse bugs eg. female workers not spawning with their AI attached
