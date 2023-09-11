@@ -29,5 +29,10 @@
     "$chebgonaz_mercenarytype_archertier2": "Лучник II",
     "$chebgonaz_mercenarytype_archertier3": "Лучник III",
     "$chebgonaz_mercenarytype_miner": "Старатель",
-    "$chebgonaz_mercenarytype_woodcutter": "Лесоруб"
+    "$chebgonaz_mercenarytype_woodcutter": "Лесоруб",
+    "$chebgonaz_worker_target": "Цель",
+    "$chebgonaz_worker_cantfindtarget": "Не могу найти цель.",
+    "$chebgonaz_minionstatus_following": "Следует",
+    "$chebgonaz_minionstatus_waiting": "Ждет",
+    "$chebgonaz_minionstatus_roaming": "Гуляет"
 }
