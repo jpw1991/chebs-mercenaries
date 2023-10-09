@@ -4,6 +4,6 @@
   "version_number": "2.2.1",
   "website_url": "https://github.com/jpw1991/chebs-mercenaries",
   "dependencies": [
-    "ValheimModding-Jotunn-2.11.0"
+    "ValheimModding-Jotunn-2.14.4"
   ]
 }
