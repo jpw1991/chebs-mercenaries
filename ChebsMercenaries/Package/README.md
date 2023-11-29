@@ -138,6 +138,7 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 
  Date | Version | Notes 
 --- | --- | ---
+29/11/2023 | 2.2.2 | Fix issue of configs not syncing reliably
 07/10/2023 | 2.2.1 | update missing custom shader in chebgonaz bundle
 06/10/2023 | 2.2.0 | update for hildr's
 12/09/2023 | 2.1.2 | Fix issue of armor not displaying properly on mercs; fix issue of skin colors not changing for mercs
