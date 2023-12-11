@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
 using BepInEx;
 using BepInEx.Configuration;
 using ChebsMercenaries.Items;
@@ -24,7 +27,7 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "2.2.1";
+        public const string PluginVersion = "2.2.2";
         private const string ConfigFileName = PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
@@ -130,39 +133,48 @@ namespace ChebsMercenaries
             _weaponsOfCommand.ForEach(w => w.CreateConfigs(this));
         }
 
-        private void SetupWatcher()
+        #endregion
+
+        #region ConfigUpdate
+        private byte[] GetFileHash(string fileName)
         {
-            FileSystemWatcher watcher = new(Paths.ConfigPath, ConfigFileName);
-            watcher.Changed += ReadConfigValues;
-            watcher.Created += ReadConfigValues;
-            watcher.Renamed += ReadConfigValues;
-            watcher.Error += (sender, e) => Jotunn.Logger.LogError($"Error watching for config changes: {e}");
-            watcher.IncludeSubdirectories = true;
-            watcher.SynchronizingObject = ThreadingHelper.SynchronizingObject;
-            watcher.EnableRaisingEvents = true;
+            var sha1 = HashAlgorithm.Create();
+            using var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+            return sha1.ComputeHash(stream);
         }
 
-        private void ReadConfigValues(object sender, FileSystemEventArgs e)
+        private IEnumerator WatchConfigFile()
         {
-            if (!File.Exists(ConfigFileFullPath)) return;
+            var lastHash = GetFileHash(ConfigFileFullPath);
+            while (true)
+            {
+                yield return new WaitForSeconds(5);
+                var hash = GetFileHash(ConfigFileFullPath);
+                if (!hash.SequenceEqual(lastHash))
+                {
+                    lastHash = hash;
+                    ReadConfigValues();
+                }
+            }
+        }
+        
+        private void ReadConfigValues()
+        {
             try
             {
-                Logger.LogInfo("Read updated config values");
-                Config.Reload();
-                
+                var adminOrLocal = ZNet.instance.IsServerInstance() || ZNet.instance.IsLocalInstance();
+                Logger.LogInfo($"Read updated config values (admin/local={adminOrLocal})");
+                if (adminOrLocal) Config.Reload();
                 MercenaryChest.UpdateRecipe();
-
                 _weaponsOfCommand.ForEach(w => w.UpdateRecipe());
             }
             catch (Exception exc)
             {
                 Logger.LogError($"There was an issue loading your {ConfigFileName}: {exc}");
-                Logger.LogError("Please check your config entries for spelling and format!");
             }
         }
-
         #endregion
-
+        
         private void Awake()
         {
             if (!Base.VersionCheck(ChebsValheimLibraryVersion, out string message))
@@ -174,7 +186,14 @@ namespace ChebsMercenaries
             LoadChebGonazAssetBundle();
             harmony.PatchAll();
 
-            SetupWatcher();
+            SynchronizationManager.OnConfigurationSynchronized += (obj, attr) =>
+            {
+                Logger.LogInfo(!attr.InitialSynchronization
+                    ? "Syncing configuration changes from server..."
+                    : "Syncing initial configuration...");
+            };
+
+            StartCoroutine(WatchConfigFile());
         }
 
         private void LoadChebGonazAssetBundle()
