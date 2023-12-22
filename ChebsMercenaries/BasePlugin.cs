@@ -27,7 +27,7 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "2.2.2";
+        public const string PluginVersion = "2.2.3";
         private const string ConfigFileName = PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
@@ -41,6 +41,8 @@ namespace ChebsMercenaries
             new MaceOfCommand(),
             new SwordOfCommand(),
         };
+        
+        public static ConfigEntry<bool> PvPAllowed;
 
         // if set to true, the particle effects that for some reason hurt radeon are dynamically disabled
         public static ConfigEntry<bool> RadeonFriendly, HeavyLogging;
@@ -105,6 +107,10 @@ namespace ChebsMercenaries
         private void CreateConfigValues()
         {
             Config.SaveOnConfigSet = true;
+            
+            PvPAllowed = Config.Bind("General (Server Synced)", "PvPAllowed",
+                false, new ConfigDescription("Whether minions will target and attack other players and their minions.", null,
+                    new ConfigurationManagerAttributes { IsAdminOnly = true }));
 
             RadeonFriendly = Config.Bind("General (Client)", "RadeonFriendly",
                 false, new ConfigDescription("ONLY set this to true if you have graphical issues with " +
