@@ -1,4 +1,5 @@
 using ChebsMercenaries.Minions;
+using ChebsMercenaries.PvP;
 using ChebsValheimLibrary.Minions;
 using HarmonyLib;
 using UnityEngine;
@@ -48,7 +49,7 @@ namespace ChebsMercenaries.Patches
             }
         }
         
-        [HarmonyPatch(typeof(BaseAI))]
+       [HarmonyPatch(typeof(BaseAI))]
         class BaseAIPatch2
         {
             [HarmonyPatch(nameof(BaseAI.IsEnemy), new []{typeof(Character), typeof(Character)})]
@@ -84,10 +85,12 @@ namespace ChebsMercenaries.Patches
                         __result = false;
                         return;
                     }
-                    
+
                     if (minionMasterA != minionMasterB)
                     {
-                        __result = true;
+                        var minionAFriendlyToMinionB = PvPManager.Friendly(minionMasterA, minionMasterB);
+                        var minionBFriendlyToMinionA = PvPManager.Friendly(minionMasterB, minionMasterA);
+                        __result = !(minionAFriendlyToMinionB && minionBFriendlyToMinionA);
                     }
                 }
                 else if (minionB != null)
@@ -96,7 +99,9 @@ namespace ChebsMercenaries.Patches
                         && minionMasterB != "" // do nothing if unclaimed minion
                         && minionMasterB != player.GetPlayerName())
                     {
-                        __result = true;
+                        var friendly = PvPManager.Friendly(player.GetPlayerName(), minionMasterB);
+                        //if (BasePlugin.HeavyLogging.Value) Jotunn.Logger.LogInfo($"Friendly = {friendly}");
+                        __result = !friendly;
                     }
                     // B is a player owned thing of some kind
                     // for now, defer to default handling
@@ -107,7 +112,9 @@ namespace ChebsMercenaries.Patches
                         && minionMasterA != "" // do nothing if unclaimed minion
                         && minionMasterA != player.GetPlayerName())
                     {
-                        __result = true;
+                        var friendly = PvPManager.Friendly(player.GetPlayerName(), minionMasterA);
+                        //if (BasePlugin.HeavyLogging.Value) Jotunn.Logger.LogInfo($"Friendly = {friendly}");
+                        __result = !friendly;
                     }
                     // A is a player owned thing of some kind
                     // for now, defer to default handling

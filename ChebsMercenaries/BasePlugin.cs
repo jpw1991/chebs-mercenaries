@@ -8,6 +8,7 @@ using BepInEx;
 using BepInEx.Configuration;
 using ChebsMercenaries.Items;
 using ChebsMercenaries.Minions;
+using ChebsMercenaries.PvP;
 using ChebsMercenaries.Structure;
 using ChebsValheimLibrary;
 using HarmonyLib;
@@ -27,11 +28,11 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "2.2.3";
+        public const string PluginVersion = "2.3.4";
         private const string ConfigFileName = PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
-        public readonly System.Version ChebsValheimLibraryVersion = new("2.4.0");
+        public readonly System.Version ChebsValheimLibraryVersion = new("2.4.1");
 
         private readonly Harmony harmony = new(PluginGuid);
 
@@ -43,6 +44,7 @@ namespace ChebsMercenaries
         };
         
         public static ConfigEntry<bool> PvPAllowed;
+        public static ConfigEntry<string> PvPFriendsList;
 
         // if set to true, the particle effects that for some reason hurt radeon are dynamically disabled
         public static ConfigEntry<bool> RadeonFriendly, HeavyLogging;
@@ -111,6 +113,13 @@ namespace ChebsMercenaries
             PvPAllowed = Config.Bind("General (Server Synced)", "PvPAllowed",
                 false, new ConfigDescription("Whether minions will target and attack other players and their minions.", null,
                     new ConfigurationManagerAttributes { IsAdminOnly = true }));
+            PvPFriendsList = Config.Bind("General (Client)", "PvPFriendsList",
+                "", new ConfigDescription("A comma delimited list of player names who your minions are friendly to eg. Jane,Bob,Istvan"));
+            PvPFriendsList.SettingChanged += ((sender, args) =>
+            {
+                if (HeavyLogging.Value) Logger.LogInfo("PvP Friends list updated");
+                PvPManager.UpdatePlayerFriendsDict(PvPFriendsList.Value);
+            });
 
             RadeonFriendly = Config.Bind("General (Client)", "RadeonFriendly",
                 false, new ConfigDescription("ONLY set this to true if you have graphical issues with " +
@@ -189,6 +198,7 @@ namespace ChebsMercenaries
             }
 
             CreateConfigValues();
+            PvPManager.ConfigureRPC();
             LoadChebGonazAssetBundle();
             harmony.PatchAll();
 

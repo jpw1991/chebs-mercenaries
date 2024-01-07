@@ -1,9 +1,9 @@
 ﻿{
   "name": "ChebsMercenaries",
   "description": "Cheb's Mercenaries adds mercenaries to Valheim that you can purchase with gold and upgrade with materials to fight (warriors, archers) or perform work (lumberjacks, miners).",
-  "version_number": "2.2.3",
+  "version_number": "2.3.4",
   "website_url": "https://github.com/jpw1991/chebs-mercenaries",
   "dependencies": [
-    "ValheimModding-Jotunn-2.14.4"
+    "ValheimModding-Jotunn-2.16.1"
   ]
 }
