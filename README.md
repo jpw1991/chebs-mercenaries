@@ -135,6 +135,15 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 ## Changelog
 
 <details>
+<summary>2024</summary>
+
+Date | Version | Notes
+--- | --- | ---
+07/01/2024 | 4.5.0 | PvP with friends as exceptions implemented via console commands.
+
+</details>
+
+<details>
 <summary>2023</summary>
 
  Date | Version | Notes 

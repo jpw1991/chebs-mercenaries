@@ -32,5 +32,7 @@
     "$chebgonaz_mercenarytype_woodcutter": "Woodcutter",
     "$chebgonaz_worker_target": "Target",
     "$chebgonaz_worker_cantfindtarget": "Can't find target.",
-    "$chebgonaz_minionstatus_following": "Following"
+    "$chebgonaz_minionstatus_following": "Following",
+    "$chebgonaz_minionstatus_roaming": "Roaming",
+    "$chebgonaz_minionstatus_waiting": "Waiting"
 }

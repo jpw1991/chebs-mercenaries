@@ -9,9 +9,9 @@ using BepInEx.Configuration;
 using ChebsMercenaries.Commands.PvP;
 using ChebsMercenaries.Items;
 using ChebsMercenaries.Minions;
-using ChebsMercenaries.PvP;
 using ChebsMercenaries.Structure;
 using ChebsValheimLibrary;
+using ChebsValheimLibrary.PvP;
 using HarmonyLib;
 using Jotunn;
 using Jotunn.Entities;
@@ -29,7 +29,7 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "2.3.4";
+        public const string PluginVersion = "2.3.5";
         private const string ConfigFileName = PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
@@ -45,7 +45,6 @@ namespace ChebsMercenaries
         };
         
         public static ConfigEntry<bool> PvPAllowed;
-        public static ConfigEntry<string> PvPFriendsList;
 
         // if set to true, the particle effects that for some reason hurt radeon are dynamically disabled
         public static ConfigEntry<bool> RadeonFriendly, HeavyLogging;
