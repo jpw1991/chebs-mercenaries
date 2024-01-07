@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using BepInEx;
 using BepInEx.Configuration;
+using ChebsMercenaries.Commands.PvP;
 using ChebsMercenaries.Items;
 using ChebsMercenaries.Minions;
 using ChebsMercenaries.PvP;
@@ -32,7 +33,7 @@ namespace ChebsMercenaries
         private const string ConfigFileName = PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
-        public readonly System.Version ChebsValheimLibraryVersion = new("2.4.1");
+        public readonly System.Version ChebsValheimLibraryVersion = new("2.5.0");
 
         private readonly Harmony harmony = new(PluginGuid);
 
@@ -113,13 +114,6 @@ namespace ChebsMercenaries
             PvPAllowed = Config.Bind("General (Server Synced)", "PvPAllowed",
                 false, new ConfigDescription("Whether minions will target and attack other players and their minions.", null,
                     new ConfigurationManagerAttributes { IsAdminOnly = true }));
-            PvPFriendsList = Config.Bind("General (Client)", "PvPFriendsList",
-                "", new ConfigDescription("A comma delimited list of player names who your minions are friendly to eg. Jane,Bob,Istvan"));
-            PvPFriendsList.SettingChanged += ((sender, args) =>
-            {
-                if (HeavyLogging.Value) Logger.LogInfo("PvP Friends list updated");
-                PvPManager.UpdatePlayerFriendsDict(PvPFriendsList.Value);
-            });
 
             RadeonFriendly = Config.Bind("General (Client)", "RadeonFriendly",
                 false, new ConfigDescription("ONLY set this to true if you have graphical issues with " +
@@ -201,6 +195,15 @@ namespace ChebsMercenaries
             PvPManager.ConfigureRPC();
             LoadChebGonazAssetBundle();
             harmony.PatchAll();
+            
+            var pvpCommands = new List<ConsoleCommand>()
+                { new PvPAddFriend(), new PvPRemoveFriend(), new PvPListFriends() };
+            foreach (var pvpCommand in pvpCommands)
+            {
+                if (!CommandManager.Instance.CustomCommands
+                        .ToList().Exists(c => c.Name == pvpCommand.Name))
+                    CommandManager.Instance.AddConsoleCommand(pvpCommand);
+            }
 
             SynchronizationManager.OnConfigurationSynchronized += (obj, attr) =>
             {

@@ -135,6 +135,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\PvP\PvPAddFriend.cs" />
+    <Compile Include="Commands\PvP\PvPListFriends.cs" />
+    <Compile Include="Commands\PvP\PvPRemoveFriend.cs" />
     <Compile Include="Items\AxeOfCommand.cs" />
     <Compile Include="Items\MaceOfCommand.cs" />
     <Compile Include="Items\SwordOfCommand.cs" />
@@ -156,7 +159,6 @@
     <Compile Include="Patches\CharacterDropPatches.cs" />
     <Compile Include="Patches\CharacterPatches.cs" />
     <Compile Include="Patches\ImpactEffectPatches.cs" />
-    <Compile Include="Patches\PlayerProfilePatches.cs" />
     <Compile Include="Patches\TameablePatches.cs" />
     <Compile Include="Patches\VisEquipmentPatches.cs" />
     <Compile Include="Patches\WearNTearPatches.cs" />

@@ -39,7 +39,7 @@ namespace ChebsMercenaries.Minions
             var itemsCost = plugin.ModConfig(serverSynced, "ItemsCost", "CookedMeat|Coins:5,HardAntler:1",
                 "The items that are consumed when creating a minion. Please use a comma-delimited list of prefab names with a : and integer for amount. Alternative items can be specified with a | eg. Wood|Coal:5 to mean wood and/or coal.",
                 null, true);
-            ItemsCost = new MemoryConfigEntry<string, List<string>>(itemsCost, s => s?.Split(',').ToList());
+            ItemsCost = new MemoryConfigEntry<string, List<string>>(itemsCost, s => s?.Split(',').Select(str => str.Trim()).ToList());
             Health = plugin.Config.Bind(serverSynced, "Health",
                 50f, new ConfigDescription("How much health the mercenary has.", null,
                     new ConfigurationManagerAttributes { IsAdminOnly = true }));

@@ -116,7 +116,6 @@ You can also edit the configs manually. Almost everything can be tweaked to your
 
 ## Future Ideas
 
-- Add hair/beards.
 - Add backpack mercenary.
 - Add resource gathering mercenary.
 
