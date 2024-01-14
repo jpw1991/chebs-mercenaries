@@ -4,13 +4,15 @@ Cheb's Mercenaries adds mercenaries to Valheim that you can purchase with gold a
 
 It is related to my other mod called [Cheb's Necromancy](https://github.com/jpw1991/chebs-necromancy) and shares a lot of concepts and functionality. It's basically for people that want living human minions rather than the undead.
 
+**Attention:** PvP is a new feature in 2.2.3 and needs testing. By default, it is disabled. To turn it on, set `PvPAllowed` to true in the config. Your minions should now be hostile to other players. Please report problems [here](https://github.com/jpw1991/chebs-mercenaries/pull/44).
+
 ## About Me
 
-[![image1](https://imgur.com/Fahi6sP.png)](https://chebgonaz.pythonanywhere.com)
+[![image1](https://imgur.com/Fahi6sP.png)](https://necrobase.chebgonaz.com)
 [![image2](https://imgur.com/X18OyQs.png)](https://ko-fi.com/chebgonaz)
 [![image3](https://imgur.com/4e64jQ8.png)](https://www.patreon.com/chebgonaz?fan_landing=true)
 
-I'm a YouTuber/Game Developer/Modder who is interested in all things necromancy and minion-related. Please check out my [YouTube channel](https://www.youtube.com/channel/UCPlZ1XnekiJxKymXbXyvkCg) and if you like the work I do and want to give back, please consider supporting me on [Patreon](https://www.patreon.com/chebgonaz?fan_landing=true) or throwing me a dime on [Ko-fi](https://ko-fi.com/chebgonaz). You can also check out my [website](https://chebgonaz.pythonanywhere.com) where I host information on all known necromancy mods, games, books, videos and also some written reviews/guides.
+I'm a YouTuber/Game Developer/Modder who is interested in all things necromancy and minion-related. Please check out my [YouTube channel](https://www.youtube.com/channel/UCPlZ1XnekiJxKymXbXyvkCg) and if you like the work I do and want to give back, please consider supporting me on [Patreon](https://www.patreon.com/chebgonaz?fan_landing=true) or throwing me a dime on [Ko-fi](https://ko-fi.com/chebgonaz). You can also check out my [website](https://necrobase.chebgonaz.com) where I host information on all known necromancy mods, games, books, videos and also some written reviews/guides.
 
 Thank you and I hope you enjoy the mod! If you have questions or need help please join my [Discord](https://discord.com/invite/EB96ASQ).
 
@@ -54,6 +56,12 @@ plugins/
 ├── ChebsValheimLibrary.dll
 └── ... other mods ...
 ```
+
+### Cheb's Valheim Library
+
+[Cheb's Valheim Library](https://jpw1991.github.io/chebs-valheim-library/index.html) (CVL) is a DLL that contains shared code across my mods. For example, both skeletons from Cheb's Necromancy and mercenaries from Cheb's Mercenaries inherit the `ChebGonazMinion` type from CVL. This permits mercenaries to be commanded by a wand, and vice versa.
+
+My mods are bundled with the latest CVL at the time of their release, but if you want to upgrade, you can get the newest CVL [here](https://github.com/jpw1991/chebs-valheim-library/releases).
 
 ## Features
 
@@ -114,7 +122,6 @@ You can also edit the configs manually. Almost everything can be tweaked to your
 
 ## Future Ideas
 
-- Add hair/beards.
 - Add backpack mercenary.
 - Add resource gathering mercenary.
 
@@ -134,10 +141,20 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 ## Changelog
 
 <details>
+<summary>2024</summary>
+
+Date | Version | Notes
+--- | --- | ---
+07/01/2024 | 4.5.0 | PvP with friends as exceptions implemented via console commands.
+
+</details>
+
+<details>
 <summary>2023</summary>
 
  Date | Version | Notes 
 --- | --- | ---
+22/12/2023 | 2.2.3 | Permit PvP - if enabled, minions will attack players and creatures that are not their owner.
 29/11/2023 | 2.2.2 | Fix issue of configs not syncing reliably
 07/10/2023 | 2.2.1 | update missing custom shader in chebgonaz bundle
 06/10/2023 | 2.2.0 | update for hildr's

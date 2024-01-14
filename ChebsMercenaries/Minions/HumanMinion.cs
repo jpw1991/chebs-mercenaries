@@ -62,7 +62,7 @@ namespace ChebsMercenaries.Minions
                 "Comma delimited list of HTML color codes.", null, true);
             HairColors = new MemoryConfigEntry<string, List<Vector3>>(hairColors, s =>
             {
-                var cols = s?.Split(',').ToList().Select(colorCode =>
+                var cols = s?.Split(',').Select(str => str.Trim()).ToList().Select(colorCode =>
                     ColorUtility.TryParseHtmlString(colorCode, out Color color)
                         ? Utils.ColorToVec3(color)
                         : Vector3.zero).ToList();
@@ -73,7 +73,7 @@ namespace ChebsMercenaries.Minions
                 "Comma delimited list of HTML color codes.", null, true);
             SkinColors = new MemoryConfigEntry<string, List<Vector3>>(skinColors, s =>
             {
-                var cols = s?.Split(',').ToList().Select(colorCode =>
+                var cols = s?.Split(',').Select(str => str.Trim()).ToList().Select(colorCode =>
                     ColorUtility.TryParseHtmlString(colorCode, out Color color)
                         ? Utils.ColorToVec3(color)
                         : Vector3.zero).ToList();

@@ -6,10 +6,12 @@ using System.Linq;
 using System.Security.Cryptography;
 using BepInEx;
 using BepInEx.Configuration;
+using ChebsMercenaries.Commands.PvP;
 using ChebsMercenaries.Items;
 using ChebsMercenaries.Minions;
 using ChebsMercenaries.Structure;
 using ChebsValheimLibrary;
+using ChebsValheimLibrary.PvP;
 using HarmonyLib;
 using Jotunn;
 using Jotunn.Entities;
@@ -27,11 +29,11 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "2.2.2";
+        public const string PluginVersion = "2.3.7";
         private const string ConfigFileName = PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
-        public readonly System.Version ChebsValheimLibraryVersion = new("2.4.0");
+        public readonly System.Version ChebsValheimLibraryVersion = new("2.5.2");
 
         private readonly Harmony harmony = new(PluginGuid);
 
@@ -41,6 +43,8 @@ namespace ChebsMercenaries
             new MaceOfCommand(),
             new SwordOfCommand(),
         };
+        
+        public static ConfigEntry<bool> PvPAllowed;
 
         // if set to true, the particle effects that for some reason hurt radeon are dynamically disabled
         public static ConfigEntry<bool> RadeonFriendly, HeavyLogging;
@@ -105,6 +109,10 @@ namespace ChebsMercenaries
         private void CreateConfigValues()
         {
             Config.SaveOnConfigSet = true;
+            
+            PvPAllowed = Config.Bind("General (Server Synced)", "PvPAllowed",
+                false, new ConfigDescription("Whether minions will target and attack other players and their minions.", null,
+                    new ConfigurationManagerAttributes { IsAdminOnly = true }));
 
             RadeonFriendly = Config.Bind("General (Client)", "RadeonFriendly",
                 false, new ConfigDescription("ONLY set this to true if you have graphical issues with " +
@@ -183,17 +191,34 @@ namespace ChebsMercenaries
             }
 
             CreateConfigValues();
+            PvPManager.ConfigureRPC();
             LoadChebGonazAssetBundle();
             harmony.PatchAll();
+            
+            var pvpCommands = new List<ConsoleCommand>()
+                { new PvPAddFriend(), new PvPRemoveFriend(), new PvPListFriends() };
+            foreach (var pvpCommand in pvpCommands)
+            {
+                if (!CommandManager.Instance.CustomCommands
+                        .ToList().Exists(c => c.Name == pvpCommand.Name))
+                    CommandManager.Instance.AddConsoleCommand(pvpCommand);
+            }
 
             SynchronizationManager.OnConfigurationSynchronized += (obj, attr) =>
             {
                 Logger.LogInfo(!attr.InitialSynchronization
                     ? "Syncing configuration changes from server..."
                     : "Syncing initial configuration...");
+                StartCoroutine(RequestPvPDict());
             };
 
             StartCoroutine(WatchConfigFile());
+        }
+        
+        private IEnumerator RequestPvPDict()
+        {
+            yield return new WaitUntil(() => ZNet.instance != null && Player.m_localPlayer != null);
+            PvPManager.InitialFriendsListRequest();
         }
 
         private void LoadChebGonazAssetBundle()
