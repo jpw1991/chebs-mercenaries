@@ -1,6 +1,6 @@
 using ChebsMercenaries.Minions;
-using ChebsValheimLibrary.PvP;
 using ChebsValheimLibrary.Minions;
+using ChebsValheimLibrary.PvP;
 using HarmonyLib;
 using UnityEngine;
 

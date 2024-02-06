@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using ChebsMercenaries.Minions;
 using ChebsValheimLibrary.Minions;
 using HarmonyLib;
