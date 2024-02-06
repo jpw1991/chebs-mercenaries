@@ -16,7 +16,7 @@ namespace ChebsMercenaries.Minions
 
         private static List<ItemDrop> _hairs, _beards;
 
-        public static void CreateConfigs(BasePlugin plugin)
+        public new static void CreateConfigs(BasePlugin plugin)
         {
             const string serverSync = "HumanMinion (Server Synced)";
             const string client = "HumanMinion (Client)";
