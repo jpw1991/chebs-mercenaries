@@ -29,7 +29,7 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "2.3.7";
+        public const string PluginVersion = "2.4.0";
         private const string ConfigFileName = PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
@@ -72,6 +72,8 @@ namespace ChebsMercenaries
             "ChebGonaz_HumanWarriorTier2Female.prefab",
             "ChebGonaz_HumanWarriorTier3Female.prefab",
             "ChebGonaz_HumanWarriorTier4Female.prefab",
+            
+            "ChebGonaz_Catapult.prefab",
         };
 
         #region ConfigStuff
@@ -124,6 +126,8 @@ namespace ChebsMercenaries
             HeavyLogging = Config.Bind("General (Client)", "HeavyLogging",
                 false, new ConfigDescription("Turn this on for debugging. Lots of things will get logged."));
 
+            MercenaryMinion.CreateConfigs(this);
+            
             HumanMinion.CreateConfigs(this);
             HumanWoodcutterMinion.CreateConfigs(this);
             HumanMinerMinion.CreateConfigs(this);
@@ -135,6 +139,8 @@ namespace ChebsMercenaries
             MercenaryWarriorTier2Minion.CreateConfigs(this);
             MercenaryWarriorTier3Minion.CreateConfigs(this);
             MercenaryWarriorTier4Minion.CreateConfigs(this);
+            
+            CatapultMinion.CreateConfigs(this);
 
             MercenaryChest.CreateConfigs(this);
 
@@ -295,6 +301,11 @@ namespace ChebsMercenaries
                         case "ChebGonaz_HumanArcherTier3Female.prefab":
                             if (HeavyLogging.Value) Jotunn.Logger.LogInfo($"Adding MercenaryArcherTier3Minion component to {prefabName}.");
                             prefab.AddComponent<MercenaryArcherTier3Minion>();
+                            break;
+                        
+                        case "ChebGonaz_Catapult.prefab":
+                            if (HeavyLogging.Value) Jotunn.Logger.LogInfo($"Adding CatapultMinion component to {prefabName}.");
+                            prefab.AddComponent<CatapultMinion>();
                             break;
 
                         default:

@@ -28,15 +28,15 @@ namespace ChebsMercenaries.Patches
             // For all other minions, check if they're supposed to be dropping
             // items and whether these should be packed into a crate or not.
             // We don't want ppls surtling cores and things to be claimed by davey jones
-            if (__instance.TryGetComponent(out HumanMinion humanMinion))
+            if (__instance.TryGetComponent(out MercenaryMinion mercenaryMinion))
             {
-                if (HumanMinion.DropOnDeath.Value != ChebGonazMinion.DropType.Nothing
-                    && HumanMinion.PackDropItemsIntoCargoCrate.Value)
+                if (MercenaryMinion.DropOnDeath.Value != ChebGonazMinion.DropType.Nothing
+                    && MercenaryMinion.PackDropItemsIntoCargoCrate.Value)
                 {
-                    humanMinion.DepositIntoNearbyDeathCrate(__instance);
+                    mercenaryMinion.DepositIntoNearbyDeathCrate(__instance);
                 }
 
-                if (humanMinion.ItemsDropped)
+                if (mercenaryMinion.ItemsDropped)
                 {
                     Logger.LogInfo("items dropped is true");
                     ___m_drops.RemoveAll(a => true);

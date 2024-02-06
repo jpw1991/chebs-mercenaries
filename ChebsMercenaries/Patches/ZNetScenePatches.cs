@@ -44,6 +44,8 @@ namespace ChebsMercenaries.Patches
             
             BasePlugin.MercenaryPrefabPaths.ForEach(prefabFileName =>
             {
+                if (prefabFileName == "ChebGonaz_Catapult.prefab") return;
+                
                 var prefabName = prefabFileName.Replace(".prefab", "");
                 var mercPrefab = __instance.GetPrefab(prefabName);
                 if (mercPrefab == null)
