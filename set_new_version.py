@@ -48,12 +48,9 @@ if __name__ == '__main__':
         sys.exit(1)
 
     file_pattern_replacements = [
-        FilePatternReplacement('ChebsMercenaries/Properties/AssemblyInfo.cs',
-                               'AssemblyVersion\\([".0-9]+\\)',
-                               f'AssemblyVersion("{version}.0")'),
-        FilePatternReplacement('ChebsMercenaries/Properties/AssemblyInfo.cs',
-                               'AssemblyFileVersion\\([".0-9]+\\)',
-                               f'AssemblyFileVersion("{version}.0")'),
+        FilePatternReplacement('ChebsMercenaries/ChebsMercenaries.csproj',
+                               '<Version>[0-9.]+<\/Version>',
+                               f'<Version>{version}.0</Version>'),
         FilePatternReplacement('ChebsMercenaries/BasePlugin.cs',
                                'PluginVersion = [".0-9]+',
                                f'PluginVersion = "{version}"'),

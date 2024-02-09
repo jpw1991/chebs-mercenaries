@@ -7,6 +7,7 @@ using ChebsValheimLibrary.Common;
 using ChebsValheimLibrary.Minions;
 using UnityEngine;
 using Logger = Jotunn.Logger;
+using Random = UnityEngine.Random;
 
 namespace ChebsMercenaries.Minions
 {
