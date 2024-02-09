@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using ChebsValheimLibrary.PvP;
+﻿using ChebsValheimLibrary.PvP;
 using Jotunn.Entities;
 
 namespace ChebsMercenaries.Commands.PvP

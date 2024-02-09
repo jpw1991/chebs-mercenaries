@@ -133,6 +133,8 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 
 - Artists
     + **Ramblez** (aka **[Thorngor](https://www.nexusmods.com/users/21532784)** on the Nexus) - Most of custom textures and icons.
+    + **Independent.nu** and [qubodup](https://opengameart.org/users/qubodup) for [35 wooden cracks/hits/destructions](https://opengameart.org/content/35-wooden-crackshitsdestructions) which are the catapult sound effects.
+    + [**AntumDeluge**](https://opengameart.org/users/antumdeluge) for the [creaking tree](https://opengameart.org/content/tree-creaking) sound effect used for the catapult.
 - Translations
 	+ [**pandory**](https://github.com/pandory-network) - German language localization.
 	+ [**Cordain**](https://github.com/Cordain) - Polish language localization.
@@ -145,7 +147,8 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 
 Date | Version | Notes
 --- | --- | ---
-07/01/2024 | 4.5.0 | PvP with friends as exceptions implemented via console commands.
+06/02/2024 | 2.4.0 | Add catapult
+07/01/2024 | 2.3.0 | PvP with friends as exceptions implemented via console commands.
 
 </details>
 

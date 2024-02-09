@@ -1,7 +1,6 @@
-using System.Collections.Generic;
-using System.Linq;
 using BepInEx.Configuration;
 using ChebsValheimLibrary.Common;
+using Jotunn;
 
 namespace ChebsMercenaries.Minions
 {
@@ -37,7 +36,7 @@ namespace ChebsMercenaries.Minions
             }
             else
             {
-                Jotunn.Logger.LogError("Error: Failed to get Humanoid component to set health value.");
+                Logger.LogError("Error: Failed to get Humanoid component to set health value.");
             }
         }
     }

@@ -4,30 +4,37 @@ using Jotunn;
 
 namespace ChebsMercenaries.Minions
 {
-    internal class MercenaryWarriorTier4Minion : HumanMinion
+    internal class CatapultMinion : MercenaryMinion
     {
         public new static ConfigEntry<float> Health;
         public static MemoryConfigEntry<string, List<string>> ItemsCost;
 
         public new static void CreateConfigs(BasePlugin plugin)
         {
-            const string serverSynced = "MercenaryWarriorTier4Minion (Server Synced)";
+            const string serverSynced = "CatapultMinion (Server Synced)";
 
-            var itemsCost = plugin.ModConfig(serverSynced, "ItemsCost", "Coins:100",
+            var itemsCost = plugin.ModConfig(serverSynced, "ItemsCost", "Wood:25,RoundLog:5,Bronze:1",
                 "The items that are consumed when creating a minion. Please use a comma-delimited list of prefab names with a : and integer for amount. Alternative items can be specified with a | eg. Wood|Coal:5 to mean wood and/or coal.",
                 null, true);
             ItemsCost = new MemoryConfigEntry<string, List<string>>(itemsCost, s => s?.Split(',').Select(str => str.Trim()).ToList());
             Health = plugin.Config.Bind(serverSynced, "Health",
-                400f, new ConfigDescription("How much health the mercenary has.", null,
+                250f, new ConfigDescription("How much health the mercenary has.", null,
                     new ConfigurationManagerAttributes { IsAdminOnly = true }));
         }
         
-        public override void AfterAwake()
+        public sealed override void Awake()
+        {
+            base.Awake();
+            
+            AfterAwake();
+        }
+
+        public virtual void AfterAwake()
         {
             ConfigureHealth();
         }
 
-        protected override void ConfigureHealth()
+        protected virtual void ConfigureHealth()
         {
             if (TryGetComponent(out Humanoid humanoid))
             {

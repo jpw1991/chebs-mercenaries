@@ -1,5 +1,5 @@
-using ChebsMercenaries.Minions;
 using HarmonyLib;
+using Jotunn;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedParameter.Local
@@ -27,15 +27,15 @@ namespace ChebsMercenaries.Patches
             var playerPrefab = __instance.GetPrefab("Player");
             if (playerPrefab == null)
             {
-                Jotunn.Logger.LogError($"ZNetScenePatches: Failed to get player prefab. Armor may not display" +
-                                       $"correctly on mercenaries.");
+                Logger.LogError($"ZNetScenePatches: Failed to get player prefab. Armor may not display" +
+                                $"correctly on mercenaries.");
                 return;
             }
 
             if (!playerPrefab.TryGetComponent(out VisEquipment playerVisEquipment))
             {
-                Jotunn.Logger.LogError($"ZNetScenePatches: Failed to get Player's VisEquipment " +
-                                       $"component. Armor may not display correctly on mercenaries.");
+                Logger.LogError($"ZNetScenePatches: Failed to get Player's VisEquipment " +
+                                $"component. Armor may not display correctly on mercenaries.");
                 return;
             }
 
@@ -44,19 +44,21 @@ namespace ChebsMercenaries.Patches
             
             BasePlugin.MercenaryPrefabPaths.ForEach(prefabFileName =>
             {
+                if (prefabFileName == "ChebGonaz_Catapult.prefab") return;
+                
                 var prefabName = prefabFileName.Replace(".prefab", "");
                 var mercPrefab = __instance.GetPrefab(prefabName);
                 if (mercPrefab == null)
                 {
-                    Jotunn.Logger.LogError($"ZNetScenePatches: Failed to get {prefabName}. Armor may not display" +
-                                           $"correctly on mercenaries.");
+                    Logger.LogError($"ZNetScenePatches: Failed to get {prefabName}. Armor may not display" +
+                                    $"correctly on mercenaries.");
                     return;
                 }
 
                 if (!mercPrefab.TryGetComponent(out VisEquipment visEquipment))
                 {
-                    Jotunn.Logger.LogError($"ZNetScenePatches: Failed to get {prefabName}'s VisEquipment " +
-                                           $"component. Armor may not display correctly on mercenaries.");
+                    Logger.LogError($"ZNetScenePatches: Failed to get {prefabName}'s VisEquipment " +
+                                    $"component. Armor may not display correctly on mercenaries.");
                     return;
                 }
 
