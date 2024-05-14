@@ -154,7 +154,6 @@ Date | Version | Notes
 
  Date | Version | Notes 
 --- | --- | ---
-25/04/2024 | 2.4.0 | Prepare for ashlands; upgrade CVL
 22/12/2023 | 2.2.3 | Permit PvP - if enabled, minions will attack players and creatures that are not their owner.
 29/11/2023 | 2.2.2 | Fix issue of configs not syncing reliably
 07/10/2023 | 2.2.1 | update missing custom shader in chebgonaz bundle

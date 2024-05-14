@@ -1,13 +1,12 @@
 #!/bin/bash
 
-RELEASEDIR=ChebsMercenaries/bin/Release
+RELEASEDIR=ChebsMercenaries/bin/Release/net48
 DLL=$RELEASEDIR/ChebsMercenaries.dll
-LIB=../chebs-valheim-library/ChebsValheimLibrary/bin/Release/ChebsValheimLibrary.dll
+LIB=$RELEASEDIR/ChebsValheimLibrary.dll
 BUN=../chebs-necromancy/ChebsNecromancyUnity/Assets/AssetBundles/chebgonaz
 PLUGINS=ChebsMercenaries/Package/plugins
 README=README.md
 TRANSLATIONS=Translations
-BEPINEX=ChebsMercenaries/libs/BepInEx.dll
 
 VERSION=$1
 
@@ -43,10 +42,6 @@ if [ ! -f "$README" ]; then
     exit 1
 fi
 
-if [ ! -f "$BEPINEX" ]; then
-    echo "Error: $BEPINEX does not exist or is not readable."
-    exit 1
-fi
 
 cp -f "$DLL" "$PLUGINS" || { echo "Error: Failed to copy $DLL"; exit 1; }
 cp -f "$LIB" "$PLUGINS" || { echo "Error: Failed to copy $LIB"; exit 1; }
