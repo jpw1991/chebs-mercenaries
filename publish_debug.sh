@@ -1,12 +1,11 @@
 #!/bin/bash
 
-DEBUGDIR=ChebsMercenaries/bin/Debug
+DEBUGDIR=ChebsMercenaries/bin/Debug/net48
 DLL=$DEBUGDIR/ChebsMercenaries.dll
-LIB=../chebs-valheim-library/ChebsValheimLibrary/bin/Release/ChebsValheimLibrary.dll
+LIB=$DEBUGDIR/ChebsValheimLibrary.dll
 BUN=../chebs-necromancy/ChebsNecromancyUnity/Assets/AssetBundles/chebgonaz
 #PLUGINS=/home/joshua/.local/share/Steam/steamapps/common/Valheim/BepInEx/plugins
 PLUGINS=/home/$USER/.config/r2modmanPlus-local/Valheim/profiles/cheb-development/BepInEx/plugins/ChebGonaz-ChebsMercenaries
-BEPINEX=ChebsMercenaries/libs/BepInEx.dll
 
 # Check that source files exist and are readable
 if [ ! -f "$DLL" ]; then
@@ -32,11 +31,6 @@ fi
 
 if [ ! -w "$PLUGINS" ]; then
     echo "Error: $PLUGINS directory is not writable."
-    exit 1
-fi
-
-if [ ! -f "$BEPINEX" ]; then
-    echo "Error: $BEPINEX does not exist or is not readable."
     exit 1
 fi
 
