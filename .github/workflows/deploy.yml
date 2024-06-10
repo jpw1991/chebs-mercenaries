@@ -3,51 +3,68 @@ name: Publish package
 on:
   release:
     types: [published] # run when a new release is published
+    tags:
+      - 'v*' # Trigger only if the tag matches eg. v1.0.0
+
+  workflow_run:
+    workflows: ["build"] # run if build.yml is successfully completed
+    types:
+      - completed
 
 env:
   name: ChebsMercenaries
   jsonf: manifest.json
   dlpath: https://github.com/jpw1991/chebs-mercenaries/releases/download
-  dependencies: "ValheimModding-Jotunn@2.11.2" # dependencies separated by spaces
+  dependencies: "ValheimModding-Jotunn@2.20.1" # dependencies separated by spaces
   categories: "Mods" # categories separated by spaces
   namespace: ChebGonaz
 
 jobs:
-  verify:
+  verify-tag:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Get clean version
-        run: echo "cleanVersion=$(echo ${{github.ref_name}} | sed s/v//g)" >> $GITHUB_ENV
-      - name: Check that version matches
+      - name: Check tag
         run: |
-          if [[ "$(jq -r '.version_number' $(find ./${{env.name}}/Package -name ${{env.jsonf}}))" != "${{ env.cleanVersion }}" ]]; then
-            echo "::debug::${{env.cleanVersion}}"
-            echo "::debug::$(cat $(find ./ -name ${{env.jsonf}}))"
-            echo "::error::Version in ${{env.jsonf}} does not match tag version"
+          # the tags check above doesn't seem to work properly, so a more rigorous check here
+          if [ "${{ github.event_name }}" == "release" ]; then
+            echo "This workflow was triggered by a release."
+            release_tag="${{ github.event.release.tag_name }}" 
+            # Check if the tag matches semantic versioning pattern
+            if ! [[ $release_tag =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+)?$ ]]; then
+              echo "Error: Release tag ($release_tag) does not match semantic versioning pattern."
+              exit 1
+            fi
+            exit 0
+          elif [ "${{ github.event_name }}" == "workflow_run" ]; then
+            echo "This workflow was triggered by a workflow run."
+            exit 0
+          else
+            echo "This workflow was triggered by an unknown event: ${{ github.event_name }}"
             exit 1
           fi
-      - name: Get Description
-        id: get_description
-        run: |
-          description=$(jq -r '.description' $(find ./${{env.name}}/Package -name ${{env.jsonf}}))
-          echo "DESCRIPTION=${description}" >> $GITHUB_ENV
   publish:
+    needs: verify-tag
     runs-on: ubuntu-latest
-    needs: verify
     steps:
       - uses: actions/checkout@v3
-      - run: wget ${{ env.dlpath }}/${{ github.ref_name }}/${{ env.name }}.${{ github.ref_name }}.zip
+      - name: Read manifest
+        run: |
+          version="$(jq -r '.version_number' ${{env.name}}/Package/${{env.jsonf}})"
+          description="$(jq -r '.description' ${{env.name}}/Package/${{env.jsonf}})"
+          echo "VERSION=${version}" >> $GITHUB_ENV
+          echo "DESCRIPTION=${description}" >> $GITHUB_ENV
+      - run: wget ${{env.dlpath}}/v${{env.VERSION}}/${{env.name}}.${{env.VERSION}}.zip
       - name: Upload Thunderstore Package
         uses: GreenTF/upload-thunderstore-package@v4
         with:
           community: valheim
-          namespace: ${{ env.namespace }}
-          name: ${{ env.name }}
-          version: ${{ github.ref_name }} # This is the tag that was created in the release
-          description: ${{ env.DESCRIPTION }}
-          token: ${{ secrets.TS_KEY }}
-          deps: ${{ env.dependencies }}
-          categories: ${{ env.categories }}
-          file: ${{ env.name }}.${{ github.ref_name }}.zip
+          namespace: ${{env.namespace}}
+          name: ${{env.name}}
+          version: ${{env.VERSION}}
+          description: ${{env.DESCRIPTION}}
+          token: ${{secrets.TS_KEY}}
+          deps: ${{env.dependencies}}
+          categories: ${{env.categories}}
+          file: ${{env.name}}.${{env.VERSION}}.zip
 
