@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Collections;
 using System.Security.Cryptography;
 using BepInEx;
 using BepInEx.Configuration;
@@ -72,6 +68,8 @@ namespace ChebsMercenaries
             "ChebGonaz_HumanWarriorTier2Female.prefab",
             "ChebGonaz_HumanWarriorTier3Female.prefab",
             "ChebGonaz_HumanWarriorTier4Female.prefab",
+            
+            "ChebGonaz_Catapult.prefab",
         };
 
         #region ConfigStuff
@@ -124,6 +122,8 @@ namespace ChebsMercenaries
             HeavyLogging = Config.Bind("General (Client)", "HeavyLogging",
                 false, new ConfigDescription("Turn this on for debugging. Lots of things will get logged."));
 
+            MercenaryMinion.CreateConfigs(this);
+            
             HumanMinion.CreateConfigs(this);
             HumanWoodcutterMinion.CreateConfigs(this);
             HumanMinerMinion.CreateConfigs(this);
@@ -135,6 +135,8 @@ namespace ChebsMercenaries
             MercenaryWarriorTier2Minion.CreateConfigs(this);
             MercenaryWarriorTier3Minion.CreateConfigs(this);
             MercenaryWarriorTier4Minion.CreateConfigs(this);
+            
+            CatapultMinion.CreateConfigs(this);
 
             MercenaryChest.CreateConfigs(this);
 
@@ -295,6 +297,11 @@ namespace ChebsMercenaries
                         case "ChebGonaz_HumanArcherTier3Female.prefab":
                             if (HeavyLogging.Value) Jotunn.Logger.LogInfo($"Adding MercenaryArcherTier3Minion component to {prefabName}.");
                             prefab.AddComponent<MercenaryArcherTier3Minion>();
+                            break;
+                        
+                        case "ChebGonaz_Catapult.prefab":
+                            if (HeavyLogging.Value) Jotunn.Logger.LogInfo($"Adding CatapultMinion component to {prefabName}.");
+                            prefab.AddComponent<CatapultMinion>();
                             break;
 
                         default:

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using BepInEx.Configuration;
 using ChebsMercenaries.Minions.WorkerAI;
 using ChebsValheimLibrary.Common;

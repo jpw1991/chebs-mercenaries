@@ -26,13 +26,13 @@ namespace ChebsMercenaries.Patches
             // Stop players that aren't the owner of a minion from interacting
             // with it. Also call HumanMinion wait/follow methods to
             // properly update the ZDO with the waiting position.
-            if (__instance.TryGetComponent(out HumanMinion humanMinion)
+            if (__instance.TryGetComponent(out MercenaryMinion mercenaryMinion)
                 && user.TryGetComponent(out Player player))
             {
                 // if nobody owns the minion yet, claim ownership
-                if (humanMinion.UndeadMinionMaster == "") humanMinion.UndeadMinionMaster = player.GetPlayerName();
+                if (mercenaryMinion.UndeadMinionMaster == "") mercenaryMinion.UndeadMinionMaster = player.GetPlayerName();
 
-                if (!humanMinion.BelongsToPlayer(player.GetPlayerName()))
+                if (!mercenaryMinion.BelongsToPlayer(player.GetPlayerName()))
                 {
                     user.Message(MessageHud.MessageType.Center, "$chebgonaz_mercenaries_notyourminion");
                     return false; // deny base method completion
@@ -43,7 +43,7 @@ namespace ChebsMercenaries.Patches
                     return false; // deny base method completion
                 }
 
-                var currentStatus = humanMinion.Status;
+                var currentStatus = mercenaryMinion.Status;
                 var nextStatus = currentStatus switch
                 {
                     ChebGonazMinion.State.Following => ChebGonazMinion.State.Waiting,
@@ -55,19 +55,19 @@ namespace ChebsMercenaries.Patches
                 if (nextStatus.Equals(ChebGonazMinion.State.Following))
                 {
                     user.Message(MessageHud.MessageType.Center, "$chebgonaz_mercenaries_humanfollowing");
-                    humanMinion.Follow(player.gameObject);
+                    mercenaryMinion.Follow(player.gameObject);
                     return false; // deny base method completion
                 }
 
                 if (nextStatus.Equals(ChebGonazMinion.State.Waiting))
                 {
                     user.Message(MessageHud.MessageType.Center, "$chebgonaz_mercenaries_humanwaiting");
-                    humanMinion.Wait(player.transform.position);
+                    mercenaryMinion.Wait(player.transform.position);
                     return false; // deny base method completion
                 }
 
                 user.Message(MessageHud.MessageType.Center, "$chebgonaz_mercenaries_humanroaming");
-                humanMinion.Roam();
+                mercenaryMinion.Roam();
                 return false; // deny base method completion
             }
 
@@ -84,10 +84,10 @@ namespace ChebsMercenaries.Patches
         {
             if (__instance.m_nview.IsValid()
                 && __instance.m_commandable
-                && __instance.TryGetComponent(out HumanMinion humanMinion)
+                && __instance.TryGetComponent(out MercenaryMinion mercenaryMinion)
                 && Player.m_localPlayer != null)
             {
-                __result = humanMinion.Status switch
+                __result = mercenaryMinion.Status switch
                 {
                     ChebGonazMinion.State.Following => Localization.instance.Localize("$chebgonaz_mercenaries_wait"),
                     ChebGonazMinion.State.Waiting => Localization.instance.Localize("$chebgonaz_mercenaries_roam"),
@@ -105,9 +105,9 @@ namespace ChebsMercenaries.Patches
         static void Postfix(Tameable __instance, ref string __result)
         {
             if (__instance.m_nview.IsValid()
-                && __instance.TryGetComponent(out HumanMinion humanMinion))
+                && __instance.TryGetComponent(out MercenaryMinion mercenaryMinion))
             {
-                __result = $@"{Localization.instance.Localize("$chebgonaz_mercenaries_owner")}: {humanMinion.UndeadMinionMaster} ({humanMinion.Status switch {
+                __result = $@"{Localization.instance.Localize("$chebgonaz_mercenaries_owner")}: {mercenaryMinion.UndeadMinionMaster} ({mercenaryMinion.Status switch {
                     ChebGonazMinion.State.Following => Localization.instance.Localize("$chebgonaz_minionstatus_following"),
                     ChebGonazMinion.State.Roaming => Localization.instance.Localize("$chebgonaz_minionstatus_roaming"),
                     _ => Localization.instance.Localize("$chebgonaz_minionstatus_waiting") }})";

@@ -23,7 +23,7 @@ namespace ChebsMercenaries.Patches
         // stop minions from damaging ships
         static bool Prefix(ref Collision info, ImpactEffect __instance)
         {
-            if (info.gameObject.TryGetComponent(out HumanMinion _))
+            if (info.gameObject.TryGetComponent(out MercenaryMinion _))
             {
                 return false; // deny base method completion
             }

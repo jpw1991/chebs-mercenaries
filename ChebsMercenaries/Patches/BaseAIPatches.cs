@@ -1,6 +1,6 @@
 using ChebsMercenaries.Minions;
-using ChebsValheimLibrary.PvP;
 using ChebsValheimLibrary.Minions;
+using ChebsValheimLibrary.PvP;
 using HarmonyLib;
 using UnityEngine;
 
@@ -28,15 +28,15 @@ namespace ChebsMercenaries.Patches
             [HarmonyPostfix]
             static void Postfix(GameObject go, float dt, BaseAI __instance)
             {
-                if (__instance.TryGetComponent(out HumanMinion humanMinion))
+                if (__instance.TryGetComponent(out MercenaryMinion mercenaryMinion))
                 {
-                    var isWorker = humanMinion is HumanMinerMinion or HumanWoodcutterMinion;
+                    var isWorker = mercenaryMinion is HumanMinerMinion or HumanWoodcutterMinion;
                     // use our custom implementation with custom follow distance
                     var num = Vector3.Distance(go.transform.position, __instance.transform.position);
-                    var run = isWorker && num > 3f || num > HumanMinion.RunDistance.Value;
+                    var run = isWorker && num > 3f || num > MercenaryMinion.RunDistance.Value;
                     var approachRange = isWorker
-                        ? 0f //.25f
-                        : HumanMinion.FollowDistance.Value;
+                        ? 0f
+                        : MercenaryMinion.FollowDistance.Value;
                     if (num < approachRange)
                     {
                         __instance.StopMoving();
