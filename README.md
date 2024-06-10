@@ -69,7 +69,7 @@ Detailed info in the [wiki](https://github.com/jpw1991/chebs-mercenaries/wiki). 
 
 - Almost everything is, or will soon be, configurable. Minions too weak/overpowered? Tweak them.
 - Craftable structure at the workbench:
-    + [**Mercenaries Chest**](https://github.com/jpw1991/chebs-mercenaries/wiki/MercenaryChest): Hire warriors, archers, miners, and lumberjacks.
+    + [**Mercenaries Chest**](https://github.com/jpw1991/chebs-mercenaries/wiki/MercenaryChest): Hire warriors, archers, catapults, miners, and lumberjacks.
 - Put coins and other items in the chest to recruit a mercenary:
   - **Tier 1 warrior**: 5 CookedMeat/Coins, 1 Club
   - **Tier 2 warrior:** 25 Coins
@@ -79,7 +79,8 @@ Detailed info in the [wiki](https://github.com/jpw1991/chebs-mercenaries/wiki). 
   - **Tier 2 archer:** 50 Coins, 10 ArrowBronze
   - **Tier 3 archer:** 100 Coins, 10 ArrowIron
   - **Miner:** 5 Coins, 1 HardAntler
-  - **Woodcutter:** 5 Coins,  1 Flint
+  - **Woodcutter:** 5 Coins, 1 Flint
+  - **Catapult:** 25 Wood, 5 Core Wood, 1 Bronze
 - Put extra stuff in there to give the mercenary clothing:
   - **Leather armor:** 2 DeerHide/LeatherScraps/Scales
   - **Troll armor:** 2 TrollHide
@@ -147,7 +148,7 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 
 Date | Version | Notes
 --- | --- | ---
-10/06/2024 | 2.5.0 |
+10/06/2024 | 2.4.1 | Implement spawning of catapult; add console command to spawn mercenaries in with armor
 06/02/2024 | 2.4.0 | Add catapult
 07/01/2024 | 2.3.0 | PvP with friends as exceptions implemented via console commands.
 
