@@ -34,5 +34,6 @@
     "$chebgonaz_worker_cantfindtarget": "Can't find target.",
     "$chebgonaz_minionstatus_following": "Following",
     "$chebgonaz_minionstatus_roaming": "Roaming",
-    "$chebgonaz_minionstatus_waiting": "Waiting"
+    "$chebgonaz_minionstatus_waiting": "Waiting",
+    "$chebgonaz_mercenarytype_catapult": "Catapult",
 }

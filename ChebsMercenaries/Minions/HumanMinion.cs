@@ -47,47 +47,7 @@ namespace ChebsMercenaries.Minions
                 return cols;
             });
         }
-
-        public enum MercenaryType
-        {
-            None,
-            WarriorTier1,
-            WarriorTier2,
-            WarriorTier3,
-            WarriorTier4,
-            ArcherTier1,
-            ArcherTier2,
-            ArcherTier3,
-            Miner,
-            Woodcutter,
-        }
-
-        public static readonly Dictionary<MercenaryType, string> PrefabNames = new()
-        {
-            { MercenaryType.WarriorTier1, "ChebGonaz_HumanWarrior" },
-            { MercenaryType.WarriorTier2, "ChebGonaz_HumanWarriorTier2" },
-            { MercenaryType.WarriorTier3, "ChebGonaz_HumanWarriorTier3" },
-            { MercenaryType.WarriorTier4, "ChebGonaz_HumanWarriorTier4" },
-            { MercenaryType.ArcherTier1, "ChebGonaz_HumanArcher" },
-            { MercenaryType.ArcherTier2, "ChebGonaz_HumanArcherTier2" },
-            { MercenaryType.ArcherTier3, "ChebGonaz_HumanArcherTier3" },
-            { MercenaryType.Miner, "ChebGonaz_HumanMiner" },
-            { MercenaryType.Woodcutter, "ChebGonaz_HumanWoodcutter" },
-        };
-
-        public static readonly Dictionary<MercenaryType, string> PrefabNamesFemale = new()
-        {
-            { MercenaryType.WarriorTier1, "ChebGonaz_HumanWarriorFemale" },
-            { MercenaryType.WarriorTier2, "ChebGonaz_HumanWarriorTier2Female" },
-            { MercenaryType.WarriorTier3, "ChebGonaz_HumanWarriorTier3Female" },
-            { MercenaryType.WarriorTier4, "ChebGonaz_HumanWarriorTier4Female" },
-            { MercenaryType.ArcherTier1, "ChebGonaz_HumanArcherFemale" },
-            { MercenaryType.ArcherTier2, "ChebGonaz_HumanArcherTier2Female" },
-            { MercenaryType.ArcherTier3, "ChebGonaz_HumanArcherTier3Female" },
-            { MercenaryType.Miner, "ChebGonaz_HumanMinerFemale" },
-            { MercenaryType.Woodcutter, "ChebGonaz_HumanWoodcutterFemale" },
-        };
-
+        
         public sealed override void Awake()
         {
             base.Awake();

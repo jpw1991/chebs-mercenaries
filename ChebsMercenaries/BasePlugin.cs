@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using BepInEx;
 using BepInEx.Configuration;
+using ChebsMercenaries.Commands;
 using ChebsMercenaries.Commands.PvP;
 using ChebsMercenaries.Items;
 using ChebsMercenaries.Minions;
@@ -25,11 +26,11 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "2.4.0";
+        public const string PluginVersion = "2.5.0";
         private const string ConfigFileName = PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
-        public readonly System.Version ChebsValheimLibraryVersion = new("2.6.1");
+        public readonly System.Version ChebsValheimLibraryVersion = new("2.6.2");
 
         private readonly Harmony harmony = new(PluginGuid);
 
@@ -197,6 +198,8 @@ namespace ChebsMercenaries
             LoadChebGonazAssetBundle();
             harmony.PatchAll();
             
+            // PvP commands could've already been added by Cheb's Necromancy or a different mod, therefore we check
+            // before adding them.
             var pvpCommands = new List<ConsoleCommand>()
                 { new PvPAddFriend(), new PvPRemoveFriend(), new PvPListFriends() };
             foreach (var pvpCommand in pvpCommands)
@@ -205,6 +208,9 @@ namespace ChebsMercenaries
                         .ToList().Exists(c => c.Name == pvpCommand.Name))
                     CommandManager.Instance.AddConsoleCommand(pvpCommand);
             }
+            
+            // No check needed for these because only this mod adds them.
+            CommandManager.Instance.AddConsoleCommand(new SpawnMerc());
 
             SynchronizationManager.OnConfigurationSynchronized += (obj, attr) =>
             {

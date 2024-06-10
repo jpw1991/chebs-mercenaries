@@ -18,5 +18,6 @@
     "$chebsmercenaries_weaponofcommand_follow": "Follow",
     "$chebsmercenaries_weaponofcommand_wait": "Wait",
     "$chebsmercenaries_weaponofcommand_teleport": "Teleport",
-    "$chebsmercenaries_weaponofcommand_shift": "Shift"
+    "$chebsmercenaries_weaponofcommand_shift": "Shift",
+    "$chebgonaz_mercenarytype_catapult": "Catapult",
 }

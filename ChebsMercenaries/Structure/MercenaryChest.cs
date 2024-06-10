@@ -37,17 +37,18 @@ namespace ChebsMercenaries.Structure
             ObjectName = MethodBase.GetCurrentMethod().DeclaringType.Name
         };
 
-        private List<HumanMinion.MercenaryType> _orderedByPreference = new()
+        private List<MercenaryMinion.MercenaryType> _orderedByPreference = new()
         {
-            HumanMinion.MercenaryType.Woodcutter,
-            HumanMinion.MercenaryType.Miner,
-            HumanMinion.MercenaryType.ArcherTier3,
-            HumanMinion.MercenaryType.ArcherTier2,
-            HumanMinion.MercenaryType.ArcherTier1,
-            HumanMinion.MercenaryType.WarriorTier4,
-            HumanMinion.MercenaryType.WarriorTier3,
-            HumanMinion.MercenaryType.WarriorTier2,
-            HumanMinion.MercenaryType.WarriorTier1,
+            MercenaryMinion.MercenaryType.Catapult,
+            MercenaryMinion.MercenaryType.Woodcutter,
+            MercenaryMinion.MercenaryType.Miner,
+            MercenaryMinion.MercenaryType.ArcherTier3,
+            MercenaryMinion.MercenaryType.ArcherTier2,
+            MercenaryMinion.MercenaryType.ArcherTier1,
+            MercenaryMinion.MercenaryType.WarriorTier4,
+            MercenaryMinion.MercenaryType.WarriorTier3,
+            MercenaryMinion.MercenaryType.WarriorTier2,
+            MercenaryMinion.MercenaryType.WarriorTier1,
         };
 
         public new static void UpdateRecipe()
@@ -97,21 +98,22 @@ namespace ChebsMercenaries.Structure
             StartCoroutine(Recruitment());
         }
 
-        private HumanMinion.MercenaryType NextMercenary()
+        private MercenaryMinion.MercenaryType NextMercenary()
         {
             foreach (var merc in _orderedByPreference)
             {
                 var itemsCost = merc switch
                 {
-                    HumanMinion.MercenaryType.WarriorTier1 => MercenaryWarriorTier1Minion.ItemsCost,
-                    HumanMinion.MercenaryType.WarriorTier2 => MercenaryWarriorTier2Minion.ItemsCost,
-                    HumanMinion.MercenaryType.WarriorTier3 => MercenaryWarriorTier3Minion.ItemsCost,
-                    HumanMinion.MercenaryType.WarriorTier4 => MercenaryWarriorTier4Minion.ItemsCost,
-                    HumanMinion.MercenaryType.ArcherTier1 => MercenaryArcherTier1Minion.ItemsCost,
-                    HumanMinion.MercenaryType.ArcherTier2 => MercenaryArcherTier2Minion.ItemsCost,
-                    HumanMinion.MercenaryType.ArcherTier3 => MercenaryArcherTier3Minion.ItemsCost,
-                    HumanMinion.MercenaryType.Miner => HumanMinerMinion.ItemsCost,
-                    HumanMinion.MercenaryType.Woodcutter => HumanWoodcutterMinion.ItemsCost,
+                    MercenaryMinion.MercenaryType.Catapult => CatapultMinion.ItemsCost,
+                    MercenaryMinion.MercenaryType.WarriorTier1 => MercenaryWarriorTier1Minion.ItemsCost,
+                    MercenaryMinion.MercenaryType.WarriorTier2 => MercenaryWarriorTier2Minion.ItemsCost,
+                    MercenaryMinion.MercenaryType.WarriorTier3 => MercenaryWarriorTier3Minion.ItemsCost,
+                    MercenaryMinion.MercenaryType.WarriorTier4 => MercenaryWarriorTier4Minion.ItemsCost,
+                    MercenaryMinion.MercenaryType.ArcherTier1 => MercenaryArcherTier1Minion.ItemsCost,
+                    MercenaryMinion.MercenaryType.ArcherTier2 => MercenaryArcherTier2Minion.ItemsCost,
+                    MercenaryMinion.MercenaryType.ArcherTier3 => MercenaryArcherTier3Minion.ItemsCost,
+                    MercenaryMinion.MercenaryType.Miner => HumanMinerMinion.ItemsCost,
+                    MercenaryMinion.MercenaryType.Woodcutter => HumanWoodcutterMinion.ItemsCost,
                     _ => null
                 };
 
@@ -119,22 +121,23 @@ namespace ChebsMercenaries.Structure
                     return merc;
             }
 
-            return HumanMinion.MercenaryType.None;
+            return MercenaryMinion.MercenaryType.None;
         }
 
-        private void PayForMercenary(HumanMinion.MercenaryType mercenaryType)
+        private void PayForMercenary(MercenaryMinion.MercenaryType mercenaryType)
         {
             var itemsCost = mercenaryType switch
             {
-                HumanMinion.MercenaryType.WarriorTier1 => MercenaryWarriorTier1Minion.ItemsCost,
-                HumanMinion.MercenaryType.WarriorTier2 => MercenaryWarriorTier2Minion.ItemsCost,
-                HumanMinion.MercenaryType.WarriorTier3 => MercenaryWarriorTier3Minion.ItemsCost,
-                HumanMinion.MercenaryType.WarriorTier4 => MercenaryWarriorTier4Minion.ItemsCost,
-                HumanMinion.MercenaryType.ArcherTier1 => MercenaryArcherTier1Minion.ItemsCost,
-                HumanMinion.MercenaryType.ArcherTier2 => MercenaryArcherTier2Minion.ItemsCost,
-                HumanMinion.MercenaryType.ArcherTier3 => MercenaryArcherTier3Minion.ItemsCost,
-                HumanMinion.MercenaryType.Miner => HumanMinerMinion.ItemsCost,
-                HumanMinion.MercenaryType.Woodcutter => HumanWoodcutterMinion.ItemsCost,
+                MercenaryMinion.MercenaryType.Catapult => CatapultMinion.ItemsCost,
+                MercenaryMinion.MercenaryType.WarriorTier1 => MercenaryWarriorTier1Minion.ItemsCost,
+                MercenaryMinion.MercenaryType.WarriorTier2 => MercenaryWarriorTier2Minion.ItemsCost,
+                MercenaryMinion.MercenaryType.WarriorTier3 => MercenaryWarriorTier3Minion.ItemsCost,
+                MercenaryMinion.MercenaryType.WarriorTier4 => MercenaryWarriorTier4Minion.ItemsCost,
+                MercenaryMinion.MercenaryType.ArcherTier1 => MercenaryArcherTier1Minion.ItemsCost,
+                MercenaryMinion.MercenaryType.ArcherTier2 => MercenaryArcherTier2Minion.ItemsCost,
+                MercenaryMinion.MercenaryType.ArcherTier3 => MercenaryArcherTier3Minion.ItemsCost,
+                MercenaryMinion.MercenaryType.Miner => HumanMinerMinion.ItemsCost,
+                MercenaryMinion.MercenaryType.Woodcutter => HumanWoodcutterMinion.ItemsCost,
                 _ => null
             };
             if (BasePlugin.HeavyLogging.Value)
@@ -243,15 +246,16 @@ namespace ChebsMercenaries.Structure
                 {
                     var nextMercLocalized = nextMerc switch
                     {
-                        HumanMinion.MercenaryType.WarriorTier1 => Localization.instance.Localize("$chebgonaz_mercenarytype_warriortier1"),
-                        HumanMinion.MercenaryType.WarriorTier2 => Localization.instance.Localize("$chebgonaz_mercenarytype_warriortier2"),
-                        HumanMinion.MercenaryType.WarriorTier3 => Localization.instance.Localize("$chebgonaz_mercenarytype_warriortier3"),
-                        HumanMinion.MercenaryType.WarriorTier4 => Localization.instance.Localize("$chebgonaz_mercenarytype_warriortier4"),
-                        HumanMinion.MercenaryType.ArcherTier1 => Localization.instance.Localize("$chebgonaz_mercenarytype_archertier1"),
-                        HumanMinion.MercenaryType.ArcherTier2 => Localization.instance.Localize("$chebgonaz_mercenarytype_archertier2"),
-                        HumanMinion.MercenaryType.ArcherTier3 => Localization.instance.Localize("$chebgonaz_mercenarytype_archertier3"),
-                        HumanMinion.MercenaryType.Miner => Localization.instance.Localize("$chebgonaz_mercenarytype_miner"),
-                        HumanMinion.MercenaryType.Woodcutter => Localization.instance.Localize("$chebgonaz_mercenarytype_woodcutter"),
+                        MercenaryMinion.MercenaryType.Catapult => Localization.instance.Localize("$chebgonaz_mercenarytype_catapult"),
+                        MercenaryMinion.MercenaryType.WarriorTier1 => Localization.instance.Localize("$chebgonaz_mercenarytype_warriortier1"),
+                        MercenaryMinion.MercenaryType.WarriorTier2 => Localization.instance.Localize("$chebgonaz_mercenarytype_warriortier2"),
+                        MercenaryMinion.MercenaryType.WarriorTier3 => Localization.instance.Localize("$chebgonaz_mercenarytype_warriortier3"),
+                        MercenaryMinion.MercenaryType.WarriorTier4 => Localization.instance.Localize("$chebgonaz_mercenarytype_warriortier4"),
+                        MercenaryMinion.MercenaryType.ArcherTier1 => Localization.instance.Localize("$chebgonaz_mercenarytype_archertier1"),
+                        MercenaryMinion.MercenaryType.ArcherTier2 => Localization.instance.Localize("$chebgonaz_mercenarytype_archertier2"),
+                        MercenaryMinion.MercenaryType.ArcherTier3 => Localization.instance.Localize("$chebgonaz_mercenarytype_archertier3"),
+                        MercenaryMinion.MercenaryType.Miner => Localization.instance.Localize("$chebgonaz_mercenarytype_miner"),
+                        MercenaryMinion.MercenaryType.Woodcutter => Localization.instance.Localize("$chebgonaz_mercenarytype_woodcutter"),
                         _ => Localization.instance.Localize("$chebgonaz_mercenarytype_none")
                     };
                     var recruitmentMessage = 
@@ -267,10 +271,17 @@ namespace ChebsMercenaries.Structure
                 if (Time.time - _lastRecruitmentAt > RecruitmentInterval.Value)
                 {
                     _lastRecruitmentAt = Time.time;
-                    if (nextMerc != HumanMinion.MercenaryType.None)
+                    if (nextMerc != MercenaryMinion.MercenaryType.None)
                     {
                         PayForMercenary(nextMerc);
-                        HumanMinion.Spawn(nextMerc, UpgradeMercenaryEquipment(), transform);
+                        if (nextMerc == MercenaryMinion.MercenaryType.Catapult)
+                        {
+                            CatapultMinion.Spawn(transform);
+                        }
+                        else
+                        {
+                            HumanMinion.Spawn(nextMerc, UpgradeMercenaryEquipment(), transform);
+                        }
                     }
                 }
             }

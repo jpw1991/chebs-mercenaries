@@ -147,6 +147,7 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 
 Date | Version | Notes
 --- | --- | ---
+10/06/2024 | 2.5.0 |
 06/02/2024 | 2.4.0 | Add catapult
 07/01/2024 | 2.3.0 | PvP with friends as exceptions implemented via console commands.
 

@@ -38,7 +38,7 @@ namespace ChebsMercenaries.Patches
                     return false; // deny base method completion
                 }
 
-                if (!HumanMinion.Commandable.Value)
+                if (!MercenaryMinion.Commandable.Value)
                 {
                     return false; // deny base method completion
                 }
