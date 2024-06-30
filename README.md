@@ -14,7 +14,7 @@ It is related to my other mod called [Cheb's Necromancy](https://github.com/jpw1
 
 I'm a YouTuber/Game Developer/Modder who is interested in all things necromancy and minion-related. Please check out my [YouTube channel](https://www.youtube.com/channel/UCPlZ1XnekiJxKymXbXyvkCg) and if you like the work I do and want to give back, please consider supporting me on [Patreon](https://www.patreon.com/chebgonaz?fan_landing=true) or throwing me a dime on [Ko-fi](https://ko-fi.com/chebgonaz). You can also check out my [website](https://necrobase.chebgonaz.com) where I host information on all known necromancy mods, games, books, videos and also some written reviews/guides.
 
-Thank you and I hope you enjoy the mod! If you have questions or need help please join my [Discord](https://discord.com/invite/EB96ASQ).
+Thank you and I hope you enjoy the mod! If you have questions or need help please join my [Discord](https://discord.gg/BweDFym6sc).
 
 ### Bisect Hosting
 
@@ -30,7 +30,7 @@ a) Create an issue on my [GitHub](https://github.com/jpw1991/chebs-mercenaries).
 
 b) Create a bug report on the [Nexus page](https://www.nexusmods.com/valheim/mods/2040?tab=bugs).
 
-c) Write to me on [Discord](https://discord.com/invite/EB96ASQ).
+c) Write to me on [Discord](https://discord.gg/BweDFym6sc).
 
 d) Write a comment on the [Nexus page](https://www.nexusmods.com/valheim/mods/2040?tab=posts).
 

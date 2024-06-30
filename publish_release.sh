@@ -3,7 +3,7 @@
 RELEASEDIR=ChebsMercenaries/bin/Release/net48
 DLL=$RELEASEDIR/ChebsMercenaries.dll
 LIB=$RELEASEDIR/ChebsValheimLibrary.dll
-BUN=../chebs-necromancy/ChebsNecromancyUnity/Assets/AssetBundles/chebgonaz
+BUN=../chebs-necromancy/chebs-necromancy-unity/Assets/AssetBundles/chebgonaz
 PLUGINS=ChebsMercenaries/Package/plugins
 README=README.md
 TRANSLATIONS=Translations

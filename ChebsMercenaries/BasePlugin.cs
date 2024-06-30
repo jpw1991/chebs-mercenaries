@@ -26,7 +26,7 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "2.4.1";
+        public const string PluginVersion = "2.5.0";
         private const string ConfigFileName = PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
@@ -317,7 +317,6 @@ namespace ChebsMercenaries
                     }
                     CreatureManager.Instance.AddCreature(new CustomCreature(prefab, true));
                 });
-
                 #endregion
 
                 #region Structures
@@ -329,6 +328,33 @@ namespace ChebsMercenaries
                     MercenaryChest.ChebsRecipeConfig.GetCustomPieceFromPrefab(mercenaryChestPrefab,
                         chebgonazAssetBundle.LoadAsset<Sprite>(MercenaryChest.ChebsRecipeConfig.IconName))
                 );
+
+                #endregion
+                
+                #region Effects
+
+                var effectNames = new List<string>()
+                {
+                    "sfx_chebsmerc_alerted",
+                    "sfx_chebsmerc_alerted_female",
+                    "sfx_chebsmerc_death",
+                    "sfx_chebsmerc_death_female",
+                    "sfx_chebsmerc_idle",
+                    "sfx_chebsmerc_idle_female",
+                    "sfx_chebsmerc_injured",
+                    "sfx_chebsmerc_injured_female",
+                    "vfx_chebgonazhuman_death",
+
+                    "sfx_chebscatapult_alert",
+                    "sfx_chebscatapult_death",
+                    "sfx_chebscatapult_idle",
+                    "sfx_chebscatapult_injured"
+                };
+                foreach (var effectName in effectNames)
+                {
+                    var prefab = Base.LoadPrefabFromBundle(effectName, chebgonazAssetBundle, RadeonFriendly.Value);
+                    PrefabManager.Instance.AddPrefab(prefab);
+                }
 
                 #endregion
             }

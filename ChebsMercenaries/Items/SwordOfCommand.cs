@@ -70,7 +70,7 @@ namespace ChebsMercenaries.Items
                 CraftingStationLevel
             );
 
-            var customItem = new CustomItem(prefab, false, config);
+            var customItem = new CustomItem(prefab, true, config);
             if (customItem.ItemPrefab == null)
             {
                 Logger.LogError($"GetCustomItemFromPrefab: {PrefabName}'s ItemPrefab is null!");
