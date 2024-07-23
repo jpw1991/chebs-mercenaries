@@ -10,6 +10,9 @@ using ChebsMercenaries.Minions;
 using ChebsMercenaries.Structure;
 using ChebsValheimLibrary;
 using ChebsValheimLibrary.Items;
+using ChebsValheimLibrary.Items.Armor.Leather.Lox;
+using ChebsValheimLibrary.Items.Armor.Leather.Troll;
+using ChebsValheimLibrary.Items.Armor.Leather.Wolf;
 using ChebsValheimLibrary.PvP;
 using HarmonyLib;
 using Jotunn;
@@ -249,6 +252,22 @@ namespace ChebsMercenaries
                     new MercenaryBowFrostItem(),
                     new MercenaryBowSilverItem(),
                     new MercenaryBowPoisonItem(),
+                    
+                    new HelmetLeatherTroll(),
+                    new HelmetLeatherWolf(),
+                    new HelmetLeatherLox(),
+                    new SkeletonHelmetLeatherTroll(),
+                    new SkeletonHelmetLeatherPoisonTroll(),
+                    new SkeletonArmorLeatherChestTroll(),
+                    new SkeletonArmorLeatherLegsTroll(),
+                    new SkeletonHelmetLeatherWolf(),
+                    new SkeletonHelmetLeatherPoisonWolf(),
+                    new SkeletonArmorLeatherChestWolf(),
+                    new SkeletonArmorLeatherLegsWolf(),
+                    new SkeletonHelmetLeatherLox(),
+                    new SkeletonHelmetLeatherPoisonLox(),
+                    new SkeletonArmorLeatherChestLox(),
+                    new SkeletonArmorLeatherLegsLox()
                 };
                 foreach (var minionItem in mercenaryMinionItems)
                 {
@@ -259,8 +278,7 @@ namespace ChebsMercenaries
                         ItemManager.Instance.AddItem(minionItem.GetCustomItemFromPrefab(minionItemPrefab));
                     }
                 }
-                
-                //Base.LoadMinionItems(chebgonazAssetBundle, RadeonFriendly.Value);
+
                 _weaponsOfCommand.ForEach(w =>
                 {
                     var prefab = Base.LoadPrefabFromBundle(w.PrefabName, chebgonazAssetBundle, RadeonFriendly.Value);
