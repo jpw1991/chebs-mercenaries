@@ -225,9 +225,9 @@ namespace ChebsMercenaries.Minions
                 case ArmorType.BlackMetal:
                     defaultItems.AddRange(new[]
                     {
-                        ZNetScene.instance.GetPrefab("ChebGonaz_HelmetBlackIron"),
-                        ZNetScene.instance.GetPrefab("ChebGonaz_ArmorBlackIronChest"),
-                        ZNetScene.instance.GetPrefab("ChebGonaz_ArmorBlackIronLegs"),
+                        ZNetScene.instance.GetPrefab("HelmetPadded"),
+                        ZNetScene.instance.GetPrefab("ArmorPaddedCuirass"),
+                        ZNetScene.instance.GetPrefab("ArmorPaddedGreaves"),
                         ZNetScene.instance.GetPrefab("CapeLox"),
                     });
                     //Emblem = InternalName.GetName(NecromancerCape.EmblemConfig.Value);

@@ -5,9 +5,11 @@ using BepInEx.Configuration;
 using ChebsMercenaries.Commands;
 using ChebsMercenaries.Commands.PvP;
 using ChebsMercenaries.Items;
+using ChebsMercenaries.Items.Minions;
 using ChebsMercenaries.Minions;
 using ChebsMercenaries.Structure;
 using ChebsValheimLibrary;
+using ChebsValheimLibrary.Items;
 using ChebsValheimLibrary.PvP;
 using HarmonyLib;
 using Jotunn;
@@ -238,7 +240,27 @@ namespace ChebsMercenaries
             {
                 #region Items
 
-                Base.LoadMinionItems(chebgonazAssetBundle, RadeonFriendly.Value);
+                var mercenaryMinionItems = new List<Item>()
+                {
+                    new MercenaryBowItem(),
+                    new MercenaryBow2Item(),
+                    new MercenaryBow3Item(),
+                    new MercenaryBowFireItem(),
+                    new MercenaryBowFrostItem(),
+                    new MercenaryBowSilverItem(),
+                    new MercenaryBowPoisonItem(),
+                };
+                foreach (var minionItem in mercenaryMinionItems)
+                {
+                    var customItem = ItemManager.Instance.GetItem(minionItem.ItemName);
+                    if (customItem == null)
+                    {
+                        var minionItemPrefab = Base.LoadPrefabFromBundle(minionItem.PrefabName, chebgonazAssetBundle, RadeonFriendly.Value);
+                        ItemManager.Instance.AddItem(minionItem.GetCustomItemFromPrefab(minionItemPrefab));
+                    }
+                }
+                
+                //Base.LoadMinionItems(chebgonazAssetBundle, RadeonFriendly.Value);
                 _weaponsOfCommand.ForEach(w =>
                 {
                     var prefab = Base.LoadPrefabFromBundle(w.PrefabName, chebgonazAssetBundle, RadeonFriendly.Value);
