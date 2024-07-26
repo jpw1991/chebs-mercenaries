@@ -84,7 +84,11 @@ namespace ChebsMercenaries.Commands
 
         public override List<string> CommandOptionList()
         {
-            return ZNetScene.instance?.GetPrefabNames();
+            var options = Enum.GetValues(typeof(MercenaryMinion.MercenaryType))
+                .Cast<MercenaryMinion.MercenaryType>()
+                .Select(o =>$"{o}")
+                .ToList();
+            return options;
         }
     }
 }
