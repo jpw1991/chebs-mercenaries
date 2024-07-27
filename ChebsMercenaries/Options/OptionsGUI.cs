@@ -93,7 +93,6 @@ public class OptionsGUI
                     fontSize: 16,
                     width: 200f, height: 30f);
                 _skinColorsDropdown = dropdownObject.GetComponent<Dropdown>();
-                // _skinColorsDropdown.AddOptions(Options.SkinColors.Select(v => $"#{ColorUtility.ToHtmlStringRGB(Utils.Vec3ToColor(v))}").ToList());
                 _skinColorsDropdown.onValueChanged.AddListener(UpdateSkinColorDisplay);
                 
                 _skinColorDisplay = GUIManager.Instance.CreateText("Skin", parent: _panel.transform,
@@ -154,7 +153,6 @@ public class OptionsGUI
                     fontSize: 16,
                     width: 200f, height: 30f);
                 _hairColorsDropdown = dropdownObject.GetComponent<Dropdown>();
-                // _hairColorsDropdown.AddOptions(Options.HairColors.Select(v => $"#{ColorUtility.ToHtmlStringRGB(Utils.Vec3ToColor(v))}").ToList());
                 _hairColorsDropdown.onValueChanged.AddListener(UpdateHairColorDisplay);
                 
                 _hairColorDisplay = GUIManager.Instance.CreateText("Hair", parent: _panel.transform,
