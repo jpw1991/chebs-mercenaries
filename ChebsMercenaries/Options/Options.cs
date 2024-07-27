@@ -1,3 +1,4 @@
+using SimpleJson;
 using UnityEngine;
 
 namespace ChebsMercenaries.Options;
@@ -7,7 +8,7 @@ using Logger = Jotunn.Logger;
 public class Options
 {
     private const string ChanceOfFemaleKey = "ChanceOfFemale";
-    private const string SkinColorsKey = "EyeColors";
+    private const string SkinColorsKey = "SkinColors";
     private const string HairColorsKey = "HairColors";
     
     public static List<Vector3> SkinColors
@@ -16,7 +17,7 @@ public class Options
         {
             // parse the html colors into vector3 colors useable by the shader and return them
             var cols = OptionsDict[SkinColorsKey]
-                .Split(',').Select(str => str.Trim()).ToList().Select(colorCode =>
+                .Select(str => str.Trim()).ToList().Select(colorCode =>
                 ColorUtility.TryParseHtmlString(colorCode, out Color color)
                     ? Utils.ColorToVec3(color)
                     : Vector3.zero).ToList();
@@ -24,8 +25,9 @@ public class Options
         }
         set
         {
-            var cols = string.Join(",", value.Select(vec => 
-                ColorUtility.ToHtmlStringRGB(new Color(vec.x, vec.y, vec.z)).Select(o => $"#{o}").ToList()));
+            var cols = value
+                .Select(vec3 => $"#{ColorUtility.ToHtmlStringRGB(new Color(vec3.x, vec3.y, vec3.z))}")
+                .ToList();
             OptionsDict[SkinColorsKey] = cols;
         }
     }
@@ -35,8 +37,8 @@ public class Options
         get
         {
             // parse the html colors into vector3 colors useable by the shader and return them
-            var cols = OptionsDict[SkinColorsKey]
-                .Split(',').Select(str => str.Trim()).ToList().Select(colorCode =>
+            var cols = OptionsDict[HairColorsKey]
+                .Select(str => str.Trim()).ToList().Select(colorCode =>
                     ColorUtility.TryParseHtmlString(colorCode, out Color color)
                         ? Utils.ColorToVec3(color)
                         : Vector3.zero).ToList();
@@ -44,9 +46,10 @@ public class Options
         }
         set
         {
-            var cols = string.Join(",", value.Select(vec => 
-                ColorUtility.ToHtmlStringRGB(new Color(vec.x, vec.y, vec.z)).Select(o => $"#{o}").ToList()));
-            OptionsDict[SkinColorsKey] = cols;
+            var cols = value
+                .Select(vec3 => $"#{ColorUtility.ToHtmlStringRGB(new Color(vec3.x, vec3.y, vec3.z))}")
+                .ToList();
+            OptionsDict[HairColorsKey] = cols;
         }
     }
     
@@ -55,23 +58,28 @@ public class Options
         get
         {
             // convert from human-readable 50% to 0.5f
-            var full = OptionsDict[ChanceOfFemaleKey];
+            var full = OptionsDict[ChanceOfFemaleKey][0];
             var fl = float.Parse(full.Replace("%", "").Trim()) / 100;
             if (fl > 1.0f) fl = 1.0f;
             else if (fl < 0.0f) fl = 0.0f;
             return fl;
         }
-        set => OptionsDict[ChanceOfFemaleKey] = $"{value * 100}%";
+        set => OptionsDict[ChanceOfFemaleKey] = new List<string>() {$"{value * 100}%" };
     }
 
-    private static Dictionary<string, string> OptionsDict => _optionsDict ??= ReadOptionsFile();
-    private static Dictionary<string, string> _optionsDict;
+    private static Dictionary<string, List<string>> OptionsDict => _optionsDict ??= ReadOptionsFile();
+    private static Dictionary<string, List<string>> _optionsDict;
     
     private static string OptionsFileName => $"ChebsMercenaries.{Player.m_localPlayer?.GetPlayerName()}.Options.json";
 
     public static void SaveOptions()
     {
-        var serializedDict = DictionaryToJson(OptionsDict); 
+        // results in annoying list stuff like:
+        // [{"Key":"SkinColors","Value":["#FEF5E7","#F5CBA7","#784212","#F5B041"]},{"Key":"HairColors","Value":["#000000","#C71F1F"]},{"Key":"ChanceOfFemale","Value":["50%"]}]
+        //var serializedDict = SimpleJson.SimpleJson.SerializeObject(_optionsDict);
+        // custom to get nicely serialized stuff:
+        // {"SkinColors":["#FEF5E7","#F5CBA7","#784212","#F5B041"],"HairColors":["#000000"],"ChanceOfFemale":["50%"]}
+        var serializedDict = CustomJsonSerializer.Serialize(_optionsDict);
         Logger.LogInfo($"serializedDict={serializedDict}");
         UpdateOptionsFile(serializedDict);
     }
@@ -106,13 +114,13 @@ public class Options
         }
     }
     
-    private static Dictionary<string, string> ReadOptionsFile()
+    private static Dictionary<string, List<string>> ReadOptionsFile()
     {
-        var empty = new Dictionary<string, string>()
+        var empty = new Dictionary<string, List<string>>()
         {
-            { SkinColorsKey, "#FEF5E7,#F5CBA7,#784212,#F5B041" }, 
-            { HairColorsKey, "#F7DC6F,#935116,#AFABAB,#FF5733,#1C2833" }, 
-            { ChanceOfFemaleKey, "50%" }
+            { SkinColorsKey, new List<string>(){"#FEF5E7","#F5CBA7","#784212","#F5B041"} }, 
+            { HairColorsKey, new List<string>(){"#F7DC6F,#935116,#AFABAB,#FF5733,#1C2833"} }, 
+            { ChanceOfFemaleKey, new List<string>(){"50%"} }
         };
         
         var filePath = Path.Combine(Environment.GetFolderPath(
@@ -148,10 +156,8 @@ public class Options
             Logger.LogInfo($"Content is empty or null; create fresh options.");
             return empty;
         }
-
-        // Logger.LogInfo($"Attempting to parse {content}");
-        var parsed = SimpleJson.SimpleJson.DeserializeObject<Dictionary<string, string>>(content);
-        // Logger.LogInfo($"parsed={parsed}");
+        
+        var parsed = SimpleJson.SimpleJson.DeserializeObject<Dictionary<string, List<string>>>(content);
         if (parsed == null)
         {
             Logger.LogError("Failed to parse options.");
@@ -161,16 +167,21 @@ public class Options
         return parsed;
     }
     
-    private static string DictionaryToJson(Dictionary<string, string> dictionary)
+    public static class CustomJsonSerializer
     {
-        // because simplejson is being a PITA and saving a list of keyvalue pairs that it can't parse back in, let's
-        // do it ourselves
-        var entries = new List<string>();
-        foreach (var kvp in dictionary)
+        public static string Serialize(Dictionary<string, List<string>> dictionary)
         {
-            var entry = $"\"{kvp.Key}\": {kvp.Value}";
-            entries.Add(entry);
+            var jsonObject = new JsonObject();
+            
+            foreach (var kvp in dictionary)
+            {
+                string key = kvp.Key;
+                List<string> values = kvp.Value;
+
+                jsonObject[key] = values;
+            }
+            
+            return jsonObject.ToString();
         }
-        return "{" + string.Join(", ", entries) + "}";
     }
 }
