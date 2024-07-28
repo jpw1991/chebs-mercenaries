@@ -1,7 +1,5 @@
 using ChebsMercenaries.Structure;
-using ChebsValheimLibrary.Minions;
 using HarmonyLib;
-using UnityEngine;
 using Logger = Jotunn.Logger;
 
 // ReSharper disable InconsistentNaming
@@ -27,7 +25,6 @@ namespace ChebsMercenaries.Patches
         {
             if (container != null && container.name.Contains("ChebGonaz_MercenaryChest"))
             {
-                Logger.LogInfo($"HERPDERP Show {container.name}");
                 MercenaryChestOptionsGUI.Show(container);
             }
         }
@@ -39,13 +36,6 @@ namespace ChebsMercenaries.Patches
         [HarmonyPostfix]
         static void Postfix(InventoryGui __instance)
         {
-            // if (__instance != null
-            //     && __instance.m_currentContainer != null
-            //     && __instance.m_currentContainer.name.Contains("ChebGonaz_MercenaryChest"))
-            // {
-            //     Logger.LogInfo($"HERPDERP Hide {__instance.name}");
-            //     MercenaryChestOptionsGUI.Hide();
-            // }
             MercenaryChestOptionsGUI.Hide();
         }
     }

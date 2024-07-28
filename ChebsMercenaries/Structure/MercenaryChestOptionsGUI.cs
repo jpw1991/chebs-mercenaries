@@ -1,5 +1,4 @@
 using ChebsMercenaries.Minions;
-using ChebsValheimLibrary.PvP;
 using Jotunn.GUI;
 using Jotunn.Managers;
 using UnityEngine;
@@ -104,6 +103,7 @@ public class MercenaryChestOptionsGUI
                             skins.Add(html);
                             SetSkins(container, skins);
                             RefreshSkinDropdown(container, skins.Count - 1);
+                            UpdateSkinColorDisplay(_skinColorsDropdown.value);
                         }
                     );
                 });
@@ -120,6 +120,7 @@ public class MercenaryChestOptionsGUI
                         skins.Remove(itemText);
                         SetSkins(container, skins);
                         RefreshSkinDropdown(container);
+                        UpdateSkinColorDisplay(_skinColorsDropdown.value);
                     }
                 });
             }
@@ -168,6 +169,7 @@ public class MercenaryChestOptionsGUI
                             hairs.Add(html);
                             SetHairs(container, hairs);
                             RefreshHairDropdown(container, hairs.Count - 1);
+                            UpdateHairColorDisplay(_hairColorsDropdown.value);
                         }
                     );
                 });
@@ -184,6 +186,7 @@ public class MercenaryChestOptionsGUI
                         hairs.Remove(itemText);
                         SetHairs(container, hairs);
                         RefreshHairDropdown(container);
+                        UpdateHairColorDisplay(_hairColorsDropdown.value);
                     }
                 });
             }

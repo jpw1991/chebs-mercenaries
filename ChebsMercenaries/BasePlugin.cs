@@ -7,7 +7,7 @@ using ChebsMercenaries.Commands.PvP;
 using ChebsMercenaries.Items;
 using ChebsMercenaries.Items.Minions;
 using ChebsMercenaries.Minions;
-using ChebsMercenaries.Options;
+using ChebsMercenaries.PvPOptions;
 using ChebsMercenaries.Structure;
 using ChebsValheimLibrary;
 using ChebsValheimLibrary.Items;
@@ -129,11 +129,10 @@ namespace ChebsMercenaries
             HeavyLogging = Config.Bind("General (Client)", "HeavyLogging",
                 false, new ConfigDescription("Turn this on for debugging. Lots of things will get logged."));
 
-            OptionsGUI.CreateConfigs(this, PluginGuid);
+            PvPOptionsGUI.CreateConfigs(this, PluginGuid);
             
             MercenaryMinion.CreateConfigs(this);
             
-            HumanMinion.CreateConfigs(this);
             HumanWoodcutterMinion.CreateConfigs(this);
             HumanMinerMinion.CreateConfigs(this);
 
@@ -426,9 +425,9 @@ namespace ChebsMercenaries
                     });
                 }
                 
-                if (OptionsGUI.OptionsButton != null && ZInput.GetButtonUp(OptionsGUI.OptionsButton.Name))
+                if (PvPOptionsGUI.OptionsButton != null && ZInput.GetButtonUp(PvPOptionsGUI.OptionsButton.Name))
                 {
-                    OptionsGUI.TogglePanel();
+                    PvPOptionsGUI.TogglePanel();
                 }
             }
         }

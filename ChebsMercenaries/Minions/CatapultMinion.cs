@@ -1,10 +1,8 @@
 using BepInEx.Configuration;
-using ChebsMercenaries.Structure;
 using ChebsValheimLibrary.Common;
 using ChebsValheimLibrary.Minions;
 using UnityEngine;
 using Logger = Jotunn.Logger;
-using Random = System.Random;
 
 namespace ChebsMercenaries.Minions
 {

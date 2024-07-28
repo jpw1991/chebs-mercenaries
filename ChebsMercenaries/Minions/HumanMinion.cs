@@ -1,7 +1,5 @@
 using System.Collections;
-using BepInEx.Configuration;
 using ChebsMercenaries.Structure;
-using ChebsValheimLibrary.Common;
 using ChebsValheimLibrary.Minions;
 using UnityEngine;
 using Logger = Jotunn.Logger;
