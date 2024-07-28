@@ -280,7 +280,26 @@ namespace ChebsMercenaries.Structure
                         }
                         else
                         {
-                            HumanMinion.Spawn(nextMerc, UpgradeMercenaryEquipment(), transform);
+                            var skinColors = MercenaryChestOptionsGUI.GetSkins(_container)
+                                .Select(str => str.Trim()).ToList().Select(html =>
+                                ColorUtility.TryParseHtmlString(html, out Color color)
+                                    ? Utils.ColorToVec3(color)
+                                    : Vector3.zero).ToList();
+                            var hairColors = MercenaryChestOptionsGUI.GetHairs(_container)
+                                .Select(str => str.Trim()).ToList().Select(html =>
+                                    ColorUtility.TryParseHtmlString(html, out Color color)
+                                        ? Utils.ColorToVec3(color)
+                                        : Vector3.zero).ToList();
+                            var genderStr = MercenaryChestOptionsGUI.GetGender(_container);
+                            if (!float.TryParse(genderStr, out var chanceOfFemale))
+                            {
+                                Logger.LogError($"Failed to parse {genderStr}, defaulting to 50%");
+                                chanceOfFemale = 50f;
+                            }
+                            chanceOfFemale /= 100; // convert from eg. 50% to 0.5
+                            
+                            HumanMinion.Spawn(nextMerc, UpgradeMercenaryEquipment(), transform, 
+                                chanceOfFemale, skinColors, hairColors);
                         }
                     }
                 }

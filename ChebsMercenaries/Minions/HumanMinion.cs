@@ -11,42 +11,7 @@ namespace ChebsMercenaries.Minions
 {
     public class HumanMinion : MercenaryMinion
     {
-        public static ConfigEntry<float> ChanceOfFemale;
-        public static MemoryConfigEntry<string, List<Vector3>> HairColors, SkinColors;
-
         private static List<ItemDrop> _hairs, _beards;
-
-        public new static void CreateConfigs(BasePlugin plugin)
-        {
-            const string serverSync = "HumanMinion (Server Synced)";
-            const string client = "HumanMinion (Client)";
-
-            ChanceOfFemale = plugin.ModConfig(serverSync, "ChanceOfFemale", 0.5f,
-                "Chance of a mercenary spawning being female. 0 = 0%, 1 = 100% (Default = 0.5 = 50%)",
-                new AcceptableValueRange<float>(0f, 1f), true);
-
-            var hairColors = plugin.ModConfig(serverSync, "HairColors", "#F7DC6F,#935116,#AFABAB,#FF5733,#1C2833",
-                "Comma delimited list of HTML color codes.", null, true);
-            HairColors = new MemoryConfigEntry<string, List<Vector3>>(hairColors, s =>
-            {
-                var cols = s?.Split(',').Select(str => str.Trim()).ToList().Select(colorCode =>
-                    ColorUtility.TryParseHtmlString(colorCode, out Color color)
-                        ? Utils.ColorToVec3(color)
-                        : Vector3.zero).ToList();
-                return cols;
-            });
-
-            var skinColors = plugin.ModConfig(serverSync, "SkinColors", "#FEF5E7,#F5CBA7,#784212,#F5B041",
-                "Comma delimited list of HTML color codes.", null, true);
-            SkinColors = new MemoryConfigEntry<string, List<Vector3>>(skinColors, s =>
-            {
-                var cols = s?.Split(',').Select(str => str.Trim()).ToList().Select(colorCode =>
-                    ColorUtility.TryParseHtmlString(colorCode, out Color color)
-                        ? Utils.ColorToVec3(color)
-                        : Vector3.zero).ToList();
-                return cols;
-            });
-        }
         
         public sealed override void Awake()
         {
@@ -246,7 +211,8 @@ namespace ChebsMercenaries.Minions
             humanoid.m_visEquipment.UpdateEquipmentVisuals();
         }
 
-        public static void Spawn(MercenaryType mercenaryType, ArmorType armorType, Transform spawner)
+        public static void Spawn(MercenaryType mercenaryType, ArmorType armorType, Transform spawner, 
+            float chanceOfFemale, List<Vector3> skinColors, List<Vector3> hairColors)
         {
             if (mercenaryType is MercenaryType.None) return;
             
@@ -256,7 +222,7 @@ namespace ChebsMercenaries.Minions
                 return;
             }
 
-            var female = Random.value < ChanceOfFemale.Value;
+            var female = Random.value < chanceOfFemale;
 
             var prefabName = female ? PrefabNamesFemale[mercenaryType] : PrefabNames[mercenaryType];
             if (BasePlugin.HeavyLogging.Value)
@@ -290,12 +256,12 @@ namespace ChebsMercenaries.Minions
                 return;
             }
             
-            var randomSkinColor = SkinColors.Value[Random.Range(0, SkinColors.Value.Count)];
+            var randomSkinColor = skinColors[Random.Range(0, skinColors.Count)];
             humanoid.m_visEquipment.SetSkinColor(randomSkinColor);
             humanoid.m_nview.GetZDO().Set("SkinColor", randomSkinColor);
             var randomHair = _hairs[Random.Range(0, _hairs.Count)].gameObject.name;
             humanoid.SetHair(randomHair);
-            var randomHairColor = HairColors.Value[Random.Range(0, HairColors.Value.Count)];
+            var randomHairColor = hairColors[Random.Range(0, hairColors.Count)];
             humanoid.m_visEquipment.SetHairColor(randomHairColor);
             if (!female)
             {

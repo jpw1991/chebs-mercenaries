@@ -2,6 +2,7 @@
 using ChebsValheimLibrary.Minions;
 using Jotunn.Entities;
 using Jotunn.Managers;
+using UnityEngine;
 
 namespace ChebsMercenaries.Commands
 {
@@ -79,7 +80,20 @@ namespace ChebsMercenaries.Commands
                 }
             }
 
-            HumanMinion.Spawn(chosenMerc, chosenArmor, Player.m_localPlayer.transform);
+            var skinColors = new List<string>() {"#F7DC6F", "#935116", "#AFABAB", "#FF5733", "#1C2833"}
+                .Select(str => str.Trim()).ToList().Select(html =>
+                ColorUtility.TryParseHtmlString(html, out Color color)
+                    ? Utils.ColorToVec3(color)
+                    : Vector3.zero).ToList();
+            
+            var hairColors = new List<string>() {"#F7DC6F", "#935116", "#AFABAB", "#FF5733", "#1C2833"}
+                .Select(str => str.Trim()).ToList().Select(html =>
+                    ColorUtility.TryParseHtmlString(html, out Color color)
+                        ? Utils.ColorToVec3(color)
+                        : Vector3.zero).ToList();
+
+            HumanMinion.Spawn(chosenMerc, chosenArmor, Player.m_localPlayer.transform,
+                .5f, skinColors, hairColors);
         }
 
         public override List<string> CommandOptionList()
