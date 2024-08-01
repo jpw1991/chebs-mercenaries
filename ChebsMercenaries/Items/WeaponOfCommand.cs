@@ -98,7 +98,7 @@ namespace ChebsMercenaries.Items
                 {
                     Name = ItemName + "Follow",
                     Config = FollowConfig,
-                    GamepadConfig = FollowGamepadConfig,
+                    // GamepadConfig = FollowGamepadConfig,
                     HintToken = "$chebsmercenaries_weaponofcommand_follow",
                     BlockOtherInputs = true
                 };
@@ -111,7 +111,7 @@ namespace ChebsMercenaries.Items
                 {
                     Name = ItemName + "Wait",
                     Config = WaitConfig,
-                    GamepadConfig = WaitGamepadConfig,
+                    // GamepadConfig = WaitGamepadConfig,
                     HintToken = "$chebsmercenaries_weaponofcommand_wait",
                     BlockOtherInputs = true
                 };
@@ -124,7 +124,7 @@ namespace ChebsMercenaries.Items
                 {
                     Name = ItemName + "Teleport",
                     Config = TeleportConfig,
-                    GamepadConfig = TeleportGamepadConfig,
+                    // GamepadConfig = TeleportGamepadConfig,
                     HintToken = "$chebsmercenaries_weaponofcommand_teleport",
                     BlockOtherInputs = true
                 };

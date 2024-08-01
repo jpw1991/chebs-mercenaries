@@ -25,14 +25,14 @@ public class PvPOptionsGUI
     {
         const string client = "PvP Options (Client)";
 
-        OptionsKeyConfigEntry = plugin.Config.Bind(client, "OpenOptions",
+        OptionsKeyConfigEntry = plugin.Config.Bind(client, "PvPOpenOptions",
             new KeyboardShortcut(KeyCode.F7), new ConfigDescription("Open the mod PvP options window."));
         
         OptionsButton = new ButtonConfig
         {
-            Name = "OptionsButton",
+            Name = "PvPOpenOptions",
             ShortcutConfig = OptionsKeyConfigEntry,
-            HintToken = "OptionsButton"
+            HintToken = "PvPOpenOptions"
         };
         InputManager.Instance.AddButton(pluginGuid, OptionsButton);
     }
@@ -81,14 +81,14 @@ public class PvPOptionsGUI
                 var allies = PvPManager.GetPlayerFriends();
                 GUIManager.Instance.CreateText("PvP Allies:", parent: _panel.transform,
                     anchorMin: new Vector2(0.5f, 1f), anchorMax: new Vector2(0.5f, 1f),
-                    position: new Vector2(-250f, -210f),
+                    position: new Vector2(-250f, -100f),
                     font: GUIManager.Instance.AveriaSerifBold, fontSize: 16, color: GUIManager.Instance.ValheimOrange,
                     outline: true, outlineColor: Color.black,
                     width: 200f, height: 30f, addContentSizeFitter: false);
 
                 var textObject = GUIManager.Instance.CreateText(string.Join(", ", allies), parent: _panel.transform,
                     anchorMin: new Vector2(0.5f, 1f), anchorMax: new Vector2(0.5f, 1f),
-                    position: new Vector2(0f, -210f),
+                    position: new Vector2(0f, -100f),
                     font: GUIManager.Instance.AveriaSerifBold, fontSize: 16, color: GUIManager.Instance.ValheimOrange,
                     outline: true, outlineColor: Color.black,
                     width: 400f, height: 30f, addContentSizeFitter: false);
@@ -97,7 +97,7 @@ public class PvPOptionsGUI
                 // add/remove ally
                 GUIManager.Instance.CreateText("Ally (case sensitive):", parent: _panel.transform,
                     anchorMin: new Vector2(0.5f, 1f), anchorMax: new Vector2(0.5f, 1f),
-                    position: new Vector2(-250f, -240f),
+                    position: new Vector2(-250f, -140f),
                     font: GUIManager.Instance.AveriaSerifBold, fontSize: 16, color: GUIManager.Instance.ValheimOrange,
                     outline: true, outlineColor: Color.black,
                     width: 200f, height: 30f, addContentSizeFitter: false);
@@ -105,7 +105,7 @@ public class PvPOptionsGUI
                 _allyInput = GUIManager.Instance.CreateInputField(parent: _panel.transform,
                     anchorMin: new Vector2(0.5f, 0.5f),
                     anchorMax: new Vector2(0.5f, 0.5f),
-                    position: new Vector2(0f, 60f),
+                    position: new Vector2(0f, 170f),
                     contentType: InputField.ContentType.Standard,
                     placeholderText: "player",
                     fontSize: 16,
@@ -115,7 +115,7 @@ public class PvPOptionsGUI
 
                 GUIManager.Instance.CreateButton("+", parent: _panel.transform,
                     anchorMin: new Vector2(0.5f, 0.5f), anchorMax: new Vector2(0.5f, 0.5f),
-                    position: new Vector2(200f, 60f),
+                    position: new Vector2(200f, 170f),
                     width: 30f, height: 30f).GetComponent<Button>().onClick.AddListener(() =>
                 {
                     if (_allyInput.text != string.Empty)
@@ -134,7 +134,7 @@ public class PvPOptionsGUI
 
                 GUIManager.Instance.CreateButton("-", parent: _panel.transform,
                     anchorMin: new Vector2(0.5f, 0.5f), anchorMax: new Vector2(0.5f, 0.5f),
-                    position: new Vector2(260f, 60f),
+                    position: new Vector2(260f, 170f),
                     width: 30f, height: 30f).GetComponent<Button>().onClick.AddListener(() =>
                 {
                     if (_allyInput.text != string.Empty)

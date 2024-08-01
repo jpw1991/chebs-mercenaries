@@ -4,8 +4,6 @@ Cheb's Mercenaries adds mercenaries to Valheim that you can purchase with gold a
 
 It is related to my other mod called [Cheb's Necromancy](https://github.com/jpw1991/chebs-necromancy) and shares a lot of concepts and functionality. It's basically for people that want living human minions rather than the undead.
 
-**Attention:** PvP is a new feature in 2.2.3 and needs testing. By default, it is disabled. To turn it on, set `PvPAllowed` to true in the config. Your minions should now be hostile to other players. Please report problems [here](https://github.com/jpw1991/chebs-mercenaries/pull/44).
-
 ## About Me
 
 [![image1](https://imgur.com/Fahi6sP.png)](https://necrobase.chebgonaz.com)
@@ -148,6 +146,7 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 
 Date | Version | Notes
 --- | --- | ---
+29/09/2024 | 3.0.0 | Overhaul of asset bundle and aesthetics
 10/06/2024 | 2.4.1 | Implement spawning of catapult; add console command to spawn mercenaries in with armor
 06/02/2024 | 2.4.0 | Add catapult
 07/01/2024 | 2.3.0 | PvP with friends as exceptions implemented via console commands.
