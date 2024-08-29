@@ -4,8 +4,6 @@ Cheb's Mercenaries adds mercenaries to Valheim that you can purchase with gold a
 
 It is related to my other mod called [Cheb's Necromancy](https://github.com/jpw1991/chebs-necromancy) and shares a lot of concepts and functionality. It's basically for people that want living human minions rather than the undead.
 
-**Attention:** PvP is a new feature in 2.2.3 and needs testing. By default, it is disabled. To turn it on, set `PvPAllowed` to true in the config. Your minions should now be hostile to other players. Please report problems [here](https://github.com/jpw1991/chebs-mercenaries/pull/44).
-
 ## About Me
 
 [![image1](https://imgur.com/Fahi6sP.png)](https://necrobase.chebgonaz.com)
@@ -14,7 +12,7 @@ It is related to my other mod called [Cheb's Necromancy](https://github.com/jpw1
 
 I'm a YouTuber/Game Developer/Modder who is interested in all things necromancy and minion-related. Please check out my [YouTube channel](https://www.youtube.com/channel/UCPlZ1XnekiJxKymXbXyvkCg) and if you like the work I do and want to give back, please consider supporting me on [Patreon](https://www.patreon.com/chebgonaz?fan_landing=true) or throwing me a dime on [Ko-fi](https://ko-fi.com/chebgonaz). You can also check out my [website](https://necrobase.chebgonaz.com) where I host information on all known necromancy mods, games, books, videos and also some written reviews/guides.
 
-Thank you and I hope you enjoy the mod! If you have questions or need help please join my [Discord](https://discord.com/invite/EB96ASQ).
+Thank you and I hope you enjoy the mod! If you have questions or need help please contact me on [Discord](https://discord.gg/BweDFym6sc) and @ me so I see it.
 
 ### Bisect Hosting
 
@@ -30,7 +28,7 @@ a) Create an issue on my [GitHub](https://github.com/jpw1991/chebs-mercenaries).
 
 b) Create a bug report on the [Nexus page](https://www.nexusmods.com/valheim/mods/2040?tab=bugs).
 
-c) Write to me on [Discord](https://discord.com/invite/EB96ASQ).
+c) Write to me on [Discord](https://discord.gg/BweDFym6sc).
 
 d) Write a comment on the [Nexus page](https://www.nexusmods.com/valheim/mods/2040?tab=posts).
 
@@ -148,6 +146,8 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 
 Date | Version | Notes
 --- | --- | ---
+29/08/2024 | 3.0.1 | Fix a mock that was causing some players issues; ease validation on PvP name field to permit spaces in names
+29/07/2024 | 3.0.0 | Overhaul of asset bundle and aesthetics
 10/06/2024 | 2.4.1 | Implement spawning of catapult; add console command to spawn mercenaries in with armor
 06/02/2024 | 2.4.0 | Add catapult
 07/01/2024 | 2.3.0 | PvP with friends as exceptions implemented via console commands.
