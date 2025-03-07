@@ -142,6 +142,15 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 ## Changelog
 
 <details>
+<summary>2025</summary>
+
+Date | Version | Notes
+--- | --- | ---
+07/03/2025 | 3.0.2 | Fix stuff for Bog Witch
+
+</details>
+
+<details>
 <summary>2024</summary>
 
 Date | Version | Notes
