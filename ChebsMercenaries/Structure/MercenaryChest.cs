@@ -19,8 +19,6 @@ namespace ChebsMercenaries.Structure
         public static ConfigEntry<int> ArmorBronzeRequiredConfig;
         public static ConfigEntry<int> ArmorIronRequiredConfig;
         public static ConfigEntry<int> ArmorBlackIronRequiredConfig;
-        public static ConfigEntry<int> ArmorCarapaceRequiredConfig;
-        public static ConfigEntry<int> ArmorFlametalRequiredConfig;
 
         private Container _container;
         private Inventory _inventory;
@@ -93,82 +91,11 @@ namespace ChebsMercenaries.Structure
             ArmorBlackIronRequiredConfig = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ArmorBlackIronRequired",
                 1, "The amount of Black Metal required to craft a minion in black iron armor.", null,
                 true);
-
-            ArmorCarapaceRequiredConfig = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ArmorCarapaceRequired",
-                1, "The amount of Carapace required to craft a minion in carapace armor.", null,
-                true);
-
-            ArmorFlametalRequiredConfig = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ArmorFlametalRequired",
-                1, "The amount of Flametal required to craft a minion in flametal armor.", null,
-                true);
         }
 
         private void Awake()
         {
             StartCoroutine(Recruitment());
-
-            // Subscribe to destruction events
-            if (TryGetComponent<Destructible>(out var destructible))
-            {
-                destructible.m_onDestroyed += OnDestroyed;
-            }
-
-            if (TryGetComponent<WearNTear>(out var wearNTear))
-            {
-                wearNTear.m_onDestroyed += OnDestroyed;
-            }
-        }
-
-        private void OnDestroyed()
-        {
-            Logger.LogInfo("MercenaryChest OnDestroyed called");
-
-            // Clean up the container before destruction
-            if (_container != null)
-            {
-                // Force empty the inventory
-                if (_inventory != null)
-                {
-                    _inventory.RemoveAll();
-                }
-
-                Destroy(_container);
-                _container = null;
-            }
-
-            // Stop the recruitment coroutine
-            StopAllCoroutines();
-
-            // IMPORTANT: Properly destroy the ZNetView to remove from save file
-            if (TryGetComponent<ZNetView>(out var zNetView))
-            {
-                if (zNetView.IsOwner())
-                {
-                    Logger.LogInfo("Destroying ZNetView to remove from save file");
-                    zNetView.Destroy();
-                }
-                else
-                {
-                    Logger.LogInfo("Not owner, requesting ZNetView destruction");
-                    zNetView.ClaimOwnership();
-                    zNetView.Destroy();
-                }
-            }
-            else
-            {
-                // Fallback: Force destroy GameObject if no ZNetView
-                Logger.LogInfo("No ZNetView found, force destroying GameObject");
-                StartCoroutine(ForceDestroy());
-            }
-        }
-
-        private IEnumerator ForceDestroy()
-        {
-            yield return new WaitForSeconds(0.1f);
-            if (gameObject != null)
-            {
-                Destroy(gameObject);
-            }
         }
 
         private MercenaryMinion.MercenaryType NextMercenary()
@@ -221,34 +148,15 @@ namespace ChebsMercenaries.Structure
             ChebGonazMinion.ConsumeRequirements(itemsCost, _inventory);
         }
 
-        private ChebGonazMinion.ArmorType UpgradeMercenaryEquipment(out bool useCarapace, out bool useFlametal)
+        private ChebGonazMinion.ArmorType UpgradeMercenaryEquipment()
         {
-            useCarapace = false;
-            useFlametal = false;
-
-            // Check for Flametal first (highest priority)
-            if (_inventory.CountItems("$item_flametal") >= ArmorFlametalRequiredConfig.Value)
-            {
-                _inventory.RemoveItem("$item_flametal", ArmorFlametalRequiredConfig.Value);
-                useFlametal = true;
-                return ChebGonazMinion.ArmorType.BlackMetal; // Use BlackMetal as base type
-            }
-            // Check for Carapace second
-            if (_inventory.CountItems("$item_carapace") >= ArmorCarapaceRequiredConfig.Value)
-            {
-                _inventory.RemoveItem("$item_carapace", ArmorCarapaceRequiredConfig.Value);
-                useCarapace = true;
-                return ChebGonazMinion.ArmorType.BlackMetal; // Use BlackMetal as base type
-            }
-
-            // Fall back to original armor type determination
             var armorType = ChebGonazMinion.DetermineArmorType(
                 _inventory,
                 ArmorBlackIronRequiredConfig.Value,
                 ArmorIronRequiredConfig.Value,
                 ArmorBronzeRequiredConfig.Value,
                 ArmorLeatherScrapsRequiredConfig.Value);
-
+            
             if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"Determining mercenary's armour type: {armorType}.");
 
             switch (armorType)
@@ -257,10 +165,10 @@ namespace ChebsMercenaries.Structure
                     _inventory.RemoveItem("$item_blackmetal", ArmorBlackIronRequiredConfig.Value);
                     break;
                 case ChebGonazMinion.ArmorType.Iron:
-                    _inventory.RemoveItem("$item_iron", ArmorIronRequiredConfig.Value);
+                    _inventory.RemoveItem("$item_iron", ArmorBlackIronRequiredConfig.Value);
                     break;
                 case ChebGonazMinion.ArmorType.Bronze:
-                    _inventory.RemoveItem("$item_bronze", ArmorBronzeRequiredConfig.Value);
+                    _inventory.RemoveItem("$item_bronze", ArmorBlackIronRequiredConfig.Value);
                     break;
                 case ChebGonazMinion.ArmorType.Leather:
                     var leatherItemTypes = new List<string>()
@@ -323,15 +231,15 @@ namespace ChebsMercenaries.Structure
             while (true)
             {
                 yield return new WaitForSeconds(5);
-
+                
                 if (!piece.m_nview.IsOwner()) continue;
-
+                
                 var playersInRange = new List<Player>();
                 Player.GetPlayersInRange(transform.position, PlayerDetectionDistance, playersInRange);
                 if (playersInRange.Count < 1) continue;
 
                 yield return new WaitWhile(() => playersInRange[0].IsSleeping());
-
+                
                 var nextMerc = NextMercenary();
 
                 if (playersInRange.Any(player => Vector3.Distance(player.transform.position, transform.position) < 5))
@@ -350,7 +258,7 @@ namespace ChebsMercenaries.Structure
                         MercenaryMinion.MercenaryType.Woodcutter => Localization.instance.Localize("$chebgonaz_mercenarytype_woodcutter"),
                         _ => Localization.instance.Localize("$chebgonaz_mercenarytype_none")
                     };
-                    var recruitmentMessage =
+                    var recruitmentMessage = 
                         Localization.instance.Localize("$chebgonaz_mercenarychest_recruitmentmessage")
                             .Replace("%1", nextMercLocalized)
                             .Replace("%2", (RecruitmentInterval.Value - (Time.time - _lastRecruitmentAt)).ToString("0"));
@@ -389,10 +297,9 @@ namespace ChebsMercenaries.Structure
                                 chanceOfFemale = 50f;
                             }
                             chanceOfFemale /= 100; // convert from eg. 50% to 0.5
-
-                            var armorType = UpgradeMercenaryEquipment(out bool useCarapace, out bool useFlametal);
-                            HumanMinion.Spawn(nextMerc, armorType, transform,
-                                chanceOfFemale, skinColors, hairColors, useCarapace, useFlametal);
+                            
+                            HumanMinion.Spawn(nextMerc, UpgradeMercenaryEquipment(), transform, 
+                                chanceOfFemale, skinColors, hairColors);
                         }
                     }
                 }
