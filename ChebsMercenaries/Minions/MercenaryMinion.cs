@@ -27,6 +27,8 @@ namespace ChebsMercenaries.Minions
             Catapult,
         }
 
+
+
         public static readonly Dictionary<MercenaryType, string> PrefabNames = new()
         {
             { MercenaryType.WarriorTier1, "ChebGonaz_HumanWarrior" },
