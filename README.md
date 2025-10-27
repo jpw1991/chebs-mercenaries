@@ -151,6 +151,13 @@ Date | Version | Notes
 </details>
 
 <details>
+<summary>2025</summary>
+Date | Version | Notes
+--- | --- | ---
+28/10/2025 | 3.0.3 | Get stuff compiling again to proceed on other fixes
+</details>
+
+<details>
 <summary>2024</summary>
 
 Date | Version | Notes
