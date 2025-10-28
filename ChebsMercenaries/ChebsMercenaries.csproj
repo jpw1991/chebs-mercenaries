@@ -24,7 +24,7 @@
     <AssemblyCulture>$(NeutralLanguage)</AssemblyCulture>
 
     <!-- Version Information -->
-    <Version>3.0.3.0</Version>
+    <Version>3.1.0.0</Version>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyVersion>$(Version)</AssemblyVersion>
 

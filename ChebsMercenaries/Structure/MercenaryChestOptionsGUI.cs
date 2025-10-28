@@ -226,12 +226,20 @@ public class MercenaryChestOptionsGUI
                                $"Archer I: {string.Join(", ", MercenaryArcherTier1Minion.ItemsCost.Value)}\n" +
                                $"Archer II: {string.Join(", ", MercenaryArcherTier2Minion.ItemsCost.Value)}\n" +
                                $"Archer III: {string.Join(", ", MercenaryArcherTier3Minion.ItemsCost.Value)}\n" +
+                               $"Armor Options (all except catapult): {string.Join(", ", 
+                                   MercenaryChest.ArmorLeatherScrapsRequiredConfig.Value + " LeatherScraps",
+                                   MercenaryChest.ArmorBronzeRequiredConfig.Value + " Bronze",
+                                   MercenaryChest.ArmorIronRequiredConfig.Value + " Iron",
+                                   MercenaryChest.ArmorBlackIronRequiredConfig.Value + " BlackMetal",
+                                   MercenaryChest.ArmorCarapaceRequiredConfig.Value + " Carapace",
+                                   MercenaryChest.ArmorFlametalRequiredConfig.Value + " Flametal"
+                               ) }\n" +
                                $"Catapult: {string.Join(", ", CatapultMinion.ItemsCost.Value)}";
             
             GUIManager.Instance.CreateText(infoAreaText, parent: _panel.transform,
                 anchorMin: new Vector2(0.5f, 1f), anchorMax: new Vector2(0.5f, 1f),
                 position: new Vector2(0, -470f),
-                font: GUIManager.Instance.AveriaSerifBold, fontSize: 16, color: GUIManager.Instance.ValheimOrange,
+                font: GUIManager.Instance.AveriaSerifBold, fontSize: 14, color: GUIManager.Instance.ValheimOrange,
                 outline: true, outlineColor: Color.black,
                 width: 350f, height: 500f, addContentSizeFitter: false);
         }

@@ -19,6 +19,8 @@ namespace ChebsMercenaries.Structure
         public static ConfigEntry<int> ArmorBronzeRequiredConfig;
         public static ConfigEntry<int> ArmorIronRequiredConfig;
         public static ConfigEntry<int> ArmorBlackIronRequiredConfig;
+        public static ConfigEntry<int> ArmorCarapaceRequiredConfig;
+        public static ConfigEntry<int> ArmorFlametalRequiredConfig;
 
         private Container _container;
         private Inventory _inventory;
@@ -91,11 +93,24 @@ namespace ChebsMercenaries.Structure
             ArmorBlackIronRequiredConfig = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ArmorBlackIronRequired",
                 1, "The amount of Black Metal required to craft a minion in black iron armor.", null,
                 true);
+
+            ArmorCarapaceRequiredConfig = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ArmorCarapaceRequired",
+                1, "The amount of Carapace required to craft a minion in carapace armor.", null,
+                true);
+
+            ArmorFlametalRequiredConfig = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ArmorFlametalRequired",
+                1, "The amount of Flametal required to craft a minion in flametal armor.", null,
+                true);
         }
 
         private void Awake()
         {
             StartCoroutine(Recruitment());
+        }
+
+        private void OnDestroy()
+        {
+            StopAllCoroutines();
         }
 
         private MercenaryMinion.MercenaryType NextMercenary()
@@ -148,15 +163,34 @@ namespace ChebsMercenaries.Structure
             ChebGonazMinion.ConsumeRequirements(itemsCost, _inventory);
         }
 
-        private ChebGonazMinion.ArmorType UpgradeMercenaryEquipment()
+        private ChebGonazMinion.ArmorType UpgradeMercenaryEquipment(out bool useCarapace, out bool useFlametal)
         {
+            useCarapace = false;
+            useFlametal = false;
+
+            // Check for Flametal first (highest priority)
+            if (_inventory.CountItems("$item_flametal") >= ArmorFlametalRequiredConfig.Value)
+            {
+                _inventory.RemoveItem("$item_flametal", ArmorFlametalRequiredConfig.Value);
+                useFlametal = true;
+                return ChebGonazMinion.ArmorType.BlackMetal; // Use BlackMetal as base type
+            }
+            // Check for Carapace second
+            if (_inventory.CountItems("$item_carapace") >= ArmorCarapaceRequiredConfig.Value)
+            {
+                _inventory.RemoveItem("$item_carapace", ArmorCarapaceRequiredConfig.Value);
+                useCarapace = true;
+                return ChebGonazMinion.ArmorType.BlackMetal; // Use BlackMetal as base type
+            }
+
+            // Fall back to original armor type determination
             var armorType = ChebGonazMinion.DetermineArmorType(
                 _inventory,
                 ArmorBlackIronRequiredConfig.Value,
                 ArmorIronRequiredConfig.Value,
                 ArmorBronzeRequiredConfig.Value,
                 ArmorLeatherScrapsRequiredConfig.Value);
-            
+
             if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"Determining mercenary's armour type: {armorType}.");
 
             switch (armorType)
@@ -165,10 +199,10 @@ namespace ChebsMercenaries.Structure
                     _inventory.RemoveItem("$item_blackmetal", ArmorBlackIronRequiredConfig.Value);
                     break;
                 case ChebGonazMinion.ArmorType.Iron:
-                    _inventory.RemoveItem("$item_iron", ArmorBlackIronRequiredConfig.Value);
+                    _inventory.RemoveItem("$item_iron", ArmorIronRequiredConfig.Value);
                     break;
                 case ChebGonazMinion.ArmorType.Bronze:
-                    _inventory.RemoveItem("$item_bronze", ArmorBlackIronRequiredConfig.Value);
+                    _inventory.RemoveItem("$item_bronze", ArmorBronzeRequiredConfig.Value);
                     break;
                 case ChebGonazMinion.ArmorType.Leather:
                     var leatherItemTypes = new List<string>()
@@ -231,15 +265,15 @@ namespace ChebsMercenaries.Structure
             while (true)
             {
                 yield return new WaitForSeconds(5);
-                
+
                 if (!piece.m_nview.IsOwner()) continue;
-                
+
                 var playersInRange = new List<Player>();
                 Player.GetPlayersInRange(transform.position, PlayerDetectionDistance, playersInRange);
                 if (playersInRange.Count < 1) continue;
 
                 yield return new WaitWhile(() => playersInRange[0].IsSleeping());
-                
+
                 var nextMerc = NextMercenary();
 
                 if (playersInRange.Any(player => Vector3.Distance(player.transform.position, transform.position) < 5))
@@ -258,7 +292,7 @@ namespace ChebsMercenaries.Structure
                         MercenaryMinion.MercenaryType.Woodcutter => Localization.instance.Localize("$chebgonaz_mercenarytype_woodcutter"),
                         _ => Localization.instance.Localize("$chebgonaz_mercenarytype_none")
                     };
-                    var recruitmentMessage = 
+                    var recruitmentMessage =
                         Localization.instance.Localize("$chebgonaz_mercenarychest_recruitmentmessage")
                             .Replace("%1", nextMercLocalized)
                             .Replace("%2", (RecruitmentInterval.Value - (Time.time - _lastRecruitmentAt)).ToString("0"));
@@ -297,9 +331,10 @@ namespace ChebsMercenaries.Structure
                                 chanceOfFemale = 50f;
                             }
                             chanceOfFemale /= 100; // convert from eg. 50% to 0.5
-                            
-                            HumanMinion.Spawn(nextMerc, UpgradeMercenaryEquipment(), transform, 
-                                chanceOfFemale, skinColors, hairColors);
+
+                            var armorType = UpgradeMercenaryEquipment(out bool useCarapace, out bool useFlametal);
+                            HumanMinion.Spawn(nextMerc, armorType, transform,
+                                chanceOfFemale, skinColors, hairColors, useCarapace, useFlametal);
                         }
                     }
                 }

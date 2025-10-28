@@ -87,6 +87,10 @@ Detailed info in the [wiki](https://github.com/jpw1991/chebs-mercenaries/wiki). 
   - **Bronze armor:** 1 Bronze
   - **Iron armor:** 1 Iron
   - **Black metal armor:** 1 Black Metal
+- **Special Equipment:**
+  - Special equipment added by joel in 3.1.0. Includes carapace and flametal armor as well as very high quality weaponry such as `JotunBane`, `Mistwalker`, `Eldner`, `Niedhogg` and `Splitner`.
+  - **Carapace:** 1 Carapace
+  - **Flametal:** 1 FlametalNew
 - Ownership
   - Mercenaries have no owner until first activated (with E), after which they only ever respond to that one player.
 - Roam/Wait/Follow
@@ -117,7 +121,6 @@ You can also edit the configs manually. Almost everything can be tweaked to your
 
 - Soft incompatibility with [slope combat fix](https://github.com/jpw1991/chebs-necromancy/issues/180) because it can mess up worker minion aiming. Not a big deal - especially if you never use miners/woodcutters. As an alternative, you may consider (Slope Combat Assistance)[https://valheim.thunderstore.io/package/Digitalroot/Digitalroots_Slope_Combat_Assistance/] because it only affects the player.
 - Soft incompatibility with [Ward is Love](https://github.com/jpw1991/chebs-necromancy/issues/177) because it will identify workers as enemies and yeet them. As an alternative, you may consider using [Better Wards](https://valheim.thunderstore.io/package/Azumatt/BetterWards/).
-- Soft incompatibility with [Ward is Love](https://github.com/jpw1991/chebs-necromancy/issues/177) because it will identify workers as enemies and yeet them.
 
 ## Future Ideas
 
@@ -134,6 +137,8 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
     + **Ramblez** (aka **[Thorngor](https://www.nexusmods.com/users/21532784)** on the Nexus) - Most of custom textures and icons.
     + **Independent.nu** and [qubodup](https://opengameart.org/users/qubodup) for [35 wooden cracks/hits/destructions](https://opengameart.org/content/35-wooden-crackshitsdestructions) which are the catapult sound effects.
     + [**AntumDeluge**](https://opengameart.org/users/antumdeluge) for the [creaking tree](https://opengameart.org/content/tree-creaking) sound effect used for the catapult.
+- Developers
+	+ [Joel](https://github.com/joellos) for adding Flametal and Carapace types as well as various improvements and bugfixes.
 - Translations
 	+ [**pandory**](https://github.com/pandory-network) - German language localization.
 	+ [**Cordain**](https://github.com/Cordain) - Polish language localization.
@@ -146,15 +151,10 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 
 Date | Version | Notes
 --- | --- | ---
+28/10/2025 | 3.1.0 | Integrate changes from Joel; fix archers a bit
+28/10/2025 | 3.0.3 | Get stuff compiling again to proceed on other fixes
 07/03/2025 | 3.0.2 | Fix stuff for Bog Witch
 
-</details>
-
-<details>
-<summary>2025</summary>
-Date | Version | Notes
---- | --- | ---
-28/10/2025 | 3.0.3 | Get stuff compiling again to proceed on other fixes
 </details>
 
 <details>

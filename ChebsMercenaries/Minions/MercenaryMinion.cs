@@ -9,9 +9,9 @@ namespace ChebsMercenaries.Minions
         public static ConfigEntry<bool> PackDropItemsIntoCargoCrate;
         public static ConfigEntry<bool> Commandable;
         public static ConfigEntry<float> FollowDistance, RunDistance, RoamRange;
-        
+
         public static ConfigEntry<float> Health;
-        
+
         public enum MercenaryType
         {
             None,
@@ -26,6 +26,7 @@ namespace ChebsMercenaries.Minions
             Woodcutter,
             Catapult,
         }
+
 
         public static readonly Dictionary<MercenaryType, string> PrefabNames = new()
         {
@@ -86,10 +87,10 @@ namespace ChebsMercenaries.Minions
                 3f,
                 new ConfigDescription(
                     "How close a following minion needs to be to you before it stops running and starts walking (0 = always running, 10 = default)."));
-            
+
             RoamRange = plugin.Config.Bind(client, "RoamRange",
                 10f, new ConfigDescription("How far a unit is allowed to roam from its current position."));
-            
+
             Health = plugin.Config.Bind(serverSync, "Health",
                 50f, new ConfigDescription("How much health the mercenary has (default fallback value).", null,
                     new ConfigurationManagerAttributes { IsAdminOnly = true }));
