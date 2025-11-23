@@ -158,7 +158,7 @@ namespace ChebsMercenaries.Structure
             if (BasePlugin.HeavyLogging.Value)
             {
                 var itemsCostLog = itemsCost?.Value == null ? "" : string.Join(", ", itemsCost.Value);
-                Logger.LogInfo($"Paying for mercenary {mercenaryType} with {itemsCostLog}...");
+                if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"Paying for mercenary {mercenaryType} with {itemsCostLog}...");
             }
             ChebGonazMinion.ConsumeRequirements(itemsCost, _inventory);
         }

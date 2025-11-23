@@ -217,24 +217,24 @@ public class MercenaryChestOptionsGUI
             var infoAreaText = "Here you can configure the aesthetics of the mercenaries spawned by this chest. These" +
                                " settings are unique to this chest.\n\n" +
                                "Mercenary creation costs:\n\n" +
-                               $"Miner: {string.Join(", ", HumanMinerMinion.ItemsCost.Value)}\n" +
-                               $"Woodcutter: {string.Join(", ", HumanWoodcutterMinion.ItemsCost.Value)}\n" +
-                               $"Warrior I: {string.Join(", ", MercenaryWarriorTier1Minion.ItemsCost.Value)}\n" +
-                               $"Warrior II: {string.Join(", ", MercenaryWarriorTier2Minion.ItemsCost.Value)}\n" +
-                               $"Warrior III: {string.Join(", ", MercenaryWarriorTier3Minion.ItemsCost.Value)}\n" +
-                               $"Warrior IV: {string.Join(", ", MercenaryWarriorTier4Minion.ItemsCost.Value)}\n" +
-                               $"Archer I: {string.Join(", ", MercenaryArcherTier1Minion.ItemsCost.Value)}\n" +
-                               $"Archer II: {string.Join(", ", MercenaryArcherTier2Minion.ItemsCost.Value)}\n" +
-                               $"Archer III: {string.Join(", ", MercenaryArcherTier3Minion.ItemsCost.Value)}\n" +
+                               $"Miner: {string.Join(", ", LocalizeItemsCost(HumanMinerMinion.ItemsCost.Value))}\n" +
+                               $"Woodcutter: {string.Join(", ", LocalizeItemsCost(HumanWoodcutterMinion.ItemsCost.Value))}\n" +
+                               $"Warrior I: {string.Join(", ", LocalizeItemsCost(MercenaryWarriorTier1Minion.ItemsCost.Value))}\n" +
+                               $"Warrior II: {string.Join(", ", LocalizeItemsCost(MercenaryWarriorTier2Minion.ItemsCost.Value))}\n" +
+                               $"Warrior III: {string.Join(", ", LocalizeItemsCost(MercenaryWarriorTier3Minion.ItemsCost.Value))}\n" +
+                               $"Warrior IV: {string.Join(", ", LocalizeItemsCost(MercenaryWarriorTier4Minion.ItemsCost.Value))}\n" +
+                               $"Archer I: {string.Join(", ", LocalizeItemsCost(MercenaryArcherTier1Minion.ItemsCost.Value))}\n" +
+                               $"Archer II: {string.Join(", ", LocalizeItemsCost(MercenaryArcherTier2Minion.ItemsCost.Value))}\n" +
+                               $"Archer III: {string.Join(", ", LocalizeItemsCost(MercenaryArcherTier3Minion.ItemsCost.Value))}\n" +
                                $"Armor Options (all except catapult): {string.Join(", ", 
-                                   MercenaryChest.ArmorLeatherScrapsRequiredConfig.Value + " LeatherScraps",
-                                   MercenaryChest.ArmorBronzeRequiredConfig.Value + " Bronze",
-                                   MercenaryChest.ArmorIronRequiredConfig.Value + " Iron",
-                                   MercenaryChest.ArmorBlackIronRequiredConfig.Value + " BlackMetal",
-                                   MercenaryChest.ArmorCarapaceRequiredConfig.Value + " Carapace",
-                                   MercenaryChest.ArmorFlametalRequiredConfig.Value + " Flametal"
+                                   MercenaryChest.ArmorLeatherScrapsRequiredConfig.Value + " " + LocalizeItemPrefabByPrefabName("LeatherScraps"),
+                                   MercenaryChest.ArmorBronzeRequiredConfig.Value + " " +  LocalizeItemPrefabByPrefabName("Bronze"),
+                                   MercenaryChest.ArmorIronRequiredConfig.Value + " " +  LocalizeItemPrefabByPrefabName("Iron"),
+                                   MercenaryChest.ArmorBlackIronRequiredConfig.Value + " " +  LocalizeItemPrefabByPrefabName("BlackMetal"),
+                                   MercenaryChest.ArmorCarapaceRequiredConfig.Value + " " +  LocalizeItemPrefabByPrefabName("Carapace"),
+                                   MercenaryChest.ArmorFlametalRequiredConfig.Value + " " +  LocalizeItemPrefabByPrefabName("Flametal")
                                ) }\n" +
-                               $"Catapult: {string.Join(", ", CatapultMinion.ItemsCost.Value)}";
+                               $"Catapult: {string.Join(", ", LocalizeItemsCost(CatapultMinion.ItemsCost.Value))}\n";
             
             GUIManager.Instance.CreateText(infoAreaText, parent: _panel.transform,
                 anchorMin: new Vector2(0.5f, 1f), anchorMax: new Vector2(0.5f, 1f),
@@ -259,6 +259,58 @@ public class MercenaryChestOptionsGUI
         _panel.SetActive(true);
     }
 
+    private static string LocalizeItemsCost(List<string> itemsCost)
+    {
+        // Take the items cost eg. Wood:5 and localize it eg. Holz:5
+        const string errorMsg = "Error. Check player.log";
+        var finished = new List<string>();
+        foreach (var fuel in itemsCost)
+        {
+            var splut = fuel.Split(':');
+            if (splut.Length != 2)
+            {
+                Logger.LogError("Error in config for ItemsCost - please revise.");
+                return errorMsg;
+            }
+
+            var itemRequired = splut[0];
+            if (!int.TryParse(splut[1], out var itemAmountRequired))
+            {
+                Logger.LogError("Error in config for ItemsCost - please revise.");
+                return errorMsg;
+            }
+            
+            var acceptedItems = itemRequired.Split('|');
+            var itemsLocalized = new List<string>();
+            foreach (var acceptedItem in acceptedItems)
+            {
+                var requiredItemPrefab = ZNetScene.instance.GetPrefab(acceptedItem);
+                if (requiredItemPrefab == null)
+                {
+                    Logger.LogError($"Error processing config for ItemsCost: {itemRequired} doesn't exist.");
+                    return errorMsg;
+                }
+                itemsLocalized.Add(LocalizationManager.Instance.TryTranslate(requiredItemPrefab.GetComponent<ItemDrop>().m_itemData.m_shared.m_name));
+            }
+
+            finished.Add($"{string.Join("|", itemsLocalized)}:{itemAmountRequired}");
+        }
+        return string.Join(", ", finished);
+    }
+    
+    private static string LocalizeItemPrefabByPrefabName(string prefabName)
+    {
+        // Localize a specific prefab eg. Wood and localize it eg. Holz
+        const string errorMsg = "Error. Check player.log";
+        var prefab = ZNetScene.instance.GetPrefab(prefabName);
+        if (prefab == null)
+        {
+            Logger.LogError($"Error prefab {prefab} doesn't exist.");
+            return errorMsg;
+        }
+        return LocalizationManager.Instance.TryTranslate(prefab.GetComponent<ItemDrop>().m_itemData.m_shared .m_name);
+    }
+    
     private static void ChanceOfFemaleInputHandler(string str)
     {
         if (_lastContainer == null) return;

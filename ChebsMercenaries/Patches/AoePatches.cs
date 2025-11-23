@@ -1,4 +1,5 @@
 using ChebsValheimLibrary.Minions;
+using ChebsValheimLibrary.PvP;
 using HarmonyLib;
 using UnityEngine;
 
@@ -17,26 +18,34 @@ using UnityEngine;
 
 namespace ChebsMercenaries.Patches
 {
-    [HarmonyPatch(typeof(Aoe), "OnHit")]
-    class SharpStakesMinionPatch
+    [HarmonyPatch(typeof(Aoe), nameof(Aoe.ShouldHit))]
+    class ShouldHitPatch
     {
-        [HarmonyPrefix]
-        static bool Prefix(Collider collider, Vector3 hitPoint, Aoe __instance)
+        [HarmonyPostfix]
+        static void Postfix(Collider collider, Aoe __instance, ref bool __result)
         {
-            if (collider.TryGetComponent(out ChebGonazMinion _))
-            {
-                Piece piece = __instance.GetComponentInParent<Piece>();
-                if (piece != null && piece.IsPlacedByPlayer())
-                {
-                    // stop minion from receiving damage from stakes placed
-                    // by a player
-                    __instance.m_damage.m_pierce = 0f;
-                    // also stop minions from damaging the stakes
-                    __instance.m_damageSelf = 0f;
-                }
-            }
+            var chebGonazMinion = collider.GetComponentInParent<ChebGonazMinion>();
+            if (!chebGonazMinion) return;
 
-            return true; // permit base method completion
+            var piece = __instance.GetComponentInParent<Piece>();
+            if (piece == null || !piece.IsPlacedByPlayer()) return;
+
+            var friendly = FriendlyToMinion(chebGonazMinion, piece);
+            if (!friendly) return;
+
+            // stop minion from receiving damage from stakes placed by an allied player
+            __result = false;
+        }
+
+        static bool FriendlyToMinion(ChebGonazMinion minion, Piece piece)
+        {
+            if (!BasePlugin.PvPAllowed.Value) return true;
+
+            var minionMaster = minion.UndeadMinionMaster;
+            var pieceMasterId = piece.GetCreator();
+            var pieceMaster = Player.s_players.Find(player => player.GetPlayerID() == pieceMasterId)?.GetPlayerName();
+
+            return PvPManager.Friendly(minionMaster, pieceMaster);
         }
     }
 }
