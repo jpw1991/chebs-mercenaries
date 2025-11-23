@@ -216,26 +216,25 @@ public class MercenaryChestOptionsGUI
             // info area
             var infoAreaText = "Here you can configure the aesthetics of the mercenaries spawned by this chest. These" +
                                " settings are unique to this chest.\n\n" +
-                               "Mercenary creation costs:\n\n" +
-                               $"Miner: {string.Join(", ", LocalizeItemsCost(HumanMinerMinion.ItemsCost.Value))}\n" +
-                               $"Woodcutter: {string.Join(", ", LocalizeItemsCost(HumanWoodcutterMinion.ItemsCost.Value))}\n" +
-                               $"Warrior I: {string.Join(", ", LocalizeItemsCost(MercenaryWarriorTier1Minion.ItemsCost.Value))}\n" +
-                               $"Warrior II: {string.Join(", ", LocalizeItemsCost(MercenaryWarriorTier2Minion.ItemsCost.Value))}\n" +
-                               $"Warrior III: {string.Join(", ", LocalizeItemsCost(MercenaryWarriorTier3Minion.ItemsCost.Value))}\n" +
-                               $"Warrior IV: {string.Join(", ", LocalizeItemsCost(MercenaryWarriorTier4Minion.ItemsCost.Value))}\n" +
-                               $"Archer I: {string.Join(", ", LocalizeItemsCost(MercenaryArcherTier1Minion.ItemsCost.Value))}\n" +
-                               $"Archer II: {string.Join(", ", LocalizeItemsCost(MercenaryArcherTier2Minion.ItemsCost.Value))}\n" +
-                               $"Archer III: {string.Join(", ", LocalizeItemsCost(MercenaryArcherTier3Minion.ItemsCost.Value))}\n" +
-                               $"Armor Options (all except catapult): {string.Join(", ", 
-                                   MercenaryChest.ArmorLeatherScrapsRequiredConfig.Value + " " + LocalizeItemPrefabByPrefabName("LeatherScraps"),
-                                   MercenaryChest.ArmorBronzeRequiredConfig.Value + " " +  LocalizeItemPrefabByPrefabName("Bronze"),
-                                   MercenaryChest.ArmorIronRequiredConfig.Value + " " +  LocalizeItemPrefabByPrefabName("Iron"),
-                                   MercenaryChest.ArmorBlackIronRequiredConfig.Value + " " +  LocalizeItemPrefabByPrefabName("BlackMetal"),
-                                   MercenaryChest.ArmorCarapaceRequiredConfig.Value + " " +  LocalizeItemPrefabByPrefabName("Carapace"),
-                                   MercenaryChest.ArmorFlametalRequiredConfig.Value + " " +  LocalizeItemPrefabByPrefabName("Flametal")
-                               ) }\n" +
-                               $"Catapult: {string.Join(", ", LocalizeItemsCost(CatapultMinion.ItemsCost.Value))}\n";
-            
+                               $"<color=silver>Miner:</color> {string.Join("<color=white>, </color>", LocalizeItemsCost(HumanMinerMinion.ItemsCost.Value))}\n" +
+                               $"<color=silver>Woodcutter:</color> {string.Join("<color=white>, </color>", LocalizeItemsCost(HumanWoodcutterMinion.ItemsCost.Value))}\n" +
+                               $"<color=silver>Warrior I:</color> {string.Join("<color=white>, </color>", LocalizeItemsCost(MercenaryWarriorTier1Minion.ItemsCost.Value))}\n" +
+                               $"<color=silver>Warrior II:</color> {string.Join("<color=white>, </color>", LocalizeItemsCost(MercenaryWarriorTier2Minion.ItemsCost.Value))}\n" +
+                               $"<color=silver>Warrior III:</color> {string.Join("<color=white>, </color>", LocalizeItemsCost(MercenaryWarriorTier3Minion.ItemsCost.Value))}\n" +
+                               $"<color=silver>Warrior IV:</color> {string.Join("<color=white>, </color>", LocalizeItemsCost(MercenaryWarriorTier4Minion.ItemsCost.Value))}\n" +
+                               $"<color=silver>Archer I:</color> {string.Join("<color=white>, </color>", LocalizeItemsCost(MercenaryArcherTier1Minion.ItemsCost.Value))}\n" +
+                               $"<color=silver>Archer II:</color> {string.Join("<color=white>, </color>", LocalizeItemsCost(MercenaryArcherTier2Minion.ItemsCost.Value))}\n" +
+                               $"<color=silver>Archer III:</color> {string.Join("<color=white>, </color>", LocalizeItemsCost(MercenaryArcherTier3Minion.ItemsCost.Value))}\n" +
+                               $"<color=silver>Catapult:</color> {string.Join("<color=white>, </color>", LocalizeItemsCost(CatapultMinion.ItemsCost.Value))}\n" +
+                               $"\n<b>Armor Options (all except catapult):</b> {string.Join("<color=white>, </color>",
+                                   "<color=cyan>" + MercenaryChest.ArmorLeatherScrapsRequiredConfig.Value + "</color> <color=red>" + LocalizeItemPrefabByPrefabName("LeatherScraps") + "</color>",
+                                   "<color=cyan>" + MercenaryChest.ArmorBronzeRequiredConfig.Value + "</color> <color=red>" + LocalizeItemPrefabByPrefabName("Bronze") + "</color>",
+                                   "<color=cyan>" + MercenaryChest.ArmorIronRequiredConfig.Value + "</color> <color=red>" + LocalizeItemPrefabByPrefabName("Iron") + "</color>",
+                                   "<color=cyan>" + MercenaryChest.ArmorBlackIronRequiredConfig.Value + "</color> <color=red>" + LocalizeItemPrefabByPrefabName("BlackMetal") + "</color>",
+                                   "<color=cyan>" + MercenaryChest.ArmorCarapaceRequiredConfig.Value + "</color> <color=red>" + LocalizeItemPrefabByPrefabName("Carapace") + "</color>",
+                                   "<color=cyan>" + MercenaryChest.ArmorFlametalRequiredConfig.Value + "</color> <color=red>" + LocalizeItemPrefabByPrefabName("FlametalNew") + "</color>"
+                               )}\n";
+
             GUIManager.Instance.CreateText(infoAreaText, parent: _panel.transform,
                 anchorMin: new Vector2(0.5f, 1f), anchorMax: new Vector2(0.5f, 1f),
                 position: new Vector2(0, -470f),
@@ -290,12 +289,12 @@ public class MercenaryChestOptionsGUI
                     Logger.LogError($"Error processing config for ItemsCost: {itemRequired} doesn't exist.");
                     return errorMsg;
                 }
-                itemsLocalized.Add(LocalizationManager.Instance.TryTranslate(requiredItemPrefab.GetComponent<ItemDrop>().m_itemData.m_shared.m_name));
+                itemsLocalized.Add($"<color=red>{LocalizationManager.Instance.TryTranslate(requiredItemPrefab.GetComponent<ItemDrop>().m_itemData.m_shared.m_name)}</color>");
             }
 
-            finished.Add($"{string.Join("|", itemsLocalized)}:{itemAmountRequired}");
+            finished.Add($"{string.Join("<color=white>|</color>", itemsLocalized)}<color=white>:</color><color=aqua>{itemAmountRequired}</color>");
         }
-        return string.Join(", ", finished);
+        return string.Join("<color=white>, </color>", finished);
     }
     
     private static string LocalizeItemPrefabByPrefabName(string prefabName)
