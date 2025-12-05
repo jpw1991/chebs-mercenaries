@@ -15,11 +15,13 @@ public class MercenaryChestOptionsGUI
     private const string DefaultHairColors = "#F7DC6F,#935116,#AFABAB,#FF5733,#1C2833";
     private const string GenderZdoKey = "ChebGonazMercSex";
     private const string DefaultGender = "50";
+    private const string HelmetZdoKey = "ChebGonazMercHelmet";
+    private const string DefaultHelmet = "100";
     
     private static GameObject _panel;
     private static Dropdown _skinColorsDropdown, _hairColorsDropdown;
     private static Text _skinColorDisplay, _hairColorDisplay;
-    private static InputField _chanceOfFemaleInputField;
+    private static InputField _chanceOfFemaleInputField, _chanceOfHelmetInputField;
 
     private static Container _lastContainer;
 
@@ -63,7 +65,7 @@ public class MercenaryChestOptionsGUI
                 // Merc skin color
                 GUIManager.Instance.CreateText("Skin Colors:", parent: _panel.transform,
                     anchorMin: new Vector2(0.5f, 1f), anchorMax: new Vector2(0.5f, 1f),
-                    position: new Vector2(-150f, -100f),
+                    position: new Vector2(-150f, -95f),
                     font: GUIManager.Instance.AveriaSerifBold, fontSize: 16, color: GUIManager.Instance.ValheimOrange,
                     outline: true, outlineColor: Color.black,
                     width: 120f, height: 30f, addContentSizeFitter: false);
@@ -78,7 +80,7 @@ public class MercenaryChestOptionsGUI
                 
                 _skinColorDisplay = GUIManager.Instance.CreateText("Skin", parent: _panel.transform,
                     anchorMin: new Vector2(0.5f, 1f), anchorMax: new Vector2(0.5f, 1f),
-                    position: new Vector2(60f, -100f),
+                    position: new Vector2(60f, -95f),
                     font: GUIManager.Instance.AveriaSerifBold, fontSize: 16, color: GUIManager.Instance.ValheimOrange,
                     outline: true, outlineColor: Color.black,
                     width: 60f, height: 30f, addContentSizeFitter: false).GetComponent<Text>();
@@ -129,7 +131,7 @@ public class MercenaryChestOptionsGUI
                 // Merc hair color
                 GUIManager.Instance.CreateText("Hair Colors:", parent: _panel.transform,
                     anchorMin: new Vector2(0.5f, 1f), anchorMax: new Vector2(0.5f, 1f),
-                    position: new Vector2(-150f, -140f),
+                    position: new Vector2(-150f, -135f),
                     font: GUIManager.Instance.AveriaSerifBold, fontSize: 16, color: GUIManager.Instance.ValheimOrange,
                     outline: true, outlineColor: Color.black,
                     width: 120f, height: 30f, addContentSizeFitter: false);
@@ -144,7 +146,7 @@ public class MercenaryChestOptionsGUI
                 
                 _hairColorDisplay = GUIManager.Instance.CreateText("Hair", parent: _panel.transform,
                     anchorMin: new Vector2(0.5f, 1f), anchorMax: new Vector2(0.5f, 1f),
-                    position: new Vector2(60f, -140f),
+                    position: new Vector2(60f, -135f),
                     font: GUIManager.Instance.AveriaSerifBold, fontSize: 16, color: GUIManager.Instance.ValheimOrange,
                     outline: true, outlineColor: Color.black,
                     width: 60f, height: 30f, addContentSizeFitter: false).GetComponent<Text>();
@@ -195,7 +197,7 @@ public class MercenaryChestOptionsGUI
                 // Merc gender
                 GUIManager.Instance.CreateText("Female %:", parent: _panel.transform,
                     anchorMin: new Vector2(0.5f, 1f), anchorMax: new Vector2(0.5f, 1f),
-                    position: new Vector2(-150f, -180f),
+                    position: new Vector2(-150f, -175f),
                     font: GUIManager.Instance.AveriaSerifBold, fontSize: 16, color: GUIManager.Instance.ValheimOrange,
                     outline: true, outlineColor: Color.black,
                     width: 120f, height: 30f, addContentSizeFitter: false);
@@ -209,6 +211,26 @@ public class MercenaryChestOptionsGUI
                     width: 120f, height: 30f).GetComponent<InputField>();
                 _chanceOfFemaleInputField.characterLimit = 3;
                 _chanceOfFemaleInputField.onValueChanged.AddListener(ChanceOfFemaleInputHandler) ;
+            }
+            
+            {
+                // Merc helmet
+                GUIManager.Instance.CreateText("Helmet %:", parent: _panel.transform,
+                    anchorMin: new Vector2(0.5f, 1f), anchorMax: new Vector2(0.5f, 1f),
+                    position: new Vector2(-150f, -215f),
+                    font: GUIManager.Instance.AveriaSerifBold, fontSize: 16, color: GUIManager.Instance.ValheimOrange,
+                    outline: true, outlineColor: Color.black,
+                    width: 120f, height: 30f, addContentSizeFitter: false);
+                
+                _chanceOfHelmetInputField = GUIManager.Instance.CreateInputField(parent:  _panel.transform,
+                    anchorMin: new Vector2(0.5f, 0.5f), anchorMax: new Vector2(0.5f, 0.5f),
+                    position: new Vector2(-40f, 90f),
+                    contentType: InputField.ContentType.Alphanumeric,
+                    placeholderText: "100%",
+                    fontSize: 16,
+                    width: 120f, height: 30f).GetComponent<InputField>();
+                _chanceOfHelmetInputField.characterLimit = 3;
+                _chanceOfHelmetInputField.onValueChanged.AddListener(ChanceOfHelmetInputHandler) ;
             }
         }
 
@@ -237,7 +259,7 @@ public class MercenaryChestOptionsGUI
 
             GUIManager.Instance.CreateText(infoAreaText, parent: _panel.transform,
                 anchorMin: new Vector2(0.5f, 1f), anchorMax: new Vector2(0.5f, 1f),
-                position: new Vector2(0, -470f),
+                position: new Vector2(0, -480f),
                 font: GUIManager.Instance.AveriaSerifBold, fontSize: 14, color: GUIManager.Instance.ValheimOrange,
                 outline: true, outlineColor: Color.black,
                 width: 350f, height: 500f, addContentSizeFitter: false);
@@ -254,6 +276,8 @@ public class MercenaryChestOptionsGUI
         UpdateHairColorDisplay(0);
 
         _chanceOfFemaleInputField.text = GetGender(container);
+        
+        _chanceOfHelmetInputField.text = GetHelmet(container);
         
         _panel.SetActive(true);
     }
@@ -318,6 +342,15 @@ public class MercenaryChestOptionsGUI
             SetGender(_lastContainer, result.ToString());
         }
     }
+    
+    private static void ChanceOfHelmetInputHandler(string str)
+    {
+        if (_lastContainer == null) return;
+        if (int.TryParse(str, out var result))
+        {
+            SetHelmet(_lastContainer, result.ToString());
+        }
+    }
 
     public static void Hide()
     {
@@ -371,6 +404,22 @@ public class MercenaryChestOptionsGUI
     private static void SetGender(Container container, string gender)
     {
         container.m_nview.GetZDO().Set(GenderZdoKey, gender);
+    }
+    
+    public static string GetHelmet(Container container)
+    {
+        var helmet = container.m_nview.GetZDO().GetString(HelmetZdoKey);
+        if (helmet == string.Empty)
+        {
+            container.m_nview.GetZDO().Set(HelmetZdoKey, DefaultHelmet);
+            helmet = DefaultHelmet;
+        }
+        return helmet;
+    }
+    
+    private static void SetHelmet(Container container, string helmet)
+    {
+        container.m_nview.GetZDO().Set(HelmetZdoKey, helmet);
     }
     
     private static void UpdateSkinColorDisplay(int unused)

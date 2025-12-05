@@ -21,6 +21,8 @@ namespace ChebsMercenaries.Structure
         public static ConfigEntry<int> ArmorBlackIronRequiredConfig;
         public static ConfigEntry<int> ArmorCarapaceRequiredConfig;
         public static ConfigEntry<int> ArmorFlametalRequiredConfig;
+        
+        public static ConfigEntry<bool> AutomaticOwnershipConfig;
 
         private Container _container;
         private Inventory _inventory;
@@ -100,6 +102,10 @@ namespace ChebsMercenaries.Structure
 
             ArmorFlametalRequiredConfig = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "ArmorFlametalRequired",
                 1, "The amount of Flametal required to craft a minion in flametal armor.", null,
+                true);
+            
+            AutomaticOwnershipConfig = plugin.ModConfig(ChebsRecipeConfig.ObjectName, "Automatic Ownership",
+                true, "When a mercenary is recruited, it's employed automatically by the chest's creator.", null,
                 true);
         }
 
@@ -261,6 +267,8 @@ namespace ChebsMercenaries.Structure
             // trying to set width causes error here: https://github.com/jpw1991/chebs-necromancy/issues/100
             // inv.m_width = ContainerWidth.Value;
             // inv.m_height = ContainerHeight.Value;
+            
+            var pieceMaster = Player.s_players.Find(player => player.GetPlayerID() == piece.GetCreator())?.GetPlayerName();
 
             while (true)
             {
@@ -310,7 +318,7 @@ namespace ChebsMercenaries.Structure
                         PayForMercenary(nextMerc);
                         if (nextMerc == MercenaryMinion.MercenaryType.Catapult)
                         {
-                            CatapultMinion.Spawn(transform);
+                            CatapultMinion.Spawn(transform, AutomaticOwnershipConfig.Value ? pieceMaster : null);
                         }
                         else
                         {
@@ -331,10 +339,19 @@ namespace ChebsMercenaries.Structure
                                 chanceOfFemale = 50f;
                             }
                             chanceOfFemale /= 100; // convert from eg. 50% to 0.5
+                            
+                            var helmetStr = MercenaryChestOptionsGUI.GetHelmet(_container);
+                            if (!float.TryParse(genderStr, out var chanceOfHelmet))
+                            {
+                                Logger.LogError($"Failed to parse {helmetStr}, defaulting to 100%");
+                                chanceOfHelmet = 50f;
+                            }
+                            chanceOfHelmet /= 100; // convert from eg. 50% to 0.5
 
                             var armorType = UpgradeMercenaryEquipment(out bool useCarapace, out bool useFlametal);
                             HumanMinion.Spawn(nextMerc, armorType, transform,
-                                chanceOfFemale, skinColors, hairColors, useCarapace, useFlametal);
+                                chanceOfFemale, skinColors, hairColors, useCarapace, useFlametal,
+                                AutomaticOwnershipConfig.Value ? pieceMaster : null, chanceOfHelmet);
                         }
                     }
                 }

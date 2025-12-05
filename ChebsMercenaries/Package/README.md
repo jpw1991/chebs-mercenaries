@@ -151,6 +151,7 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 
 Date | Version | Notes
 --- | --- | ---
+23/11/2025 | 3.1.1 | Localize all items in the mercenary creation info label; improve damage prevention from spikes etc. to consider PvP
 28/10/2025 | 3.1.0 | Integrate changes from Joel; fix archers a bit
 28/10/2025 | 3.0.3 | Get stuff compiling again to proceed on other fixes
 07/03/2025 | 3.0.2 | Fix stuff for Bog Witch

@@ -57,7 +57,7 @@ namespace ChebsMercenaries.Minions
 
                 // Check if this is a special minion and clear random weapons
                 var savedWeapon = zdo.GetString("EquippedWeapon", "");
-                bool isSpecialMinion = !string.IsNullOrEmpty(savedWeapon) &&
+                var isSpecialMinion = !string.IsNullOrEmpty(savedWeapon) &&
                                        (savedWeapon.Contains("Carapace") || savedWeapon.Contains("Flametal") ||
                                         savedWeapon.Contains("JotunBane") || savedWeapon.Contains("Mistwalker") ||
                                         savedWeapon.Contains("Eldner") || savedWeapon.Contains("Niedhogg") ||
@@ -70,7 +70,7 @@ namespace ChebsMercenaries.Minions
                     humanoid.m_randomArmor = Array.Empty<GameObject>();
                     humanoid.m_randomSets = Array.Empty<Humanoid.ItemSet>();
                     humanoid.m_randomItems = Array.Empty<Humanoid.RandomItem>();
-                    Logger.LogInfo(
+                    if (BasePlugin.HeavyLogging.Value) Logger.LogInfo(
                         $"Cleared random equipment for special minion {gameObject.name} with weapon {savedWeapon}");
 
                     // Also remove any default weapons from inventory that might have spawned
@@ -91,7 +91,7 @@ namespace ChebsMercenaries.Minions
                             if (!isSpecialWeapon)
                             {
                                 itemsToRemove.Add(item);
-                                Logger.LogInfo($"Removing default weapon from reload: {itemName}");
+                                if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"Removing default weapon from reload: {itemName}");
                             }
                         }
                     }
@@ -140,7 +140,7 @@ namespace ChebsMercenaries.Minions
                             if (weaponItem != null)
                             {
                                 humanoid.EquipItem(weaponItem);
-                                Logger.LogInfo($"Utrustade vapen: {weaponName}");
+                                if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"Equip weapon: {weaponName}");
                             }
                             else
                             {
@@ -149,12 +149,12 @@ namespace ChebsMercenaries.Minions
                         }
                         else
                         {
-                            Logger.LogWarning($"ItemDrop saknas p� prefab '{weaponName}'.");
+                            Logger.LogError($"ItemDrop missing on prefab '{weaponName}'.");
                         }
                     }
                     else
                     {
-                        Logger.LogWarning($"Could not find weapon prefab '{weaponName}' in ZNetScene.");
+                        Logger.LogError($"Could not find weapon prefab '{weaponName}' in ZNetScene.");
                     }
                 }
 
@@ -177,7 +177,7 @@ namespace ChebsMercenaries.Minions
                             if (shieldItem != null)
                             {
                                 humanoid.EquipItem(shieldItem);
-                                Logger.LogInfo($"Equipped shield: {shieldName}");
+                                if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"Equipped shield: {shieldName}");
                             }
                             else
                             {
@@ -186,12 +186,12 @@ namespace ChebsMercenaries.Minions
                         }
                         else
                         {
-                            Logger.LogWarning($"ItemDrop is missing on prefab '{shieldName}'.");
+                            Logger.LogError($"ItemDrop is missing on prefab '{shieldName}'.");
                         }
                     }
                     else
                     {
-                        Logger.LogWarning($"Failed to find prefab '{shieldName}' in ZNetScene.");
+                        Logger.LogError($"Failed to find prefab '{shieldName}' in ZNetScene.");
                     }
                 }
 
@@ -203,7 +203,7 @@ namespace ChebsMercenaries.Minions
                 {
                     monsterAI.m_randomMoveRange = RoamRange.Value;
 
-                    if (!zdo.GetBool("HasCustomAI", false))
+                    if (!zdo.GetBool("HasCustomAI"))
                     {
                         zdo.Set("HasCustomAI", true);
                     }
@@ -215,9 +215,12 @@ namespace ChebsMercenaries.Minions
 
                 // Restore command state - handle Following with delay to wait for players to spawn
                 var waitPos = GetWaitPosition();
-                Logger.LogInfo($"DEBUG: {gameObject.name} wait position = {waitPos}");
-                Logger.LogInfo($"DEBUG: UndeadMinionMaster = '{UndeadMinionMaster}'");
-                Logger.LogInfo($"Restoring state for {gameObject.name}: Status = {Status}");
+                if (BasePlugin.HeavyLogging.Value)
+                {
+                    Logger.LogInfo($"DEBUG: {gameObject.name} wait position = {waitPos}");
+                    Logger.LogInfo($"DEBUG: UndeadMinionMaster = '{UndeadMinionMaster}'");
+                    Logger.LogInfo($"Restoring state for {gameObject.name}: Status = {Status}");
+                }
 
                 if (waitPos.Equals(Vector3.positiveInfinity)) // Following state
                 {
@@ -264,17 +267,20 @@ namespace ChebsMercenaries.Minions
             }
         }
 
-        public void ScaleEquipment(MercenaryType mercenaryType, ArmorType armorType, bool useCarapace = false,
-            bool useFlametal = false)
+        public void AssignEquipment(MercenaryType mercenaryType, ArmorType armorType, bool useCarapace = false,
+            bool useFlametal = false, float chanceOfHelmet=1f)
         {
             var defaultItems = new List<GameObject>();
 
             var humanoid = GetComponent<Humanoid>();
             if (humanoid == null)
             {
-                Logger.LogError("ScaleEquipment: humanoid is null!");
+                Logger.LogError("AssignEquipment: humanoid is null!");
                 return;
             }
+            
+            var rollForHelmet = Random.value;
+            if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"AssignEquipment: rollForHelmet={rollForHelmet}, chanceOfHelmet={chanceOfHelmet}");
 
             // Build defaultItems exactly like original, but add special weapons for carapace/flametal
             switch (armorType)
@@ -282,56 +288,80 @@ namespace ChebsMercenaries.Minions
                 case ArmorType.Leather:
                     defaultItems.AddRange(new[]
                     {
-                        ZNetScene.instance.GetPrefab("HelmetLeather"),
                         ZNetScene.instance.GetPrefab("ArmorLeatherChest"),
                         ZNetScene.instance.GetPrefab("ArmorLeatherLegs"),
                         ZNetScene.instance.GetPrefab("CapeDeerHide"),
                     });
+                    if (chanceOfHelmet >= rollForHelmet)
+                    {
+                        if (BasePlugin.HeavyLogging.Value) Logger.LogInfo("Assigning HelmetLeather");
+                        defaultItems.Add(ZNetScene.instance.GetPrefab("HelmetLeather"));
+                    }
                     break;
                 case ArmorType.LeatherTroll:
                     defaultItems.AddRange(new[]
                     {
-                        ZNetScene.instance.GetPrefab("ChebGonaz_HelmetLeatherTroll"),
                         ZNetScene.instance.GetPrefab("ChebGonaz_ArmorLeatherChestTroll"),
                         ZNetScene.instance.GetPrefab("ChebGonaz_ArmorLeatherLegsTroll"),
                         ZNetScene.instance.GetPrefab("CapeTrollHide"),
                     });
+                    if (chanceOfHelmet >= rollForHelmet)
+                    {
+                        if (BasePlugin.HeavyLogging.Value) Logger.LogInfo("Assigning ChebGonaz_HelmetLeatherTroll");
+                        defaultItems.Add(ZNetScene.instance.GetPrefab("ChebGonaz_HelmetLeatherTroll"));
+                    }
                     break;
                 case ArmorType.LeatherWolf:
                     defaultItems.AddRange(new[]
                     {
-                        ZNetScene.instance.GetPrefab("ChebGonaz_HelmetLeatherWolf"),
                         ZNetScene.instance.GetPrefab("ChebGonaz_ArmorLeatherChestWolf"),
                         ZNetScene.instance.GetPrefab("ChebGonaz_ArmorLeatherLegsWolf"),
                         ZNetScene.instance.GetPrefab("CapeWolf"),
                     });
+                    if (chanceOfHelmet >= rollForHelmet)
+                    {
+                        if (BasePlugin.HeavyLogging.Value) Logger.LogInfo("Assigning ChebGonaz_HelmetLeatherWolf");
+                        defaultItems.Add(ZNetScene.instance.GetPrefab("ChebGonaz_HelmetLeatherWolf"));
+                    }
                     break;
                 case ArmorType.LeatherLox:
                     defaultItems.AddRange(new[]
                     {
-                        ZNetScene.instance.GetPrefab("ChebGonaz_HelmetLeatherLox"),
                         ZNetScene.instance.GetPrefab("ChebGonaz_ArmorLeatherChestLox"),
                         ZNetScene.instance.GetPrefab("ChebGonaz_ArmorLeatherLegsLox"),
                         ZNetScene.instance.GetPrefab("CapeLox"),
                     });
+                    if (chanceOfHelmet >= rollForHelmet)
+                    {
+                        if (BasePlugin.HeavyLogging.Value) Logger.LogInfo("Assigning ChebGonaz_HelmetLeatherLox");
+                        defaultItems.Add(ZNetScene.instance.GetPrefab("ChebGonaz_HelmetLeatherLox"));
+                    }
                     break;
                 case ArmorType.Bronze:
                     defaultItems.AddRange(new[]
                     {
-                        ZNetScene.instance.GetPrefab("HelmetBronze"),
                         ZNetScene.instance.GetPrefab("ArmorBronzeChest"),
                         ZNetScene.instance.GetPrefab("ArmorBronzeLegs"),
                         ZNetScene.instance.GetPrefab("CapeLox"),
                     });
+                    if (chanceOfHelmet >= rollForHelmet)
+                    {
+                        if (BasePlugin.HeavyLogging.Value) Logger.LogInfo("Assigning HelmetBronze");
+                        defaultItems.Add(ZNetScene.instance.GetPrefab("HelmetBronze"));
+                    }
                     break;
                 case ArmorType.Iron:
                     defaultItems.AddRange(new[]
                     {
-                        ZNetScene.instance.GetPrefab("HelmetIron"),
                         ZNetScene.instance.GetPrefab("ArmorIronChest"),
                         ZNetScene.instance.GetPrefab("ArmorIronLegs"),
                         ZNetScene.instance.GetPrefab("CapeLox"),
                     });
+                    if (chanceOfHelmet >= rollForHelmet)
+                    {
+                        if (BasePlugin.HeavyLogging.Value) Logger.LogInfo("Assigning HelmetIron");
+                        defaultItems.Add(ZNetScene.instance.GetPrefab("HelmetIron"));
+                    }
                     break;
                 case ArmorType.BlackMetal:
                     if (useCarapace)
@@ -347,11 +377,16 @@ namespace ChebsMercenaries.Minions
 
                         defaultItems.AddRange(new[]
                         {
-                            ZNetScene.instance.GetPrefab("HelmetCarapace"),
                             ZNetScene.instance.GetPrefab("ArmorCarapaceChest"),
                             ZNetScene.instance.GetPrefab("ArmorCarapaceLegs"),
                             ZNetScene.instance.GetPrefab("CapeFeather"),
                         });
+                        
+                        if (chanceOfHelmet >= rollForHelmet)
+                        {
+                            if (BasePlugin.HeavyLogging.Value) Logger.LogInfo("Assigning HelmetCarapace");
+                            defaultItems.Add(ZNetScene.instance.GetPrefab("HelmetCarapace"));
+                        }
 
                         // Only warriors get weapons and shields, archers get bows
                         if (mercenaryType == MercenaryType.WarriorTier1 ||
@@ -382,7 +417,7 @@ namespace ChebsMercenaries.Minions
                             if (carapaceArrows != null)
                             {
                                 defaultItems.Add(carapaceArrows);
-                                Logger.LogInfo("Added ArrowCarapace for carapace archer");
+                                if (BasePlugin.HeavyLogging.Value) Logger.LogInfo("Added ArrowCarapace for carapace archer");
                             }
                         }
                     }
@@ -399,11 +434,16 @@ namespace ChebsMercenaries.Minions
 
                         defaultItems.AddRange(new[]
                         {
-                            ZNetScene.instance.GetPrefab("HelmetFlametal"),
                             ZNetScene.instance.GetPrefab("ArmorFlametalChest"),
                             ZNetScene.instance.GetPrefab("ArmorFlametalLegs"),
                             ZNetScene.instance.GetPrefab("CapeAsh"),
                         });
+                        
+                        if (chanceOfHelmet >= rollForHelmet)
+                        {
+                            if (BasePlugin.HeavyLogging.Value) Logger.LogInfo("Assigning HelmetFlametal");
+                            defaultItems.Add(ZNetScene.instance.GetPrefab("HelmetFlametal"));
+                        }
 
                         // Only warriors get weapons and shields, archers get bows
                         if (mercenaryType == MercenaryType.WarriorTier1 ||
@@ -434,7 +474,7 @@ namespace ChebsMercenaries.Minions
                             if (charredArrows != null)
                             {
                                 defaultItems.Add(charredArrows);
-                                Logger.LogInfo("Added ArrowCharred for flametal archer");
+                                if (BasePlugin.HeavyLogging.Value) Logger.LogInfo("Added ArrowCharred for flametal archer");
                             }
                         }
                     }
@@ -443,11 +483,16 @@ namespace ChebsMercenaries.Minions
                         // Regular BlackMetal - exactly like original
                         defaultItems.AddRange(new[]
                         {
-                            ZNetScene.instance.GetPrefab("HelmetPadded"),
                             ZNetScene.instance.GetPrefab("ArmorPaddedCuirass"),
                             ZNetScene.instance.GetPrefab("ArmorPaddedGreaves"),
                             ZNetScene.instance.GetPrefab("CapeLox")
                         });
+                        
+                        if (chanceOfHelmet >= rollForHelmet)
+                        {
+                            if (BasePlugin.HeavyLogging.Value) Logger.LogInfo("Assigning HelmetPadded");
+                            defaultItems.Add(ZNetScene.instance.GetPrefab("HelmetPadded"));
+                        }
                     }
 
                     break;
@@ -499,7 +544,7 @@ namespace ChebsMercenaries.Minions
             string swapKey = $"{targetBowName}_swap";
             if (modifiedBowPrefabs.ContainsKey(swapKey))
             {
-                Logger.LogInfo($"Visual modification already applied for {targetBowName}");
+                if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"Visual modification already applied for {targetBowName}");
                 return;
             }
 
@@ -526,11 +571,11 @@ namespace ChebsMercenaries.Minions
                     {
                         ApplyMaterialPropertyBlock(mercenaryBowPrefab, targetBowPrefab, targetBowName);
                         success = true;
-                        Logger.LogInfo($"MaterialPropertyBlock method succeeded for {bowPrefabName}");
+                        if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"MaterialPropertyBlock method succeeded for {bowPrefabName}");
                     }
-                    catch (System.Exception ex)
+                    catch (Exception ex)
                     {
-                        Logger.LogWarning($"MaterialPropertyBlock method failed for {bowPrefabName}: {ex.Message}");
+                        if (BasePlugin.HeavyLogging.Value) Logger.LogWarning($"MaterialPropertyBlock method failed for {bowPrefabName}: {ex.Message}");
                     }
                 }
 
@@ -541,9 +586,9 @@ namespace ChebsMercenaries.Minions
                     {
                         ApplySharedMaterialReference(mercenaryBowPrefab, targetBowPrefab, targetBowName);
                         success = true;
-                        Logger.LogInfo($"Shared material method succeeded for {bowPrefabName}");
+                        if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"Shared material method succeeded for {bowPrefabName}");
                     }
-                    catch (System.Exception ex)
+                    catch (Exception ex)
                     {
                         Logger.LogWarning($"Shared material method failed for {bowPrefabName}: {ex.Message}");
                     }
@@ -556,7 +601,7 @@ namespace ChebsMercenaries.Minions
                     {
                         ApplyColorTinting(mercenaryBowPrefab, useCarapace, useFlametal);
                         success = true;
-                        Logger.LogInfo($"Color tinting method succeeded for {bowPrefabName}");
+                        if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"Color tinting method succeeded for {bowPrefabName}");
                     }
                     catch (System.Exception ex)
                     {
@@ -567,7 +612,7 @@ namespace ChebsMercenaries.Minions
 
             // Mark as completed
             modifiedBowPrefabs[swapKey] = true;
-            Logger.LogInfo($"Completed visual modification using {targetBowName} for {swapType} archers");
+            if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"Completed visual modification using {targetBowName} for {swapType} archers");
         }
 
         // MaterialPropertyBlock approach - changes visuals without breaking components
@@ -808,7 +853,7 @@ namespace ChebsMercenaries.Minions
             }
 
             string theme = useCarapace ? "carapace" : "flametal";
-            Logger.LogInfo($"Applied {theme} color tint to {aiBowPrefab.name}");
+            if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"Applied {theme} color tint to {aiBowPrefab.name}");
         }
 
         // Helper method to remove "(Clone)" from prefab names
@@ -824,7 +869,7 @@ namespace ChebsMercenaries.Minions
         // Wait for player to spawn then restore follow behavior
         private IEnumerator WaitForPlayerThenFollow()
         {
-            Logger.LogInfo($"Waiting for owner '{UndeadMinionMaster}' to spawn...");
+            if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"Waiting for owner '{UndeadMinionMaster}' to spawn...");
 
             // Wait up to 15 seconds for the player to spawn
             float waitTime = 0f;
@@ -838,13 +883,13 @@ namespace ChebsMercenaries.Minions
                 var allPlayers = Player.GetAllPlayers();
                 if (allPlayers.Count > 0)
                 {
-                    Logger.LogInfo($"Found {allPlayers.Count} players online after {waitTime}s");
+                    if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"Found {allPlayers.Count} players online after {waitTime}s");
 
                     // Check if our specific owner is online
                     var owner = allPlayers.FirstOrDefault(p => BelongsToPlayer(p.GetPlayerName()));
                     if (owner != null)
                     {
-                        Logger.LogInfo($"Owner '{UndeadMinionMaster}' found! Starting to follow.");
+                        if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"Owner '{UndeadMinionMaster}' found! Starting to follow.");
                         RoamFollowOrWait(); // This will now find the player and start following
                         yield break;
                     }
@@ -893,7 +938,7 @@ namespace ChebsMercenaries.Minions
 
         public static void Spawn(MercenaryType mercenaryType, ArmorType armorType, Transform spawner,
             float chanceOfFemale, List<Vector3> skinColors, List<Vector3> hairColors, bool useCarapace = false,
-            bool useFlametal = false)
+            bool useFlametal = false, string master=null, float chanceOfHelmet=1f)
         {
             if (mercenaryType is MercenaryType.None) return;
 
@@ -961,9 +1006,8 @@ namespace ChebsMercenaries.Minions
                 Logger.LogError("Spawn: spawnedChar has no HumanMinion component");
                 return;
             }
-
-            // Scale equipment
-            minion.ScaleEquipment(mercenaryType, armorType, useCarapace, useFlametal);
+            
+            minion.AssignEquipment(mercenaryType, armorType, useCarapace, useFlametal, chanceOfHelmet);
 
             if (mercenaryType != MercenaryType.Miner && mercenaryType != MercenaryType.Woodcutter)
                 minion.Roam();
@@ -1046,6 +1090,11 @@ namespace ChebsMercenaries.Minions
             }
 
             minion.RecordDrops(characterDrop);
+            
+            if (!string.IsNullOrEmpty(master))
+            {
+                minion.UndeadMinionMaster = master;
+            }
         }
 
         // Method to reset bow prefabs if needed (for testing)

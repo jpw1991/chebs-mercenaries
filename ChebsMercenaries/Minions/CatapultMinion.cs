@@ -49,7 +49,7 @@ namespace ChebsMercenaries.Minions
             }
         }
         
-        public static void Spawn(Transform spawner)
+        public static void Spawn(Transform spawner, string master=null)
         {
             if (ZNetScene.instance == null)
             {
@@ -97,6 +97,11 @@ namespace ChebsMercenaries.Minions
             // aren't remembered. So we must write what we're dropping into
             // the ZDO as well and then read & restore this on Awake
             minion.RecordDrops(characterDrop);
+
+            if (!string.IsNullOrEmpty(master))
+            {
+                minion.UndeadMinionMaster = master;
+            }
         }
     }
 }
