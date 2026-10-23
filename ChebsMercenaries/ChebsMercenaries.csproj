@@ -3,7 +3,7 @@
     <!-- If you've cloned/forked this and want to change it, copy the entire file and rename its extension to
      to csproj.user and then set your own paths. This user file will take precedence over what's set here -->
     <VALHEIM_DATA_MANAGED>/home/joshua/.local/share/Steam/steamapps/common/Valheim/Valheim_Data/Managed</VALHEIM_DATA_MANAGED>
-    <BEPINEX_PATH>/home/joshua/.config/r2modmanPlus-local/Valheim/profiles/cheb-development/BepInEx/</BEPINEX_PATH>
+    <BEPINEX_PATH>/home/joshua/.local/share/com.kesomannen.gale/valheim/profiles/cheb-dev/BepInEx/</BEPINEX_PATH>
 
     <TargetFramework>net48</TargetFramework>
     <RootNamespace>ChebsMercenaries</RootNamespace>
@@ -24,7 +24,7 @@
     <AssemblyCulture>$(NeutralLanguage)</AssemblyCulture>
 
     <!-- Version Information -->
-    <Version>3.1.2.0</Version>
+    <Version>3.2.0.0</Version>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyVersion>$(Version)</AssemblyVersion>
 
@@ -36,13 +36,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2">
+    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.5.0-beta.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="ChebsValheimLibrary" Version="2.6.2" />
+    <PackageReference Include="ChebsValheimLibrary" Version="2.7.0" />
     <PackageReference Include="HarmonyX" Version="2.9.0" />
-    <PackageReference Include="JotunnLib" Version="2.27.0" />
+    <PackageReference Include="JotunnLib" Version="2.30.2" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

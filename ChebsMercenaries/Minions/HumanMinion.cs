@@ -994,11 +994,11 @@ namespace ChebsMercenaries.Minions
                 var randomBeard = _beards[Random.Range(0, _beards.Count)].gameObject.name;
                 if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"Applying beard {randomBeard}.");
                 humanoid.SetBeard(randomBeard);
-                humanoid.m_visEquipment.SetBeardItem(humanoid.m_beardItem);
+                humanoid.m_visEquipment.SetBeardItem(humanoid.m_beardItem.GetStableHashCode());
             }
 
             if (BasePlugin.HeavyLogging.Value) Logger.LogInfo($"Applying hair {humanoid.m_hairItem}.");
-            humanoid.m_visEquipment.SetHairItem(humanoid.m_hairItem);
+            humanoid.m_visEquipment.SetHairItem(humanoid.m_hairItem.GetStableHashCode());
             humanoid.m_visEquipment.UpdateEquipmentVisuals();
 
             if (!spawnedChar.TryGetComponent(out HumanMinion minion))

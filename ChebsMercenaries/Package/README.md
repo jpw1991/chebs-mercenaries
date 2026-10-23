@@ -147,6 +147,15 @@ You can find the github [here](https://github.com/jpw1991/chebs-mercenaries).
 ## Changelog
 
 <details>
+<summary>2026</summary>
+
+Date | Version | Notes
+--- | --- | ---
+23/10/2026 | 3.2.0 | Update for new Valheim, fix helmet spawn chance from reading the wrong variable
+
+</details>
+
+<details>
 <summary>2025</summary>
 
 Date | Version | Notes

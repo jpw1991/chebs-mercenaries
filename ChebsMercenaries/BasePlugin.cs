@@ -33,11 +33,11 @@ namespace ChebsMercenaries
     {
         public const string PluginGuid = "com.chebgonaz.chebsmercenaries";
         public const string PluginName = "ChebsMercenaries";
-        public const string PluginVersion = "3.1.2";
+        public const string PluginVersion = "3.2.0";
         private const string ConfigFileName = PluginGuid + ".cfg";
         private static readonly string ConfigFileFullPath = Path.Combine(Paths.ConfigPath, ConfigFileName);
 
-        public readonly System.Version ChebsValheimLibraryVersion = new("2.6.3");
+        public readonly System.Version ChebsValheimLibraryVersion = new("2.7.0");
 
         private readonly Harmony harmony = new(PluginGuid);
 
@@ -255,22 +255,6 @@ namespace ChebsMercenaries
                     new MercenaryBowFrostItem(),
                     new MercenaryBowSilverItem(),
                     new MercenaryBowPoisonItem(),
-                    
-                    new HelmetLeatherTroll(),
-                    new HelmetLeatherWolf(),
-                    new HelmetLeatherLox(),
-                    new SkeletonHelmetLeatherTroll(),
-                    new SkeletonHelmetLeatherPoisonTroll(),
-                    new SkeletonArmorLeatherChestTroll(),
-                    new SkeletonArmorLeatherLegsTroll(),
-                    new SkeletonHelmetLeatherWolf(),
-                    new SkeletonHelmetLeatherPoisonWolf(),
-                    new SkeletonArmorLeatherChestWolf(),
-                    new SkeletonArmorLeatherLegsWolf(),
-                    new SkeletonHelmetLeatherLox(),
-                    new SkeletonHelmetLeatherPoisonLox(),
-                    new SkeletonArmorLeatherChestLox(),
-                    new SkeletonArmorLeatherLegsLox()
                 };
                 foreach (var minionItem in mercenaryMinionItems)
                 {

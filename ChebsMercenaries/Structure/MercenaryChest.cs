@@ -341,7 +341,7 @@ namespace ChebsMercenaries.Structure
                             chanceOfFemale /= 100; // convert from eg. 50% to 0.5
                             
                             var helmetStr = MercenaryChestOptionsGUI.GetHelmet(_container);
-                            if (!float.TryParse(genderStr, out var chanceOfHelmet))
+                            if (!float.TryParse(helmetStr, out var chanceOfHelmet))
                             {
                                 Logger.LogError($"Failed to parse {helmetStr}, defaulting to 100%");
                                 chanceOfHelmet = 50f;

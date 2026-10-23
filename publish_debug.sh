@@ -2,10 +2,10 @@
 
 DEBUGDIR=ChebsMercenaries/bin/Debug/net48
 DLL=$DEBUGDIR/ChebsMercenaries.dll
-LIB=$DEBUGDIR/ChebsValheimLibrary.dll
+LIB=/home/joshua/repositories/chebs-valheim-library/ChebsValheimLibrary/bin/Release/net48/ChebsValheimLibrary.dll
 BUN=../chebs-necromancy/chebs-necromancy-unity/Assets/AssetBundles/chebgonaz
 #PLUGINS=/home/joshua/.local/share/Steam/steamapps/common/Valheim/BepInEx/plugins
-PLUGINS=/home/$USER/.config/r2modmanPlus-local/Valheim/profiles/cheb-development/BepInEx/plugins/ChebGonaz-ChebsMercenaries
+PLUGINS=/home/$USER/.local/share/com.kesomannen.gale/valheim/profiles/cheb-dev/BepInEx/plugins/ChebGonaz-ChebsMercenaries
 
 # Check that source files exist and are readable
 if [ ! -f "$DLL" ]; then
